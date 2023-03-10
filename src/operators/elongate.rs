@@ -25,13 +25,21 @@ pub struct ElongateOp<Precision, Dim> {
     pub _phantom: PhantomData<Precision>,
 }
 
-impl<Precision, Dim> Default for ElongateOp<Precision, Dim>
-where
-    Dim: Default,
+impl<Precision> Default for ElongateOp<Precision, Vec2>
 {
     fn default() -> Self {
         ElongateOp {
-            extent: default(),
+            extent: Vec2::ONE,
+            _phantom: default(),
+        }
+    }
+}
+
+impl<Precision> Default for ElongateOp<Precision, Vec3>
+{
+    fn default() -> Self {
+        ElongateOp {
+            extent: Vec3::ONE,
             _phantom: default(),
         }
     }
