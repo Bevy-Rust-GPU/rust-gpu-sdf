@@ -7,7 +7,7 @@ pub mod operators;
 #[cfg(test)]
 pub mod tests;
 
-/// Free-standing Default::default() invocation
+/// Free-standing [`Default::default()`] invocation
 pub fn default<T: Default>() -> T {
     Default::default()
 }
