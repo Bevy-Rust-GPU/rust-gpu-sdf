@@ -1,7 +1,5 @@
 //! Shapes composed from other shapes.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3};
-
 use crate::{
     markers::Exact,
     operators::{
@@ -11,6 +9,7 @@ use crate::{
         Operator,
     },
     signed_distance_field::metrics::euclidean::EuclideanMetric,
+    D2, D3,
 };
 
 /// An infinitely small point.
@@ -21,14 +20,23 @@ pub type Point = EuclideanMetric;
 /// Not very useful on its own; primarily used for composition.
 pub type Line<Dim> = ExtrudeDist<Point, Dim>;
 
+/// A ball.
+pub type Ball<Dim> = Round<Point, Dim>;
+
 /// A 2D circle.
-pub type Circle = Round<Point, Vec2>;
+pub type Circle = Ball<D2>;
 
 /// A 3D sphere.
-pub type Sphere = Round<Point, Vec3>;
+pub type Sphere = Ball<D3>;
 
 /// A capsule.
 pub type Capsule<Dim> = Operator<Line<Dim>, RoundOp, Dim>;
 
-/// A cube.
-pub type Cube<Dim> = Elongate<Point, Exact, Dim>;
+/// A box.
+pub type Box<Dim> = Elongate<Point, Exact, Dim>;
+
+/// A 2D square.
+pub type Square = Box<D2>;
+
+/// A 3D cube.
+pub type Cube = Box<D3>;
