@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["RepeatCountOp","Repeat a distance field a set number of times in one or more axes."],["RepeatInfiniteOp","Repeat a distance field infinitely in one or more axes."]],"type":[["RepeatCount","Repeat a distance field a set number of times in one or more axes."],["RepeatInfinite","Repeat a distance field infinitely in one or more axes."]]};

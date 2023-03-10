@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":[["Approx","Marker type for approximate operations"],["Exact","Marker type for exact operations"]]};

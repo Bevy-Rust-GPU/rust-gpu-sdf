@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"type":[["Capsule","A capsule."],["Cube","A cube."],["Line","An infinitely thin line. Not very useful on its own; primarily used for composition."],["Point","An infinitely small point. Not very useful on its own; primarily used for composition."],["Sphere","A sphere."]]};

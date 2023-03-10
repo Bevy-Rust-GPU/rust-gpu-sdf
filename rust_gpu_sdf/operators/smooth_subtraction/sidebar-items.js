@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["SmoothSubtractionOp","Compute the blended boolean subtraction of two distance fields."]],"type":[["SmoothSubtraction","Compute the blended boolean subtraction of two distance fields."]]};

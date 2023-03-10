@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["ScaleOp","Uniformly scale a distance field."]],"type":[["Scale","Uniformly scale a distance field."]]};

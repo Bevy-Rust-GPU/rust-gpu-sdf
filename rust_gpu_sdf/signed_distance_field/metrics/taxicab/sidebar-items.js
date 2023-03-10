@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["TaxicabMetric","Taxicab distance metric."]]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["RotateOp","Rotate a distance field."]],"type":[["Rotate","Rotate a distance field."]]};

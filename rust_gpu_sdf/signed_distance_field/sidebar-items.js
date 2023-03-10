@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":[["metrics","Distance metrics."],["shapes","Distance field shapes."]],"trait":[["SignedDistanceField","Describes a shape in terms of distance to the nearest point on its surface."],["SignedDistanceNormal","Computes the normal at the nearest point on the surface of its corresponding [`SignedDistanceField`]."]]};

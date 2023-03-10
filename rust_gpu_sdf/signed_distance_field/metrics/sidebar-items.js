@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":[["chebyshev","Chebyshev distance metric."],["euclidean","Euclidean distance metric."],["taxicab","Taxicab distance metric."]]};

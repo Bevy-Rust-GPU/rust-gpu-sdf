@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["HollowOp","Convert a solid shape into a hollow one with an infinitely thin surface."]],"type":[["Hollow","Convert a solid shape into a hollow one with an infinitely thin surface."]]};

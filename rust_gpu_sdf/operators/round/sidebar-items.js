@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["RoundOp","Add an arbitrary radius to a distance field."]],"type":[["Round","Add an arbitrary radius to a distance field."]]};
