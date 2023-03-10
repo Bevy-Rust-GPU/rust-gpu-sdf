@@ -2,32 +2,30 @@
 
 use core::ops::Neg;
 
-use rust_gpu_bridge::prelude::Vec3;
-
 use crate::signed_distance_field::SignedDistanceField;
 
 use super::{Operator, SignedDistanceOperator};
 
 /// Compute the boolean subtraction of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct SubtractionOp<Sdf>
-where
-    Sdf: SignedDistanceField<Vec3>,
-{
+pub struct SubtractionOp<Sdf> {
     pub sdf: Sdf,
 }
 
-impl<SdfB> SignedDistanceOperator<Vec3> for SubtractionOp<SdfB>
+impl<SdfB, Dim> SignedDistanceOperator<Dim> for SubtractionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Vec3>,
+    SdfB: SignedDistanceField<Dim>,
+    Dim: Clone,
 {
-    fn operator<SdfA>(&self, sdf: SdfA, p: Vec3) -> f32
+    fn operator<SdfA>(&self, sdf: SdfA, p: Dim) -> f32
     where
-        SdfA: SignedDistanceField<Vec3>,
+        SdfA: SignedDistanceField<Dim>,
     {
-        sdf.distance(p).neg().max(self.sdf.distance(p))
+        sdf.distance(p.clone())
+            .neg()
+            .max(self.sdf.distance(p.clone()))
     }
 }
 
 /// Compute the boolean subtraction of two distance fields.
-pub type Subtraction<SdfA, SdfB> = Operator<SdfA, SubtractionOp<SdfB>, Vec3>;
+pub type Subtraction<SdfA, SdfB, Dim> = Operator<SdfA, SubtractionOp<SdfB>, Dim>;

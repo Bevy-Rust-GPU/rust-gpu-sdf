@@ -1,6 +1,6 @@
 //! Convert a solid shape into a hollow one with an infinitely thin surface.
 
-use rust_gpu_bridge::prelude::Vec3;
+use rust_gpu_bridge::prelude::{Vec2, Vec3};
 
 use crate::signed_distance_field::SignedDistanceField;
 
@@ -18,6 +18,15 @@ impl Default for HollowOp {
     }
 }
 
+impl SignedDistanceOperator<Vec2> for HollowOp {
+    fn operator<Sdf>(&self, sdf: Sdf, p: Vec2) -> f32
+    where
+        Sdf: SignedDistanceField<Vec2>,
+    {
+        sdf.distance(p).abs()
+    }
+}
+
 impl SignedDistanceOperator<Vec3> for HollowOp {
     fn operator<Sdf>(&self, sdf: Sdf, p: Vec3) -> f32
     where
@@ -28,4 +37,4 @@ impl SignedDistanceOperator<Vec3> for HollowOp {
 }
 
 /// Convert a solid shape into a hollow one with an infinitely thin surface.
-pub type Hollow<Sdf> = Operator<Sdf, HollowOp, Vec3>;
+pub type Hollow<Sdf, Dim> = Operator<Sdf, HollowOp, Dim>;

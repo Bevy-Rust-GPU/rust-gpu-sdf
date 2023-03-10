@@ -24,40 +24,42 @@ use core::marker::PhantomData;
 use crate::{default, signed_distance_field::SignedDistanceField};
 
 /// Modifies the input / output of a [`SignedDistanceField`].
-pub trait SignedDistanceOperator<P> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: P) -> f32
+pub trait SignedDistanceOperator<Dim> {
+    fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
     where
-        Sdf: SignedDistanceField<P>;
+        Sdf: SignedDistanceField<Dim>,
+        Dim: Clone;
 }
 
-impl<T, P> SignedDistanceOperator<P> for &T
+impl<T, Dim> SignedDistanceOperator<Dim> for &T
 where
-    T: SignedDistanceOperator<P>,
+    T: SignedDistanceOperator<Dim>,
 {
-    fn operator<Sdf>(&self, sdf: Sdf, p: P) -> f32
+    fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
     where
-        Sdf: SignedDistanceField<P>,
+        Sdf: SignedDistanceField<Dim>,
+        Dim: Clone
     {
-        <T as SignedDistanceOperator<P>>::operator::<Sdf>(*self, sdf, p)
+        <T as SignedDistanceOperator<Dim>>::operator::<Sdf>(*self, sdf, p)
     }
 }
 
 /// Applies a [`SignedDistanceOperator`] to a [`SignedDistanceField`].
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash)]
-pub struct Operator<Sdf, Op, P>
+pub struct Operator<Sdf, Op, Dim>
 where
-    Sdf: SignedDistanceField<P>,
-    Op: SignedDistanceOperator<P>,
+    Sdf: SignedDistanceField<Dim>,
+    Op: SignedDistanceOperator<Dim>,
 {
     pub sdf: Sdf,
     pub op: Op,
-    pub _phantom: PhantomData<P>,
+    pub _phantom: PhantomData<Dim>,
 }
 
-impl<Sdf, Op, P> Default for Operator<Sdf, Op, P>
+impl<Sdf, Op, Dim> Default for Operator<Sdf, Op, Dim>
 where
-    Sdf: SignedDistanceField<P> + Default,
-    Op: SignedDistanceOperator<P> + Default,
+    Sdf: SignedDistanceField<Dim> + Default,
+    Op: SignedDistanceOperator<Dim> + Default,
 {
     fn default() -> Self {
         Operator {
@@ -68,12 +70,13 @@ where
     }
 }
 
-impl<S, O, P> SignedDistanceField<P> for Operator<S, O, P>
+impl<Sdf, Op, Dim> SignedDistanceField<Dim> for Operator<Sdf, Op, Dim>
 where
-    S: SignedDistanceField<P>,
-    O: SignedDistanceOperator<P>,
+    Sdf: SignedDistanceField<Dim>,
+    Op: SignedDistanceOperator<Dim>,
+    Dim: Clone,
 {
-    fn distance(&self, p: P) -> f32 {
+    fn distance(&self, p: Dim) -> f32 {
         self.op.operator(&self.sdf, p)
     }
 }

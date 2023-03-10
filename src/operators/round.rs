@@ -1,7 +1,5 @@
 //! Add an arbitrary radius to a distance field.
 
-use rust_gpu_bridge::prelude::Vec3;
-
 use crate::signed_distance_field::SignedDistanceField;
 
 use super::{Operator, SignedDistanceOperator};
@@ -18,14 +16,14 @@ impl Default for RoundOp {
     }
 }
 
-impl SignedDistanceOperator<Vec3> for RoundOp {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec3) -> f32
+impl<Dim> SignedDistanceOperator<Dim> for RoundOp {
+    fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
     where
-        Sdf: SignedDistanceField<Vec3>,
+        Sdf: SignedDistanceField<Dim>,
     {
         sdf.distance(p) - self.radius
     }
 }
 
 /// Add an arbitrary radius to a distance field.
-pub type Round<Sdf> = Operator<Sdf, RoundOp, Vec3>;
+pub type Round<Sdf, Dim> = Operator<Sdf, RoundOp, Dim>;
