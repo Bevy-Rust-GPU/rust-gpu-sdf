@@ -27,4 +27,4 @@ where
 }
 
 /// Apply a positional translation to a distance field.
-pub type Translate<Sdf> = Operator<Sdf, TranslateOp<Vec3>, Vec3>;
+pub type Translate<Sdf, Dim> = Operator<Sdf, TranslateOp<Dim>, Dim>;

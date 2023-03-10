@@ -9,7 +9,7 @@ use super::{Operator, SignedDistanceOperator};
 /// Uniformly scale a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
 pub struct ScaleOp {
-    scale: f32,
+    pub scale: f32,
 }
 
 impl<Dim> SignedDistanceOperator<Dim> for ScaleOp

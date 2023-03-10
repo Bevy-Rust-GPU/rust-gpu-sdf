@@ -4,11 +4,11 @@ use crate::{
     markers::Exact,
     operators::{
         elongate::Elongate,
-        extrude::ExtrudeDist,
-        round::{Round, RoundOp},
+        shift_isosurface::{ShiftIsosurface, ShiftIsosurfaceOp},
+        stretch::StretchDist,
         Operator,
     },
-    signed_distance_field::metrics::euclidean::EuclideanMetric,
+    signed_distance_field::{adapters::sweep::Sweep, metrics::euclidean::EuclideanMetric},
     D2, D3,
 };
 
@@ -18,10 +18,10 @@ pub type Point = EuclideanMetric;
 
 /// An infinitely thin line.
 /// Not very useful on its own; primarily used for composition.
-pub type Line<Dim> = ExtrudeDist<Point, Dim>;
+pub type Line<Dim> = StretchDist<Point, Dim>;
 
 /// A ball.
-pub type Ball<Dim> = Round<Point, Dim>;
+pub type Ball<Dim> = ShiftIsosurface<Point, Dim>;
 
 /// A 2D circle.
 pub type Circle = Ball<D2>;
@@ -30,7 +30,7 @@ pub type Circle = Ball<D2>;
 pub type Sphere = Ball<D3>;
 
 /// A capsule.
-pub type Capsule<Dim> = Operator<Line<Dim>, RoundOp, Dim>;
+pub type Capsule<Dim> = Operator<Line<Dim>, ShiftIsosurfaceOp, Dim>;
 
 /// A box.
 pub type Box<Dim> = Elongate<Point, Exact, Dim>;
@@ -40,3 +40,6 @@ pub type Square = Box<D2>;
 
 /// A 3D cube.
 pub type Cube = Box<D3>;
+
+/// A 3D torus.
+pub type Torus = Sweep<Circle, Circle>;

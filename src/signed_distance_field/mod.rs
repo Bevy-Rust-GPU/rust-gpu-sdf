@@ -2,6 +2,7 @@
 
 pub mod metrics;
 pub mod shapes;
+pub mod adapters;
 
 use rust_gpu_bridge::prelude::Vec3;
 

@@ -3,17 +3,17 @@
 pub mod composite;
 pub mod displace;
 pub mod elongate;
-pub mod extrude;
 pub mod hollow;
 pub mod intersection;
 pub mod reflect;
 pub mod repeat;
 pub mod rotate;
-pub mod round;
+pub mod shift_isosurface;
 pub mod scale;
 pub mod smooth_intersection;
 pub mod smooth_subtraction;
 pub mod smooth_union;
+pub mod stretch;
 pub mod subtraction;
 pub mod translate;
 pub mod twist;
@@ -38,7 +38,7 @@ where
     fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
     where
         Sdf: SignedDistanceField<Dim>,
-        Dim: Clone
+        Dim: Clone,
     {
         <T as SignedDistanceOperator<Dim>>::operator::<Sdf>(*self, sdf, p)
     }
@@ -80,3 +80,4 @@ where
         self.op.operator(&self.sdf, p)
     }
 }
+
