@@ -1,8 +1,8 @@
 //! Types that describe signed distance fields.
 
+pub mod adapters;
 pub mod metrics;
 pub mod shapes;
-pub mod adapters;
 
 use rust_gpu_bridge::prelude::Vec3;
 
@@ -32,5 +32,11 @@ where
 {
     fn normal(&self, p: Dim) -> Vec3 {
         <T as SignedDistanceNormal<Dim>>::normal(*self, p)
+    }
+}
+
+impl<Dim> SignedDistanceField<Dim> for f32 {
+    fn distance(&self, _: Dim) -> f32 {
+        *self
     }
 }

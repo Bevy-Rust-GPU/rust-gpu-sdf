@@ -8,7 +8,7 @@ pub mod intersection;
 pub mod reflect;
 pub mod repeat;
 pub mod rotate;
-pub mod shift_isosurface;
+pub mod isosurface;
 pub mod scale;
 pub mod smooth_intersection;
 pub mod smooth_subtraction;

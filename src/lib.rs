@@ -9,8 +9,6 @@ pub mod parameters {
 
     // Doesn't seem sufficient; not suitable for compositions that have
     // more than one nested instance of the same type.
-    
-    // Will probably need to look into functional lenses.
 
     pub trait SignedDistanceParameter<Parameter> {
         type Type;

@@ -1,22 +1,22 @@
-//! Add an arbitrary radius to a distance field.
+//! Shift the isosurface of a distance field by a given amount.
 
 use crate::signed_distance_field::SignedDistanceField;
 
 use super::{Operator, SignedDistanceOperator};
 
-/// Add an arbitrary radius to a distance field.
+/// Shift the isosurface of a distance field by a given amount.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
-pub struct ShiftIsosurfaceOp {
+pub struct IsosurfaceOp {
     pub delta: f32,
 }
 
-impl Default for ShiftIsosurfaceOp {
+impl Default for IsosurfaceOp {
     fn default() -> Self {
-        ShiftIsosurfaceOp { delta: 1.0 }
+        IsosurfaceOp { delta: 1.0 }
     }
 }
 
-impl<Dim> SignedDistanceOperator<Dim> for ShiftIsosurfaceOp {
+impl<Dim> SignedDistanceOperator<Dim> for IsosurfaceOp {
     fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
     where
         Sdf: SignedDistanceField<Dim>,
@@ -26,4 +26,4 @@ impl<Dim> SignedDistanceOperator<Dim> for ShiftIsosurfaceOp {
 }
 
 /// Add an arbitrary radius to a distance field.
-pub type ShiftIsosurface<Sdf, Dim> = Operator<Sdf, ShiftIsosurfaceOp, Dim>;
+pub type Isosurface<Sdf, Dim> = Operator<Sdf, IsosurfaceOp, Dim>;

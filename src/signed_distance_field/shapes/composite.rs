@@ -4,7 +4,7 @@ use crate::{
     markers::Exact,
     operators::{
         elongate::Elongate,
-        shift_isosurface::{ShiftIsosurface, ShiftIsosurfaceOp},
+        isosurface::{Isosurface, IsosurfaceOp},
         stretch::StretchDist,
         Operator,
     },
@@ -21,7 +21,7 @@ pub type Point = EuclideanMetric;
 pub type Line<Dim> = StretchDist<Point, Dim>;
 
 /// A ball.
-pub type Ball<Dim> = ShiftIsosurface<Point, Dim>;
+pub type Ball<Dim> = Isosurface<Point, Dim>;
 
 /// A 2D circle.
 pub type Circle = Ball<D2>;
@@ -30,7 +30,7 @@ pub type Circle = Ball<D2>;
 pub type Sphere = Ball<D3>;
 
 /// A capsule.
-pub type Capsule<Dim> = Operator<Line<Dim>, ShiftIsosurfaceOp, Dim>;
+pub type Capsule<Dim> = Operator<Line<Dim>, IsosurfaceOp, Dim>;
 
 /// A box.
 pub type Box<Dim> = Elongate<Point, Exact, Dim>;
