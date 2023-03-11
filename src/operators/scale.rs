@@ -16,7 +16,7 @@ impl<Dim> SignedDistanceOperator<Dim> for ScaleOp
 where
     Dim: Div<f32, Output = Dim>,
 {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
     where
         Sdf: SignedDistanceField<Dim>,
     {

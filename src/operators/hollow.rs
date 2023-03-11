@@ -19,7 +19,7 @@ impl Default for HollowOp {
 }
 
 impl SignedDistanceOperator<Vec2> for HollowOp {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec2) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
         Sdf: SignedDistanceField<Vec2>,
     {
@@ -28,7 +28,7 @@ impl SignedDistanceOperator<Vec2> for HollowOp {
 }
 
 impl SignedDistanceOperator<Vec3> for HollowOp {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec3) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
         Sdf: SignedDistanceField<Vec3>,
     {

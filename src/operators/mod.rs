@@ -25,7 +25,7 @@ use crate::{default, signed_distance_field::SignedDistanceField};
 
 /// Modifies the input / output of a [`SignedDistanceField`].
 pub trait SignedDistanceOperator<Dim> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
     where
         Sdf: SignedDistanceField<Dim>,
         Dim: Clone;
@@ -35,7 +35,7 @@ impl<T, Dim> SignedDistanceOperator<Dim> for &T
 where
     T: SignedDistanceOperator<Dim>,
 {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
     where
         Sdf: SignedDistanceField<Dim>,
         Dim: Clone,

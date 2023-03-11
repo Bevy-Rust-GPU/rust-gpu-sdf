@@ -17,7 +17,7 @@ where
     SdfB: SignedDistanceField<Dim>,
     Dim: Clone,
 {
-    fn operator<SdfA>(&self, sdf: SdfA, p: Dim) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
     where
         SdfA: SignedDistanceField<Dim>,
     {

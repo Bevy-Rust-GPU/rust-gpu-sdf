@@ -11,32 +11,20 @@ pub trait SignedDistanceField<Dim> {
     fn distance(&self, p: Dim) -> f32;
 }
 
-impl<T, Dim> SignedDistanceField<Dim> for &T
-where
-    T: SignedDistanceField<Dim>,
-{
-    fn distance(&self, p: Dim) -> f32 {
-        <T as SignedDistanceField<Dim>>::distance(*self, p)
-    }
-}
-
 /// Computes the normal at the nearest point on the surface of
 /// its corresponding [`SignedDistanceField`].
 pub trait SignedDistanceNormal<Dim>: SignedDistanceField<Dim> {
     fn normal(&self, p: Dim) -> Vec3;
 }
 
-impl<T, Dim> SignedDistanceNormal<Dim> for &T
-where
-    T: SignedDistanceNormal<Dim>,
-{
-    fn normal(&self, p: Dim) -> Vec3 {
-        <T as SignedDistanceNormal<Dim>>::normal(*self, p)
-    }
-}
-
 impl<Dim> SignedDistanceField<Dim> for f32 {
     fn distance(&self, _: Dim) -> f32 {
         *self
+    }
+}
+
+impl<F, Dim> SignedDistanceField<Dim> for F where F: Fn(Dim) -> f32 {
+    fn distance(&self, p: Dim) -> f32 {
+        self(p)
     }
 }

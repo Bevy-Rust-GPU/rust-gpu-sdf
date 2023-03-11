@@ -17,7 +17,7 @@ impl Default for IsosurfaceOp {
 }
 
 impl<Dim> SignedDistanceOperator<Dim> for IsosurfaceOp {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
     where
         Sdf: SignedDistanceField<Dim>,
     {

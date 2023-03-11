@@ -35,7 +35,7 @@ impl Default for TwistOp<Vec3> {
 }
 
 impl SignedDistanceOperator<Vec2> for TwistOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec2) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
         Sdf: SignedDistanceField<Vec2>,
     {
@@ -45,7 +45,7 @@ impl SignedDistanceOperator<Vec2> for TwistOp<Vec2> {
 }
 
 impl SignedDistanceOperator<Vec3> for TwistOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec3) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
         Sdf: SignedDistanceField<Vec3>,
     {

@@ -16,7 +16,7 @@ impl<SdfB> SignedDistanceOperator<Vec2> for IntersectionOp<SdfB>
 where
     SdfB: SignedDistanceField<Vec2>,
 {
-    fn operator<SdfA>(&self, sdf: SdfA, p: Vec2) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Vec2) -> f32
     where
         SdfA: SignedDistanceField<Vec2>,
     {
@@ -28,7 +28,7 @@ impl<SdfB> SignedDistanceOperator<Vec3> for IntersectionOp<SdfB>
 where
     SdfB: SignedDistanceField<Vec3>,
 {
-    fn operator<SdfA>(&self, sdf: SdfA, p: Vec3) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Vec3) -> f32
     where
         SdfA: SignedDistanceField<Vec3>,
     {

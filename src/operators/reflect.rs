@@ -28,7 +28,7 @@ impl Default for ReflectOp<Vec3> {
 }
 
 impl SignedDistanceOperator<Vec2> for ReflectOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec2) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
         Sdf: SignedDistanceField<Vec2>,
     {
@@ -46,7 +46,7 @@ impl SignedDistanceOperator<Vec2> for ReflectOp<Vec2> {
 }
 
 impl SignedDistanceOperator<Vec3> for ReflectOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec3) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
         Sdf: SignedDistanceField<Vec3>,
     {

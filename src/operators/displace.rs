@@ -14,7 +14,7 @@ impl<SdfB, Dim> SignedDistanceOperator<Dim> for DisplaceOp<SdfB>
 where
     SdfB: SignedDistanceField<Dim>,
 {
-    fn operator<SdfA>(&self, sdf: SdfA, p: Dim) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
     where
         SdfA: SignedDistanceField<Dim>,
         Dim: Clone,

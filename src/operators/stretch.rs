@@ -32,7 +32,7 @@ impl Default for StretchDistOp<Vec3> {
 }
 
 impl SignedDistanceOperator<Vec2> for StretchDistOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec2) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
         Sdf: SignedDistanceField<Vec2>,
     {
@@ -46,7 +46,7 @@ impl SignedDistanceOperator<Vec2> for StretchDistOp<Vec2> {
 }
 
 impl SignedDistanceOperator<Vec3> for StretchDistOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec3) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
         Sdf: SignedDistanceField<Vec3>,
     {
@@ -81,7 +81,7 @@ impl Default for StretchInfiniteOp<Vec3> {
 }
 
 impl SignedDistanceOperator<Vec2> for StretchInfiniteOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec2) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
         Sdf: SignedDistanceField<Vec2>,
     {
@@ -95,7 +95,7 @@ impl SignedDistanceOperator<Vec2> for StretchInfiniteOp<Vec2> {
 }
 
 impl SignedDistanceOperator<Vec3> for StretchInfiniteOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec3) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
         Sdf: SignedDistanceField<Vec3>,
     {

@@ -12,7 +12,7 @@ pub struct Rotate2dOp {
 }
 
 impl SignedDistanceOperator<Vec2> for Rotate2dOp {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec2) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
         Sdf: SignedDistanceField<Vec2>,
     {
@@ -30,7 +30,7 @@ pub struct Rotate3dOp {
 }
 
 impl SignedDistanceOperator<Vec3> for Rotate3dOp {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec3) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
         Sdf: SignedDistanceField<Vec3>,
     {

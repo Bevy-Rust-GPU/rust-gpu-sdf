@@ -72,7 +72,7 @@ impl<Dim> SignedDistanceOperator<Dim> for ElongateOp<Approx, Dim>
 where
     Dim: Neg<Output = Dim> + Sub<Output = Dim> + Clone + Clamp,
 {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
     where
         Sdf: SignedDistanceField<Dim>,
     {
@@ -82,7 +82,7 @@ where
 }
 
 impl SignedDistanceOperator<Vec3> for ElongateOp<Exact, Vec3> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec3) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
         Sdf: SignedDistanceField<Vec3>,
     {
@@ -92,7 +92,7 @@ impl SignedDistanceOperator<Vec3> for ElongateOp<Exact, Vec3> {
 }
 
 impl SignedDistanceOperator<Vec2> for ElongateOp<Exact, Vec2> {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Vec2) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
         Sdf: SignedDistanceField<Vec2>,
     {

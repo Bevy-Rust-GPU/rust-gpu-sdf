@@ -2,8 +2,6 @@
 
 use core::ops::Sub;
 
-use rust_gpu_bridge::prelude::Vec3;
-
 use crate::signed_distance_field::SignedDistanceField;
 
 use super::{Operator, SignedDistanceOperator};
@@ -18,7 +16,7 @@ impl<Dim> SignedDistanceOperator<Dim> for TranslateOp<Dim>
 where
     Dim: Clone + Sub<Dim, Output = Dim>,
 {
-    fn operator<Sdf>(&self, sdf: Sdf, p: Dim) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
     where
         Sdf: SignedDistanceField<Dim>,
     {
