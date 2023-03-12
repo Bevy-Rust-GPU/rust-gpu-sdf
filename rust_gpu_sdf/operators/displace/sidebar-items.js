@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["DisplaceOp","Displace the output of a distance field using the output of another distance field."]],"type":[["Displace","Displace the output of a distance field using the output of another distance field."]]};
+window.SIDEBAR_ITEMS = {"struct":[["DisplaceOp","Displace the output of a distance field using the output of another distance field."],["DisplaceOp_Displace",""]],"type":[["Displace","Displace the output of a distance field using the output of another distance field."],["Displace_Displace",""]]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"type":[["Onion","Converts a solid shape into a hollow one with the given surface depth."],["Transform","Translate, rotate, and scale the wrapped SDF."]]};
+window.SIDEBAR_ITEMS = {"type":[["Onion","Converts a solid shape into a hollow one with the given surface depth."],["Onion_Radius",""],["Transform","Translate, rotate, and scale the wrapped SDF."],["Transform_Rotation",""],["Transform_Scale",""]]};

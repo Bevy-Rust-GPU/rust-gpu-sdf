@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["UnionOp","Compute the boolean union of two distance fields."]],"type":[["Union","Compute the boolean union of two distance fields."]]};
+window.SIDEBAR_ITEMS = {"struct":[["UnionOp","Compute the boolean union of two distance fields."],["UnionOp_Sdf",""]],"type":[["Union","Compute the boolean union of two distance fields."],["Union_Sdf",""]]};

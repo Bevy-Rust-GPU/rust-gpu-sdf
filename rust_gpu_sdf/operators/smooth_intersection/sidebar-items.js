@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["SmoothIntersectionOp","Compute the blended boolean intersection of two distance fields."]],"type":[["SmoothIntersection","Compute the blended boolean intersection of two distance fields."]]};
+window.SIDEBAR_ITEMS = {"struct":[["SmoothIntersectionOp","Compute the blended boolean intersection of two distance fields."],["SmoothIntersectionOp_K",""],["SmoothIntersectionOp_Sdf",""]],"type":[["SmoothIntersection","Compute the blended boolean intersection of two distance fields."],["SmoothIntersection_K",""],["SmoothIntersection_Sdf",""]]};

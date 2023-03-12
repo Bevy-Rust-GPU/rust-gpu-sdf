@@ -67,74 +67,78 @@
 <a href="#67" id="67">67</a>
 <a href="#68" id="68">68</a>
 <a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Extrude a shape along its axes, preserving exterior geometry.
 
-</span><span class="kw">use </span>core::marker::PhantomData;
+</span><span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
+<span class="kw">use </span>type_fields::Field;
 
-<span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
-
-<span class="kw">use crate</span>::{
-    default,
-    markers::{Approx, Exact}, signed_distance_field::SignedDistanceField,
-};
+<span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
 
 <span class="kw">use super</span>::{Operator, SignedDistanceOperator};
 
 <span class="doccomment">/// Extrude a shape along its axes, preserving exterior geometry.
-</span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>ElongateOp&lt;Precision&gt; {
-    <span class="kw">pub </span>extent: Vec3,
-    <span class="kw">pub </span>_phantom: PhantomData&lt;Precision&gt;,
+</span><span class="attr">#[derive(Debug, Field)]
+</span><span class="kw">pub struct </span>ElongateOp&lt;Dim&gt; {
+    <span class="kw">pub </span>extent: Dim,
 }
 
-<span class="kw">impl</span>&lt;Precision&gt; Default <span class="kw">for </span>ElongateOp&lt;Precision&gt; {
+<span class="kw">impl </span>Default <span class="kw">for </span>ElongateOp&lt;Vec2&gt; {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-        ElongateOp {
-            extent: Vec3::ONE,
-            _phantom: default(),
-        }
+        ElongateOp { extent: Vec2::ONE }
     }
 }
 
-<span class="kw">impl</span>&lt;Precision&gt; Clone <span class="kw">for </span>ElongateOp&lt;Precision&gt; {
-    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        ElongateOp {
-            extent: <span class="self">self</span>.extent.clone(),
-            _phantom: <span class="self">self</span>._phantom.clone(),
-        }
+<span class="kw">impl </span>Default <span class="kw">for </span>ElongateOp&lt;Vec3&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        ElongateOp { extent: Vec3::ONE }
     }
 }
 
-<span class="kw">impl</span>&lt;Precision&gt; Copy <span class="kw">for </span>ElongateOp&lt;Precision&gt; {}
-
-<span class="kw">impl</span>&lt;Precision&gt; PartialEq <span class="kw">for </span>ElongateOp&lt;Precision&gt; {
-    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
-        <span class="self">self</span>.extent.eq(<span class="kw-2">&amp;</span>other.extent)
-    }
-}
-
-<span class="kw">impl </span>SignedDistanceOperator&lt;Vec3&gt; <span class="kw">for </span>ElongateOp&lt;Approx&gt; {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: Sdf, p: Vec3) -&gt; f32
+<span class="kw">impl </span>SignedDistanceOperator&lt;Vec2&gt; <span class="kw">for </span>ElongateOp&lt;Vec2&gt; {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec2) -&gt; f32
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Vec3&gt;,
-    {
-        <span class="kw">let </span>q = p - p.clamp(-<span class="self">self</span>.extent, <span class="self">self</span>.extent);
-        sdf.distance(q)
-    }
-}
-
-<span class="kw">impl </span>SignedDistanceOperator&lt;Vec3&gt; <span class="kw">for </span>ElongateOp&lt;Exact&gt; {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: Sdf, p: Vec3) -&gt; f32
-    <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Vec3&gt;,
+        </span>Sdf: SignedDistanceField&lt;Vec2, f32&gt;,
     {
         <span class="kw">let </span>q = p.abs() - <span class="self">self</span>.extent;
-        sdf.distance(q.max(Vec3::ZERO)) + q.x.max(q.y.max(q.z)).min(<span class="number">0.0</span>)
+        sdf.evaluate(q.max(Vec2::ZERO)) + q.x.max(q.y).min(<span class="number">0.0</span>)
+    }
+}
+
+<span class="kw">impl </span>SignedDistanceOperator&lt;Vec3&gt; <span class="kw">for </span>ElongateOp&lt;Vec3&gt; {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec3) -&gt; f32
+    <span class="kw">where
+        </span>Sdf: SignedDistanceField&lt;Vec3, f32&gt;,
+    {
+        <span class="kw">let </span>q = p.abs() - <span class="self">self</span>.extent;
+        sdf.evaluate(q.max(Vec3::ZERO)) + q.x.max(q.y.max(q.z)).min(<span class="number">0.0</span>)
     }
 }
 
 <span class="doccomment">/// Extrude a shape along its axes, preserving exterior geometry.
-</span><span class="kw">pub type </span>Elongate&lt;Sdf, Precision&gt; = Operator&lt;Sdf, ElongateOp&lt;Precision&gt;, Vec3&gt;;
+</span><span class="kw">pub type </span>Elongate&lt;Sdf, Dim&gt; = Operator&lt;Sdf, ElongateOp&lt;Dim&gt;&gt;;
 
+<span class="attr">#[allow(non_camel_case_types)]
+</span><span class="kw">pub type </span>Elongate_Extent = (<span class="kw">crate</span>::operators::Operator_Op, ElongateOp_Extent);
+
+<span class="kw">impl</span>&lt;Sdf, Dim&gt; Elongate&lt;Sdf, Dim&gt; {
+    <span class="kw">pub const </span>EXTENT: Elongate_Extent = (Operator::&lt;(), ()&gt;::OP, ElongateOp::&lt;()&gt;::EXTENT);
+}
+
+<span class="attr">#[cfg(test)]
+</span><span class="kw">pub mod </span>test {
+    <span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
+    <span class="kw">use </span>type_fields::field::Field;
+
+    <span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::shapes::composite::Point;
+
+    <span class="kw">use </span><span class="kw">super</span>::Elongate;
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_elongate() {
+        Elongate::&lt;Point, <span class="kw">_</span>&gt;::default().with(Elongate::&lt;(), ()&gt;::EXTENT, Vec3::default());
+    }
+}
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rust_gpu_sdf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.1 (d5a82bbd2 2023-02-07)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>

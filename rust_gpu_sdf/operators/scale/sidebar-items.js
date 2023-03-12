@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ScaleOp","Uniformly scale a distance field."]],"type":[["Scale","Uniformly scale a distance field."]]};
+window.SIDEBAR_ITEMS = {"struct":[["ScaleOp","Uniformly scale a distance field."],["ScaleOp_Scale",""]],"type":[["Scale","Uniformly scale a distance field."],["Scale_Scale",""]]};

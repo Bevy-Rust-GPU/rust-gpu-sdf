@@ -14,9 +14,14 @@
 <a href="#14" id="14">14</a>
 <a href="#15" id="15">15</a>
 <a href="#16" id="16">16</a>
+<a href="#17" id="17">17</a>
+<a href="#18" id="18">18</a>
+<a href="#19" id="19">19</a>
+<a href="#20" id="20">20</a>
+<a href="#21" id="21">21</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Taxicab distance metric.
 
-</span><span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
+</span><span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
 
 <span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
 
@@ -24,11 +29,16 @@
 </span><span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 </span><span class="kw">pub struct </span>TaxicabMetric;
 
-<span class="kw">impl </span>SignedDistanceField&lt;Vec3&gt; <span class="kw">for </span>TaxicabMetric {
-    <span class="kw">fn </span>distance(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Vec3) -&gt; f32 {
+<span class="kw">impl </span>SignedDistanceField&lt;Vec2, f32&gt; <span class="kw">for </span>TaxicabMetric {
+    <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Vec2) -&gt; f32 {
         p.x.abs() + p.y.abs()
     }
 }
 
+<span class="kw">impl </span>SignedDistanceField&lt;Vec3, f32&gt; <span class="kw">for </span>TaxicabMetric {
+    <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Vec3) -&gt; f32 {
+        p.x.abs() + p.y.abs() + p.z.abs()
+    }
+}
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rust_gpu_sdf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.1 (d5a82bbd2 2023-02-07)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>

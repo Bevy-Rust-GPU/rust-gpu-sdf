@@ -11,14 +11,22 @@
 <a href="#11" id="11">11</a>
 <a href="#12" id="12">12</a>
 <a href="#13" id="13">13</a>
+<a href="#14" id="14">14</a>
+<a href="#15" id="15">15</a>
+<a href="#16" id="16">16</a>
+<a href="#17" id="17">17</a>
 </pre><pre class="rust"><code><span class="attr">#![no_std]
 
-</span><span class="kw">pub mod </span>markers;
+</span><span class="kw">pub mod </span>operators;
 <span class="kw">pub mod </span>signed_distance_field;
-<span class="kw">pub mod </span>operators;
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">pub mod </span>tests;
+
+<span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
+
+<span class="kw">pub type </span>D2 = Vec2;
+<span class="kw">pub type </span>D3 = Vec3;
 
 <span class="doccomment">/// Free-standing [`Default::default()`] invocation
 </span><span class="kw">pub fn </span>default&lt;T: Default&gt;() -&gt; T {

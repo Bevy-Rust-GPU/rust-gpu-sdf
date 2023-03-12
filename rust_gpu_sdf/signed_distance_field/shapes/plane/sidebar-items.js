@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Plane","A plane."]]};
+window.SIDEBAR_ITEMS = {"struct":[["Plane","A plane."],["Plane_Dir",""]]};

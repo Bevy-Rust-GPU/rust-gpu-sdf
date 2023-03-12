@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["RotateOp","Rotate a distance field."]],"type":[["Rotate","Rotate a distance field."]]};
+window.SIDEBAR_ITEMS = {"struct":[["Rotate2dOp","Rotate a distance field."],["Rotate2dOp_Angle",""],["Rotate3dOp","Rotate a distance field."],["Rotate3dOp_Rotation",""]],"type":[["Rotate2d","Rotate a 3D distance field."],["Rotate2d_Angle",""],["Rotate3d","Rotate a distance field."],["Rotate3d_Rotation",""]]};

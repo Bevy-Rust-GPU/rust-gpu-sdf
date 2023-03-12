@@ -8,15 +8,129 @@
 <a href="#8" id="8">8</a>
 <a href="#9" id="9">9</a>
 <a href="#10" id="10">10</a>
+<a href="#11" id="11">11</a>
+<a href="#12" id="12">12</a>
+<a href="#13" id="13">13</a>
+<a href="#14" id="14">14</a>
+<a href="#15" id="15">15</a>
+<a href="#16" id="16">16</a>
+<a href="#17" id="17">17</a>
+<a href="#18" id="18">18</a>
+<a href="#19" id="19">19</a>
+<a href="#20" id="20">20</a>
+<a href="#21" id="21">21</a>
+<a href="#22" id="22">22</a>
+<a href="#23" id="23">23</a>
+<a href="#24" id="24">24</a>
+<a href="#25" id="25">25</a>
+<a href="#26" id="26">26</a>
+<a href="#27" id="27">27</a>
+<a href="#28" id="28">28</a>
+<a href="#29" id="29">29</a>
+<a href="#30" id="30">30</a>
+<a href="#31" id="31">31</a>
+<a href="#32" id="32">32</a>
+<a href="#33" id="33">33</a>
+<a href="#34" id="34">34</a>
+<a href="#35" id="35">35</a>
+<a href="#36" id="36">36</a>
+<a href="#37" id="37">37</a>
+<a href="#38" id="38">38</a>
+<a href="#39" id="39">39</a>
+<a href="#40" id="40">40</a>
+<a href="#41" id="41">41</a>
+<a href="#42" id="42">42</a>
+<a href="#43" id="43">43</a>
+<a href="#44" id="44">44</a>
+<a href="#45" id="45">45</a>
+<a href="#46" id="46">46</a>
+<a href="#47" id="47">47</a>
+<a href="#48" id="48">48</a>
+<a href="#49" id="49">49</a>
+<a href="#50" id="50">50</a>
+<a href="#51" id="51">51</a>
+<a href="#52" id="52">52</a>
+<a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
+<a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
+<a href="#65" id="65">65</a>
+<a href="#66" id="66">66</a>
+<a href="#67" id="67">67</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Operators composed from other operators.
 
-</span><span class="kw">use super</span>::{translate::Translate, rotate::Rotate, scale::Scale, round::Round, hollow::Hollow};
+</span><span class="kw">use super</span>::{
+    hollow::Hollow, isosurface::Isosurface, rotate::Rotate3d, scale::Scale, translate::Translate,
+    Operator,
+};
 
 <span class="doccomment">/// Translate, rotate, and scale the wrapped SDF.
-</span><span class="kw">pub type </span>Transform&lt;Sdf&gt; = Translate&lt;Rotate&lt;Scale&lt;Sdf&gt;&gt;&gt;;
+</span><span class="kw">pub type </span>Transform&lt;Sdf, Dim&gt; = Translate&lt;Rotate3d&lt;Scale&lt;Sdf&gt;&gt;, Dim&gt;;
+
+<span class="attr">#[allow(non_camel_case_types)]
+</span><span class="kw">pub type </span>Transform_Rotation = (
+    <span class="kw">crate</span>::operators::Operator_Target,
+    <span class="kw">crate</span>::operators::rotate::Rotate3d_Rotation,
+);
+
+<span class="attr">#[allow(non_camel_case_types)]
+</span><span class="kw">pub type </span>Transform_Scale = (
+    <span class="kw">crate</span>::operators::Operator_Target,
+    <span class="kw">crate</span>::operators::Operator_Target,
+    <span class="kw">crate</span>::operators::scale::Scale_Scale,
+);
+
+<span class="kw">impl</span>&lt;Sdf, Dim&gt; Transform&lt;Sdf, Dim&gt; {
+    <span class="kw">pub const </span>ROTATION: Transform_Rotation = (Operator::&lt;(), ()&gt;::TARGET, Rotate3d::&lt;()&gt;::ROTATION);
+
+    <span class="kw">pub const </span>SCALE: Transform_Scale = (
+        Operator::&lt;(), ()&gt;::TARGET,
+        Operator::&lt;(), ()&gt;::TARGET,
+        Scale::&lt;()&gt;::SCALE,
+    );
+}
 
 <span class="doccomment">/// Converts a solid shape into a hollow one with the given surface depth.
-</span><span class="kw">pub type </span>Onion&lt;Sdf&gt; = Round&lt;Hollow&lt;Sdf&gt;&gt;;
+</span><span class="kw">pub type </span>Onion&lt;Sdf&gt; = Isosurface&lt;Hollow&lt;Sdf&gt;&gt;;
 
+<span class="attr">#[allow(non_camel_case_types)]
+</span><span class="kw">pub type </span>Onion_Radius = <span class="kw">crate</span>::operators::isosurface::Isosurface_Delta;
+
+<span class="kw">impl</span>&lt;Sdf&gt; Onion&lt;Sdf&gt; {
+    <span class="kw">pub const </span>RADIUS: Onion_Radius = Isosurface::&lt;()&gt;::DELTA;
+}
+
+<span class="attr">#[cfg(test)]
+</span><span class="kw">pub mod </span>tests {
+    <span class="kw">use </span>rust_gpu_bridge::prelude::Quat;
+    <span class="kw">use </span>type_fields::field::Field;
+
+    <span class="kw">use crate</span>::{
+        signed_distance_field::shapes::composite::{Circle, Cube},
+        D3,
+    };
+
+    <span class="kw">use super</span>::{Onion, Transform};
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_transform() {
+        Transform::&lt;Cube, D3&gt;::default()
+            .with(Transform::&lt;(), ()&gt;::ROTATION, Quat::default())
+            .with(Transform::&lt;(), ()&gt;::SCALE, f32::default());
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_onion() {
+        Onion::&lt;Circle&gt;::default().with(Onion::&lt;()&gt;::RADIUS, f32::default());
+    }
+}
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rust_gpu_sdf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.1 (d5a82bbd2 2023-02-07)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>

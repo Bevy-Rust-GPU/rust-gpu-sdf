@@ -72,88 +72,78 @@
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
 <a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
-<a href="#76" id="76">76</a>
-<a href="#77" id="77">77</a>
-<a href="#78" id="78">78</a>
-<a href="#79" id="79">79</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Types that modify a distance field.
 
 </span><span class="kw">pub mod </span>composite;
 <span class="kw">pub mod </span>displace;
 <span class="kw">pub mod </span>elongate;
-<span class="kw">pub mod </span>extrude;
 <span class="kw">pub mod </span>hollow;
 <span class="kw">pub mod </span>intersection;
+<span class="kw">pub mod </span>isosurface;
 <span class="kw">pub mod </span>reflect;
 <span class="kw">pub mod </span>repeat;
 <span class="kw">pub mod </span>rotate;
-<span class="kw">pub mod </span>round;
 <span class="kw">pub mod </span>scale;
 <span class="kw">pub mod </span>smooth_intersection;
 <span class="kw">pub mod </span>smooth_subtraction;
 <span class="kw">pub mod </span>smooth_union;
+<span class="kw">pub mod </span>stretch;
 <span class="kw">pub mod </span>subtraction;
 <span class="kw">pub mod </span>translate;
 <span class="kw">pub mod </span>twist;
 <span class="kw">pub mod </span>union;
 
-<span class="kw">use </span>core::marker::PhantomData;
-
-<span class="kw">use crate</span>::{default, signed_distance_field::SignedDistanceField};
+<span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
 
 <span class="doccomment">/// Modifies the input / output of a [`SignedDistanceField`].
-</span><span class="kw">pub trait </span>SignedDistanceOperator&lt;P&gt; {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: Sdf, p: P) -&gt; f32
+</span><span class="kw">pub trait </span>SignedDistanceOperator&lt;Dim&gt; {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Dim) -&gt; f32
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;P&gt;;
+        </span>Sdf: SignedDistanceField&lt;Dim, f32&gt;,
+        Dim: Clone;
 }
 
-<span class="kw">impl</span>&lt;T, P&gt; SignedDistanceOperator&lt;P&gt; <span class="kw">for </span><span class="kw-2">&amp;</span>T
-<span class="kw">where
-    </span>T: SignedDistanceOperator&lt;P&gt;,
-{
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: Sdf, p: P) -&gt; f32
+<span class="kw">impl</span>&lt;Dim&gt; SignedDistanceOperator&lt;Dim&gt; <span class="kw">for </span>() {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Dim) -&gt; f32
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;P&gt;,
+        </span>Sdf: SignedDistanceField&lt;Dim, f32&gt;,
+        Dim: Clone,
     {
-        &lt;T <span class="kw">as </span>SignedDistanceOperator&lt;P&gt;&gt;::operator::&lt;Sdf&gt;(<span class="kw-2">*</span><span class="self">self</span>, sdf, p)
+        sdf.evaluate(p)
     }
 }
 
 <span class="doccomment">/// Applies a [`SignedDistanceOperator`] to a [`SignedDistanceField`].
-</span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash)]
-</span><span class="kw">pub struct </span>Operator&lt;Sdf, Op, P&gt;
-<span class="kw">where
-    </span>Sdf: SignedDistanceField&lt;P&gt;,
-    Op: SignedDistanceOperator&lt;P&gt;,
-{
-    <span class="kw">pub </span>sdf: Sdf,
+</span><span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, type_fields::Field)]
+</span><span class="kw">pub struct </span>Operator&lt;Sdf, Op&gt; {
+    <span class="kw">pub </span>target: Sdf,
     <span class="kw">pub </span>op: Op,
-    <span class="kw">pub </span>_phantom: PhantomData&lt;P&gt;,
 }
 
-<span class="kw">impl</span>&lt;Sdf, Op, P&gt; Default <span class="kw">for </span>Operator&lt;Sdf, Op, P&gt;
+<span class="kw">impl</span>&lt;Sdf, Op, Dim&gt; SignedDistanceField&lt;Dim, f32&gt; <span class="kw">for </span>Operator&lt;Sdf, Op&gt;
 <span class="kw">where
-    </span>Sdf: SignedDistanceField&lt;P&gt; + Default,
-    Op: SignedDistanceOperator&lt;P&gt; + Default,
+    </span>Sdf: SignedDistanceField&lt;Dim, f32&gt;,
+    Op: SignedDistanceOperator&lt;Dim&gt;,
+    Dim: Clone,
 {
-    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-        Operator {
-            sdf: default(),
-            op: default(),
-            _phantom: default(),
-        }
+    <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Dim) -&gt; f32 {
+        <span class="self">self</span>.op.operator(<span class="kw-2">&amp;</span><span class="self">self</span>.target, p)
     }
 }
 
-<span class="kw">impl</span>&lt;S, O, P&gt; SignedDistanceField&lt;P&gt; <span class="kw">for </span>Operator&lt;S, O, P&gt;
-<span class="kw">where
-    </span>S: SignedDistanceField&lt;P&gt;,
-    O: SignedDistanceOperator&lt;P&gt;,
-{
-    <span class="kw">fn </span>distance(<span class="kw-2">&amp;</span><span class="self">self</span>, p: P) -&gt; f32 {
-        <span class="self">self</span>.op.operator(<span class="kw-2">&amp;</span><span class="self">self</span>.sdf, p)
+<span class="attr">#[cfg(test)]
+</span><span class="kw">pub mod </span>test {
+    <span class="kw">use </span>type_fields::field::Field;
+
+    <span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::shapes::composite::Point;
+
+    <span class="kw">use super</span>::{isosurface::IsosurfaceOp, Operator};
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_operator() {
+        Operator::&lt;Point, IsosurfaceOp&gt;::default()
+            .with(Operator::&lt;(), ()&gt;::TARGET, Point::default())
+            .with(Operator::&lt;(), ()&gt;::OP, IsosurfaceOp::default());
     }
 }
 </code></pre></div>
