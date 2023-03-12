@@ -31,7 +31,7 @@ impl Raymarch for SphereTraceLipschitz {
 
     fn raymarch<Sdf, const MAX_STEPS: u32>(
         &self,
-        sdf: Sdf,
+        sdf: &Sdf,
         start: f32,
         end: f32,
         eye: Vec3,
