@@ -2,6 +2,7 @@
 
 pub mod operators;
 pub mod signed_distance_field;
+pub mod raymarch;
 
 pub mod prelude;
 
