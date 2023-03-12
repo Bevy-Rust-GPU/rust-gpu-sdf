@@ -52,11 +52,10 @@ impl SignedDistanceOperator<Vec3, Distance> for ElongateOp<Vec3> {
 /// Extrude a shape along its axes, preserving exterior geometry.
 pub type Elongate<Sdf, Dim> = Operator<Sdf, ElongateOp<Dim>>;
 
-#[allow(non_camel_case_types)]
-pub type Elongate_Extent = (crate::operators::Operator_Op, ElongateOp_Extent);
-
 impl<Sdf, Dim> Elongate<Sdf, Dim> {
-    pub const EXTENT: Elongate_Extent = (Operator::<(), ()>::OP, ElongateOp::<()>::EXTENT);
+    pub fn extent(&mut self) -> &mut Dim {
+        &mut self.op.extent
+    }
 }
 
 #[cfg(test)]
@@ -70,6 +69,6 @@ pub mod test {
 
     #[test]
     fn test_elongate() {
-        Elongate::<Point, _>::default().with(Elongate::<(), ()>::EXTENT, Vec3::default());
+        Elongate::<Point, _>::default().with(Elongate::extent, Vec3::default());
     }
 }

@@ -27,12 +27,10 @@ where
 /// Apply a positional translation to a distance field.
 pub type Translate<Sdf, Dim> = Operator<Sdf, TranslateOp<Dim>>;
 
-#[allow(non_camel_case_types)]
-pub type Translate_Translation = (crate::operators::Operator_Op, TranslateOp_Translation);
-
 impl<Sdf, Dim> Translate<Sdf, Dim> {
-    pub const TRANSLATION: Translate_Translation =
-        (Operator::<(), ()>::OP, TranslateOp::<()>::TRANSLATION);
+    pub fn translation(&mut self) -> &mut Dim {
+        &mut self.op.translation
+    }
 }
 
 #[cfg(test)]
@@ -46,6 +44,6 @@ pub mod test {
 
     #[test]
     fn test_translation() {
-        Translate::<Sphere, _>::default().with(Translate::<(), ()>::TRANSLATION, Vec3::default());
+        Translate::<Sphere, _>::default().with(Translate::translation, Vec3::default());
     }
 }

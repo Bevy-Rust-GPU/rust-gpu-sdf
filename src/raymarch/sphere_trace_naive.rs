@@ -45,7 +45,7 @@ impl Raymarch for SphereTraceNaive {
             }
         }
 
-        return out;
+        out
     }
 }
 

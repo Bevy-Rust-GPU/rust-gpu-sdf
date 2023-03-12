@@ -49,12 +49,10 @@ impl SignedDistanceOperator<Vec3, Distance> for RepeatInfiniteOp<Vec3> {
 /// Repeat a distance field infinitely in one or more axes.
 pub type RepeatInfinite<Sdf, Dim> = Operator<Sdf, RepeatInfiniteOp<Dim>>;
 
-#[allow(non_camel_case_types)]
-pub type RepeatInfinite_Period = (crate::operators::Operator_Op, RepeatInfiniteOp_Period);
-
 impl<Sdf, Dim> RepeatInfinite<Sdf, Dim> {
-    pub const PERIOD: RepeatInfinite_Period =
-        (Operator::<(), ()>::OP, RepeatInfiniteOp::<()>::PERIOD);
+    pub fn period(&mut self) -> &mut Dim {
+        &mut self.op.period
+    }
 }
 
 /// Repeat a distance field a set number of times in one or more axes.
@@ -105,15 +103,14 @@ impl SignedDistanceOperator<Vec3, Distance> for RepeatCountOp<Vec3> {
 /// Repeat a distance field a set number of times in one or more axes.
 pub type RepeatCount<Sdf, Dim> = Operator<Sdf, RepeatCountOp<Dim>>;
 
-#[allow(non_camel_case_types)]
-pub type RepeatCount_Period = (crate::operators::Operator_Op, RepeatCountOp_Period);
-
-#[allow(non_camel_case_types)]
-pub type RepeatCount_Count = (crate::operators::Operator_Op, RepeatCountOp_Count);
-
 impl<Sdf, Dim> RepeatCount<Sdf, Dim> {
-    pub const PERIOD: RepeatCount_Period = (Operator::<(), ()>::OP, RepeatCountOp::<()>::PERIOD);
-    pub const COUNT: RepeatCount_Count = (Operator::<(), ()>::OP, RepeatCountOp::<()>::COUNT);
+    pub fn period(&mut self) -> &mut Dim {
+        &mut self.op.period
+    }
+
+    pub fn count(&mut self) -> &mut Dim {
+        &mut self.op.count
+    }
 }
 
 #[cfg(test)]
@@ -128,13 +125,13 @@ pub mod tests {
     #[test]
     fn test_repeat_infinite() {
         RepeatInfinite::<Sphere, _>::default()
-            .with(RepeatInfinite::<(), ()>::PERIOD, Vec3::default());
+            .with(RepeatInfinite::period, Vec3::default());
     }
 
     #[test]
     fn test_repeat_count() {
         RepeatCount::<Sphere, _>::default()
-            .with(RepeatCount::<(), ()>::PERIOD, Vec3::default())
-            .with(RepeatCount::<(), ()>::COUNT, Vec3::default());
+            .with(RepeatCount::period, Vec3::default())
+            .with(RepeatCount::count, Vec3::default());
     }
 }

@@ -4,7 +4,7 @@ use core::ops::Sub;
 
 use type_fields::Field;
 
-use crate::prelude::{Distance, SignedDistanceField, Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Shift the isosurface of a distance field by a given amount.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -30,11 +30,10 @@ impl<Dim> SignedDistanceOperator<Dim, Distance> for IsosurfaceOp {
 /// Add an arbitrary radius to a distance field.
 pub type Isosurface<Sdf> = Operator<Sdf, IsosurfaceOp>;
 
-#[allow(non_camel_case_types)]
-pub type Isosurface_Delta = (crate::operators::Operator_Op, IsosurfaceOp_Delta);
-
 impl<Sdf> Isosurface<Sdf> {
-    pub const DELTA: Isosurface_Delta = (Operator::<(), ()>::OP, IsosurfaceOp::DELTA);
+    pub fn delta(&mut self) -> &mut f32 {
+        &mut self.op.delta
+    }
 }
 
 #[cfg(test)]
@@ -47,6 +46,6 @@ pub mod test {
 
     #[test]
     fn test_isosurface() {
-        Isosurface::<Point>::default().with(Isosurface::<()>::DELTA, f32::default());
+        Isosurface::<Point>::default().with(Isosurface::delta, f32::default());
     }
 }

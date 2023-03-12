@@ -22,18 +22,14 @@ pub type Line<Dim> = StretchDist<Point, Dim>;
 /// A ball.
 pub type Ball = Isosurface<Point>;
 
-#[allow(non_camel_case_types)]
-type Ball_Radius = crate::operators::isosurface::Isosurface_Delta;
-
 impl Ball {
-    pub const RADIUS: Ball_Radius = Isosurface::<()>::DELTA;
+    pub fn radius(&mut self) -> &mut f32 {
+        &mut self.op.delta
+    }
 }
 
 /// A 2D circle.
 pub type Circle = Ball;
-
-#[allow(non_camel_case_types)]
-pub type Circle_Radius = crate::operators::isosurface::Isosurface_Delta;
 
 /// A 3D sphere.
 pub type Sphere = Ball;
@@ -61,11 +57,11 @@ pub mod tests {
 
     #[test]
     fn test_circle() {
-        Circle::default().with(Circle::RADIUS, f32::default());
+        Circle::default().with(Circle::radius, f32::default());
     }
 
     #[test]
     fn test_sphere() {
-        Sphere::default().with(Sphere::RADIUS, f32::default());
+        Sphere::default().with(Sphere::radius, f32::default());
     }
 }

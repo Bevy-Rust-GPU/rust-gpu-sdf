@@ -45,6 +45,6 @@ pub mod test {
 
     #[test]
     pub fn test_plane() {
-        Plane::<_>::default().with(Plane::<()>::DIR, Vec3::default());
+        Plane::<_>::default().with(Plane::dir, Vec3::default());
     }
 }

@@ -22,7 +22,7 @@ impl SphereTraceLipschitz {
     // e: energy
     // R: radius
     fn falloff_k(e: f32, r: f32) -> f32 {
-        return 1.72 * e.abs() / r;
+        1.72 * e.abs() / r
     }
 }
 
@@ -65,7 +65,7 @@ impl Raymarch for SphereTraceLipschitz {
             }
         }
 
-        return out;
+        out
     }
 }
 

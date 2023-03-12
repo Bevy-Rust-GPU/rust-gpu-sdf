@@ -38,11 +38,10 @@ where
 /// Compute the boolean intersection of two distance fields.
 pub type Intersection<SdfA, SdfB> = Operator<SdfA, IntersectionOp<SdfB>>;
 
-#[allow(non_camel_case_types)]
-pub type Intersection_Sdf = (crate::operators::Operator_Op, IntersectionOp_Sdf);
-
 impl<SdfA, SdfB> Intersection<SdfA, SdfB> {
-    pub const SDF: Intersection_Sdf = (Operator::<(), ()>::OP, IntersectionOp::<()>::SDF);
+    pub fn sdf(&mut self) -> &mut SdfB {
+        &mut self.op.sdf
+    }
 }
 
 #[cfg(test)]
@@ -56,6 +55,6 @@ pub mod test {
     #[test]
     fn test_intersection() {
         Intersection::<Cube, Sphere>::default()
-            .with(Intersection::<(), ()>::SDF, Sphere::default());
+            .with(Intersection::sdf, Sphere::default());
     }
 }

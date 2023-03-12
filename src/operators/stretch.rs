@@ -54,11 +54,10 @@ impl SignedDistanceOperator<Vec3, Distance> for StretchInfiniteOp<Vec3> {
 /// Extrude a shape infinitely along an arbitrary axis.
 pub type StretchInfinite<Sdf, Dim> = Operator<Sdf, StretchInfiniteOp<Dim>>;
 
-#[allow(non_camel_case_types)]
-pub type StretchInfinite_Dir = (crate::operators::Operator_Op, StretchInfiniteOp_Dir);
-
 impl<Sdf, Dim> StretchInfinite<Sdf, Dim> {
-    pub const DIR: StretchInfinite_Dir = (Operator::<(), ()>::OP, StretchInfiniteOp::<()>::DIR);
+    pub fn dir(&mut self) -> &mut Dim {
+        &mut self.op.dir
+    }
 }
 
 /// Extrude a shape by an arbitrary distance along an arbitrary axis, preserving exterior geometry as caps.
@@ -117,16 +116,14 @@ impl SignedDistanceOperator<Vec3, Distance> for StretchDistOp<Vec3> {
 /// Extrude a shape by an arbitrary distance along an arbitrary axis, preserving exterior geometry as caps.
 pub type StretchDist<Sdf, Dim> = Operator<Sdf, StretchDistOp<Dim>>;
 
-#[allow(non_camel_case_types)]
-pub type StretchDist_Dir = (crate::operators::Operator_Op, StretchDistOp_Dir);
-
-#[allow(non_camel_case_types)]
-pub type StretchDist_Dist = (crate::operators::Operator_Op, StretchDistOp_Dist);
-
 impl<Sdf, Dim> StretchDist<Sdf, Dim> {
-    pub const DIR: StretchDist_Dir = (Operator::<(), ()>::OP, StretchDistOp::<()>::DIR);
+    pub fn dir(&mut self) -> &mut Dim {
+        &mut self.op.dir
+    }
 
-    pub const DIST: StretchDist_Dist = (Operator::<(), ()>::OP, StretchDistOp::<()>::DIST);
+    pub fn dist(&mut self) -> &mut f32 {
+        &mut self.op.dist
+    }
 }
 
 #[cfg(test)]
@@ -140,13 +137,13 @@ pub mod test {
 
     #[test]
     fn test_stretch_infinite() {
-        StretchInfinite::<Cube, _>::default().with(StretchInfinite::<(), ()>::DIR, Vec3::default());
+        StretchInfinite::<Cube, _>::default().with(StretchInfinite::dir, Vec3::default());
     }
 
     #[test]
     fn test_stretch_dist() {
         StretchDist::<Cube, _>::default()
-            .with(StretchDist::<(), ()>::DIR, Vec3::default())
-            .with(StretchDist::<(), ()>::DIST, f32::default());
+            .with(StretchDist::dir, Vec3::default())
+            .with(StretchDist::dist, f32::default());
     }
 }

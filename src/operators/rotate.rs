@@ -22,11 +22,10 @@ impl SignedDistanceOperator<Vec2, Distance> for Rotate2dOp {
 /// Rotate a 3D distance field.
 pub type Rotate2d<Sdf> = Operator<Sdf, Rotate2dOp>;
 
-#[allow(non_camel_case_types)]
-pub type Rotate2d_Angle = (crate::operators::Operator_Op, Rotate2dOp_Angle);
-
 impl<Sdf> Rotate2d<Sdf> {
-    pub const ANGLE: Rotate2d_Angle = (Operator::<(), ()>::OP, Rotate2dOp::ANGLE);
+    pub fn angle(&mut self) -> &mut f32 {
+        &mut self.op.angle
+    }
 }
 
 /// Rotate a distance field.
@@ -47,11 +46,10 @@ impl SignedDistanceOperator<Vec3, Distance> for Rotate3dOp {
 /// Rotate a distance field.
 pub type Rotate3d<Sdf> = Operator<Sdf, Rotate3dOp>;
 
-#[allow(non_camel_case_types)]
-pub type Rotate3d_Rotation = (crate::operators::Operator_Op, Rotate3dOp_Rotation);
-
 impl<Sdf> Rotate3d<Sdf> {
-    pub const ROTATION: Rotate3d_Rotation = (Operator::<(), ()>::OP, Rotate3dOp::ROTATION);
+    pub fn rotation(&mut self) -> &mut Quat {
+        &mut self.op.rotation
+    }
 }
 
 #[cfg(test)]
@@ -65,11 +63,11 @@ pub mod test {
 
     #[test]
     fn test_rotate_2d() {
-        Rotate2d::<Square>::default().with(Rotate2d::<()>::ANGLE, f32::default());
+        Rotate2d::<Square>::default().with(Rotate2d::angle, f32::default());
     }
 
     #[test]
     fn test_rotate_3d() {
-        Rotate3d::<Cube>::default().with(Rotate3d::<()>::ROTATION, Quat::default());
+        Rotate3d::<Cube>::default().with(Rotate3d::rotation, Quat::default());
     }
 }

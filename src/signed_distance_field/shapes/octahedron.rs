@@ -44,6 +44,6 @@ pub mod test {
 
     #[test]
     fn test_octahedron() {
-        Octahedron::default().with(Octahedron::SIZE, f32::default());
+        Octahedron::default().with(Octahedron::size, f32::default());
     }
 }

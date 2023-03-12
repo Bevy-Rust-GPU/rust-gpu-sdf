@@ -40,7 +40,7 @@ pub mod tests {
     #[test]
     fn test_sweep() {
         Sweep::<Circle, Circle>::default()
-            .with(Sweep::<(), ()>::CORE, Circle::default())
-            .with(Sweep::<(), ()>::SHELL, Circle::default());
+            .with(Sweep::core, Circle::default())
+            .with(Sweep::shell, Circle::default());
     }
 }

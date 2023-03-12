@@ -24,7 +24,7 @@ where
         SdfA: SignedDistanceField<Dim, Distance>,
     {
         let d1 = *sdf.evaluate(p.clone());
-        let d2 = *self.sdf.evaluate(p.clone());
+        let d2 = *self.sdf.evaluate(p);
         let h = (0.5 + 0.5 * (d2 - d1) / self.k).clamp(0.0, 1.0);
         d2.mix(d1, h).sub(self.k * h * (1.0 - h)).into()
     }
@@ -33,16 +33,14 @@ where
 /// Compute the blended boolean union of two distance fields.
 pub type SmoothUnion<SdfA, SdfB> = Operator<SdfA, SmoothUnionOp<SdfB>>;
 
-#[allow(non_camel_case_types)]
-pub type SmoothUnion_Sdf = (crate::operators::Operator_Op, SmoothUnionOp_Sdf);
-
-#[allow(non_camel_case_types)]
-pub type SmoothUnion_K = (crate::operators::Operator_Op, SmoothUnionOp_K);
-
 impl<SdfA, SdfB> SmoothUnion<SdfA, SdfB> {
-    pub const SDF: SmoothUnion_Sdf = (Operator::<(), ()>::OP, SmoothUnionOp::<()>::SDF);
+    pub fn sdf(&mut self) -> &mut SdfB {
+        &mut self.op.sdf
+    }
 
-    pub const K: SmoothUnion_K = (Operator::<(), ()>::OP, SmoothUnionOp::<()>::K);
+    pub fn k(&mut self) -> &mut f32 {
+        &mut self.op.k
+    }
 }
 
 #[cfg(test)]
@@ -56,7 +54,7 @@ pub mod test {
     #[test]
     fn test_smooth_union() {
         SmoothUnion::<Cube, Sphere>::default()
-            .with(SmoothUnion::<(), ()>::SDF, Sphere::default())
-            .with(SmoothUnion::<(), ()>::K, f32::default());
+            .with(SmoothUnion::sdf, Sphere::default())
+            .with(SmoothUnion::k, f32::default());
     }
 }

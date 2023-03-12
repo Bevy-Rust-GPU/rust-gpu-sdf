@@ -27,11 +27,10 @@ where
 /// Uniformly scale a distance field.
 pub type Scale<Sdf> = Operator<Sdf, ScaleOp>;
 
-#[allow(non_camel_case_types)]
-pub type Scale_Scale = (crate::operators::Operator_Op, ScaleOp_Scale);
-
 impl<Sdf> Scale<Sdf> {
-    pub const SCALE: Scale_Scale = (Operator::<(), ()>::OP, ScaleOp::SCALE);
+    pub fn scale(&mut self) -> &mut f32 {
+        &mut self.op.scale
+    }
 }
 
 #[cfg(test)]
@@ -44,6 +43,6 @@ pub mod test {
 
     #[test]
     fn test_scale() {
-        Scale::<Cube>::default().with(Scale::<()>::SCALE, f32::default());
+        Scale::<Cube>::default().with(Scale::scale, f32::default());
     }
 }

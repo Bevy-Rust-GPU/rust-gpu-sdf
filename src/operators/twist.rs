@@ -58,19 +58,18 @@ impl SignedDistanceOperator<Vec3, Distance> for TwistOp<Vec3> {
 /// Twist a distance field around an arbitrary axis.
 pub type Twist<Sdf, Dim> = Operator<Sdf, TwistOp<Dim>>;
 
-#[allow(non_camel_case_types)]
-pub type Twist_AxisPos = (crate::operators::Operator_Op, TwistOp_AxisPos);
-
-#[allow(non_camel_case_types)]
-pub type Twist_AxisRot = (crate::operators::Operator_Op, TwistOp_AxisRot);
-
-#[allow(non_camel_case_types)]
-pub type Twist_K = (crate::operators::Operator_Op, TwistOp_K);
-
 impl<Sdf, Dim> Twist<Sdf, Dim> {
-    pub const AXIS_POS: Twist_AxisPos = (Operator::<(), ()>::OP, TwistOp::<()>::AXIS_POS);
-    pub const AXIS_ROT: Twist_AxisRot = (Operator::<(), ()>::OP, TwistOp::<()>::AXIS_ROT);
-    pub const K: Twist_K = (Operator::<(), ()>::OP, TwistOp::<()>::K);
+    pub fn axis_pos(&mut self) -> &mut Dim {
+        &mut self.op.axis_pos
+    }
+
+    pub fn axis_rot(&mut self) -> &mut Dim {
+        &mut self.op.axis_rot
+    }
+
+    pub fn k(&mut self) -> &mut f32 {
+        &mut self.op.k
+    }
 }
 
 #[cfg(test)]
@@ -85,8 +84,8 @@ pub mod test {
     #[test]
     fn test_twist() {
         Twist::<Torus, _>::default()
-            .with(Twist::<(), ()>::AXIS_POS, Vec3::default())
-            .with(Twist::<(), ()>::AXIS_ROT, Vec3::default())
-            .with(Twist::<(), ()>::K, f32::default());
+            .with(Twist::axis_pos, Vec3::default())
+            .with(Twist::axis_rot, Vec3::default())
+            .with(Twist::k, f32::default());
     }
 }

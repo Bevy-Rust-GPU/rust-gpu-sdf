@@ -23,7 +23,7 @@ where
     {
         sdf.evaluate(p.clone())
             .neg()
-            .max(*self.sdf.evaluate(p.clone()))
+            .max(*self.sdf.evaluate(p))
             .into()
     }
 }
@@ -31,11 +31,10 @@ where
 /// Compute the boolean subtraction of two distance fields.
 pub type Subtraction<SdfA, SdfB> = Operator<SdfA, SubtractionOp<SdfB>>;
 
-#[allow(non_camel_case_types)]
-pub type Subtraction_Sdf = (crate::operators::Operator_Op, SubtractionOp_Sdf);
-
 impl<SdfA, SdfB> Subtraction<SdfA, SdfB> {
-    pub const SDF: Subtraction_Sdf = (Operator::<(), ()>::OP, SubtractionOp::<()>::SDF);
+    pub fn sdf(&mut self) -> &mut SdfB {
+        &mut self.op.sdf
+    }
 }
 
 #[cfg(test)]
@@ -48,6 +47,6 @@ pub mod test {
 
     #[test]
     fn test_subtraction() {
-        Subtraction::<Cube, Sphere>::default().with(Subtraction::<(), ()>::SDF, Sphere::default());
+        Subtraction::<Cube, Sphere>::default().with(Subtraction::sdf, Sphere::default());
     }
 }

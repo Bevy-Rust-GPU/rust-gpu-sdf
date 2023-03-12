@@ -23,7 +23,7 @@ where
         SdfA: SignedDistanceField<Dim, Distance>,
     {
         let d1 = *sdf.evaluate(p.clone());
-        let d2 = *self.sdf.evaluate(p.clone());
+        let d2 = *self.sdf.evaluate(p);
         let h = (0.5 - 0.5 * (d2 + d1) / self.k).clamp(0.0, 1.0);
         d2.mix(-d1, h).add(self.k.mul(h).mul(1.0 - h)).into()
     }
@@ -32,16 +32,14 @@ where
 /// Compute the blended boolean subtraction of two distance fields.
 pub type SmoothSubtraction<SdfA, SdfB> = Operator<SdfA, SmoothSubtractionOp<SdfB>>;
 
-#[allow(non_camel_case_types)]
-pub type SmoothSubtraction_Sdf = (crate::operators::Operator_Op, SmoothSubtractionOp_Sdf);
-
-#[allow(non_camel_case_types)]
-pub type SmoothSubtraction_K = (crate::operators::Operator_Op, SmoothSubtractionOp_K);
-
 impl<SdfA, SdfB> SmoothSubtraction<SdfA, SdfB> {
-    pub const SDF: SmoothSubtraction_Sdf = (Operator::<(), ()>::OP, SmoothSubtractionOp::<()>::SDF);
+    pub fn sdf(&mut self) -> &mut SdfB {
+        &mut self.op.sdf
+    }
 
-    pub const K: SmoothSubtraction_K = (Operator::<(), ()>::OP, SmoothSubtractionOp::<()>::K);
+    pub fn k(&mut self) -> &mut f32 {
+        &mut self.op.k
+    }
 }
 
 #[cfg(test)]
@@ -55,7 +53,7 @@ pub mod test {
     #[test]
     fn test_smooth_subtraction() {
         SmoothSubtraction::<Cube, Sphere>::default()
-            .with(SmoothSubtraction::<(), ()>::SDF, Sphere::default())
-            .with(SmoothSubtraction::<(), ()>::K, f32::default());
+            .with(SmoothSubtraction::sdf, Sphere::default())
+            .with(SmoothSubtraction::k, f32::default());
     }
 }

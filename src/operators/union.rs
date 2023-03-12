@@ -20,7 +20,7 @@ where
         SdfA: SignedDistanceField<Dim, Distance>,
     {
         sdf.evaluate(p.clone())
-            .min(*self.sdf.evaluate(p.clone()))
+            .min(*self.sdf.evaluate(p))
             .into()
     }
 }
@@ -28,11 +28,10 @@ where
 /// Compute the boolean union of two distance fields.
 pub type Union<SdfA, SdfB> = Operator<SdfA, UnionOp<SdfB>>;
 
-#[allow(non_camel_case_types)]
-pub type Union_Sdf = (crate::operators::Operator_Op, UnionOp_Sdf);
-
 impl<SdfA, SdfB> Union<SdfA, SdfB> {
-    pub const SDF: Union_Sdf = (Operator::<(), ()>::OP, UnionOp::<()>::SDF);
+    pub fn sdf(&mut self) -> &mut SdfB {
+        &mut self.op.sdf
+    }
 }
 
 #[cfg(test)]
@@ -45,6 +44,6 @@ pub mod test {
 
     #[test]
     fn test_union() {
-        Union::<Sphere, Cube>::default().with(Union::<(), ()>::SDF, Cube::default());
+        Union::<Sphere, Cube>::default().with(Union::sdf, Cube::default());
     }
 }

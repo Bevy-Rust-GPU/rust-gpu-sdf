@@ -39,8 +39,8 @@ pub mod test {
     #[test]
     fn test_extrude() {
         Extrude::<Square>::default()
-            .with(Extrude::<()>::SDF, Square::default())
-            .with(Extrude::<()>::AXIS, Vec3::default())
-            .with(Extrude::<()>::DEPTH, f32::default());
+            .with(Extrude::sdf, Square::default())
+            .with(Extrude::axis, Vec3::default())
+            .with(Extrude::depth, f32::default());
     }
 }

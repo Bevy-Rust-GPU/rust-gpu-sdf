@@ -29,12 +29,10 @@ where
 
 /// Displace the output of a distance field using the output of another distance field.
 pub type Displace<SdfA, SdfB> = Operator<SdfA, DisplaceOp<SdfB>>;
-
-#[allow(non_camel_case_types)]
-pub type Displace_Displace = (crate::operators::Operator_Op, DisplaceOp_Displace);
-
 impl<SdfA, SdfB> Displace<SdfA, SdfB> {
-    pub const DISPLACE: Displace_Displace = (Operator::<(), ()>::OP, DisplaceOp::<()>::DISPLACE);
+    pub fn displace(&mut self) -> &mut SdfB {
+        &mut self.op.displace
+    }
 }
 
 #[cfg(test)]
@@ -47,6 +45,6 @@ pub mod tests {
 
     #[test]
     fn test_displace() {
-        Displace::<Cube, Sphere>::default().with(Displace::<(), ()>::DISPLACE, Sphere::default());
+        Displace::<Cube, Sphere>::default().with(Displace::displace, Sphere::default());
     }
 }

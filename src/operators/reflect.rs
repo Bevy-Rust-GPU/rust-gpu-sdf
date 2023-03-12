@@ -65,11 +65,10 @@ impl SignedDistanceOperator<Vec3, Distance> for ReflectOp<Vec3> {
 /// Reflect a distance field about an arbitrary axis.
 pub type Reflect<Sdf, Dim> = Operator<Sdf, ReflectOp<Dim>>;
 
-#[allow(non_camel_case_types)]
-pub type Reflect_Axis = (crate::operators::Operator_Op, ReflectOp_Axis);
-
 impl<Sdf, Dim> Reflect<Sdf, Dim> {
-    pub const AXIS: Reflect_Axis = (Operator::<(), ()>::OP, ReflectOp::<()>::AXIS);
+    pub fn axis(&mut self) -> &mut Dim {
+        &mut self.op.axis
+    }
 }
 
 #[cfg(test)]
@@ -83,6 +82,6 @@ pub mod test {
 
     #[test]
     fn test_reflect() {
-        Reflect::<Sphere, _>::default().with(Reflect::<(), ()>::AXIS, Vec3::default());
+        Reflect::<Sphere, _>::default().with(Reflect::axis, Vec3::default());
     }
 }

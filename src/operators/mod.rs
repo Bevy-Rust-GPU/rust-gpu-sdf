@@ -68,7 +68,7 @@ pub mod test {
     #[test]
     fn test_operator() {
         Operator::<Point, IsosurfaceOp>::default()
-            .with(Operator::<(), ()>::TARGET, Point::default())
-            .with(Operator::<(), ()>::OP, IsosurfaceOp::default());
+            .with(Operator::target, Point::default())
+            .with(Operator::op, IsosurfaceOp::default());
     }
 }
