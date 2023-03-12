@@ -11,21 +11,21 @@ use crate::signed_distance_field::SignedDistanceField;
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 pub struct Sweep<Core, Shell>
 where
-    Core: SignedDistanceField<Vec2>,
-    Shell: SignedDistanceField<Vec2>,
+    Core: SignedDistanceField<Vec2, f32>,
+    Shell: SignedDistanceField<Vec2, f32>,
 {
     pub core: Core,
     pub shell: Shell,
 }
 
-impl<Core, Shell> SignedDistanceField<Vec3> for Sweep<Core, Shell>
+impl<Core, Shell> SignedDistanceField<Vec3, f32> for Sweep<Core, Shell>
 where
-    Core: SignedDistanceField<Vec2>,
-    Shell: SignedDistanceField<Vec2>,
+    Core: SignedDistanceField<Vec2, f32>,
+    Shell: SignedDistanceField<Vec2, f32>,
 {
-    fn distance(&self, p: Vec3) -> f32 {
-        let q = Vec2::new(self.core.distance(p.truncate()), p.z);
-        self.shell.distance(q)
+    fn evaluate(&self, p: Vec3) -> f32 {
+        let q = Vec2::new(self.core.evaluate(p.truncate()), p.z);
+        self.shell.evaluate(q)
     }
 }
 

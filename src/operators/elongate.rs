@@ -28,20 +28,20 @@ impl Default for ElongateOp<Vec3> {
 impl SignedDistanceOperator<Vec2> for ElongateOp<Vec2> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
-        Sdf: SignedDistanceField<Vec2>,
+        Sdf: SignedDistanceField<Vec2, f32>,
     {
         let q = p.abs() - self.extent;
-        sdf.distance(q.max(Vec2::ZERO)) + q.x.max(q.y).min(0.0)
+        sdf.evaluate(q.max(Vec2::ZERO)) + q.x.max(q.y).min(0.0)
     }
 }
 
 impl SignedDistanceOperator<Vec3> for ElongateOp<Vec3> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
-        Sdf: SignedDistanceField<Vec3>,
+        Sdf: SignedDistanceField<Vec3, f32>,
     {
         let q = p.abs() - self.extent;
-        sdf.distance(q.max(Vec3::ZERO)) + q.x.max(q.y.max(q.z)).min(0.0)
+        sdf.evaluate(q.max(Vec3::ZERO)) + q.x.max(q.y.max(q.z)).min(0.0)
     }
 }
 

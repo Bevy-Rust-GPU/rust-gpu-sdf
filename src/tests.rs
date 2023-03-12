@@ -6,9 +6,13 @@ use crate::signed_distance_field::{
 };
 
 // Sample a SDF several times along the provided axis, asserting expected distance output at each step
-fn sample_axis_3d<Sdf: SignedDistanceField<Vec3>>(sdf: Sdf, axis: Vec3, expected: &[(f32, f32)]) {
+fn sample_axis_3d<Sdf: SignedDistanceField<Vec3, f32>>(
+    sdf: Sdf,
+    axis: Vec3,
+    expected: &[(f32, f32)],
+) {
     for (sample_dist, expected) in expected {
-        let dist = sdf.distance(axis * *sample_dist);
+        let dist = sdf.evaluate(axis * *sample_dist);
         assert_eq!(
             dist, *expected,
             "Sample at dist {sample_dist:}, expected: {expected:}, actual: {dist:}"

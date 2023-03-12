@@ -15,25 +15,25 @@ pub struct IntersectionOp<Sdf> {
 
 impl<SdfB> SignedDistanceOperator<Vec2> for IntersectionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Vec2>,
+    SdfB: SignedDistanceField<Vec2, f32>,
 {
     fn operator<SdfA>(&self, sdf: &SdfA, p: Vec2) -> f32
     where
-        SdfA: SignedDistanceField<Vec2>,
+        SdfA: SignedDistanceField<Vec2, f32>,
     {
-        sdf.distance(p).max(self.sdf.distance(p))
+        sdf.evaluate(p).max(self.sdf.evaluate(p))
     }
 }
 
 impl<SdfB> SignedDistanceOperator<Vec3> for IntersectionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Vec3>,
+    SdfB: SignedDistanceField<Vec3, f32>,
 {
     fn operator<SdfA>(&self, sdf: &SdfA, p: Vec3) -> f32
     where
-        SdfA: SignedDistanceField<Vec3>,
+        SdfA: SignedDistanceField<Vec3, f32>,
     {
-        sdf.distance(p).max(self.sdf.distance(p))
+        sdf.evaluate(p).max(self.sdf.evaluate(p))
     }
 }
 

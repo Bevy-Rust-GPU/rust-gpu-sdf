@@ -31,20 +31,20 @@ impl Default for RepeatInfiniteOp<Vec3> {
 impl SignedDistanceOperator<Vec2> for RepeatInfiniteOp<Vec2> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
-        Sdf: SignedDistanceField<Vec2>,
+        Sdf: SignedDistanceField<Vec2, f32>,
     {
         let q = (p + 0.5 * self.period).modulo(self.period) - (0.5 * self.period);
-        sdf.distance(q)
+        sdf.evaluate(q)
     }
 }
 
 impl SignedDistanceOperator<Vec3> for RepeatInfiniteOp<Vec3> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
-        Sdf: SignedDistanceField<Vec3>,
+        Sdf: SignedDistanceField<Vec3, f32>,
     {
         let q = (p + 0.5 * self.period).modulo(self.period) - (0.5 * self.period);
-        sdf.distance(q)
+        sdf.evaluate(q)
     }
 }
 
@@ -87,20 +87,20 @@ impl Default for RepeatCountOp<Vec3> {
 impl SignedDistanceOperator<Vec2> for RepeatCountOp<Vec2> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
-        Sdf: SignedDistanceField<Vec2>,
+        Sdf: SignedDistanceField<Vec2, f32>,
     {
         let q = p - self.period * (p / self.period).round().clamp(-self.count, self.count);
-        sdf.distance(q)
+        sdf.evaluate(q)
     }
 }
 
 impl SignedDistanceOperator<Vec3> for RepeatCountOp<Vec3> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
-        Sdf: SignedDistanceField<Vec3>,
+        Sdf: SignedDistanceField<Vec3, f32>,
     {
         let q = p - self.period * (p / self.period).round().clamp(-self.count, self.count);
-        sdf.distance(q)
+        sdf.evaluate(q)
     }
 }
 

@@ -9,19 +9,19 @@ use crate::signed_distance_field::SignedDistanceField;
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
 pub struct Extrude<Sdf>
 where
-    Sdf: SignedDistanceField<Vec2>,
+    Sdf: SignedDistanceField<Vec2, f32>,
 {
     pub sdf: Sdf,
     pub axis: Vec3,
     pub depth: f32,
 }
 
-impl<Sdf> SignedDistanceField<Vec3> for Extrude<Sdf>
+impl<Sdf> SignedDistanceField<Vec3, f32> for Extrude<Sdf>
 where
-    Sdf: SignedDistanceField<Vec2>,
+    Sdf: SignedDistanceField<Vec2, f32>,
 {
-    fn distance(&self, p: Vec3) -> f32 {
-        let d = self.sdf.distance(p.truncate());
+    fn evaluate(&self, p: Vec3) -> f32 {
+        let d = self.sdf.evaluate(p.truncate());
         let w = Vec2::new(d, p.z.abs() - self.depth);
         w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()
     }

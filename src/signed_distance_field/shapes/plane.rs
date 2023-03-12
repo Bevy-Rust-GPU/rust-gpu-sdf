@@ -22,15 +22,15 @@ impl Default for Plane<Vec3> {
     }
 }
 
-impl SignedDistanceField<Vec2> for Plane<Vec2> {
-    fn distance(&self, p: Vec2) -> f32 {
+impl SignedDistanceField<Vec2, f32> for Plane<Vec2> {
+    fn evaluate(&self, p: Vec2) -> f32 {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
         p.dot(-self.dir)
     }
 }
 
-impl SignedDistanceField<Vec3> for Plane<Vec3> {
-    fn distance(&self, p: Vec3) -> f32 {
+impl SignedDistanceField<Vec3, f32> for Plane<Vec3> {
+    fn evaluate(&self, p: Vec3) -> f32 {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
         p.dot(-self.dir)
     }

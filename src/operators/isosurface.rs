@@ -21,9 +21,9 @@ impl Default for IsosurfaceOp {
 impl<Dim> SignedDistanceOperator<Dim> for IsosurfaceOp {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
     where
-        Sdf: SignedDistanceField<Dim>,
+        Sdf: SignedDistanceField<Dim, f32>,
     {
-        sdf.distance(p) - self.delta
+        sdf.evaluate(p) - self.delta
     }
 }
 

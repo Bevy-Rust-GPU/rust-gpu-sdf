@@ -14,14 +14,14 @@ pub struct UnionOp<Sdf> {
 
 impl<SdfB, Dim> SignedDistanceOperator<Dim> for UnionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Dim>,
+    SdfB: SignedDistanceField<Dim, f32>,
     Dim: Clone,
 {
     fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
     where
-        SdfA: SignedDistanceField<Dim>,
+        SdfA: SignedDistanceField<Dim, f32>,
     {
-        sdf.distance(p.clone()).min(self.sdf.distance(p.clone()))
+        sdf.evaluate(p.clone()).min(self.sdf.evaluate(p.clone()))
     }
 }
 

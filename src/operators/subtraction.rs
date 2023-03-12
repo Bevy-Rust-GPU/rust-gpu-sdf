@@ -16,16 +16,16 @@ pub struct SubtractionOp<Sdf> {
 
 impl<SdfB, Dim> SignedDistanceOperator<Dim> for SubtractionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Dim>,
+    SdfB: SignedDistanceField<Dim, f32>,
     Dim: Clone,
 {
     fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
     where
-        SdfA: SignedDistanceField<Dim>,
+        SdfA: SignedDistanceField<Dim, f32>,
     {
-        sdf.distance(p.clone())
+        sdf.evaluate(p.clone())
             .neg()
-            .max(self.sdf.distance(p.clone()))
+            .max(self.sdf.evaluate(p.clone()))
     }
 }
 

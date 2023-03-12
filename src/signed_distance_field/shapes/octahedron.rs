@@ -17,8 +17,8 @@ impl Default for Octahedron {
     }
 }
 
-impl SignedDistanceField<Vec3> for Octahedron {
-    fn distance(&self, p: Vec3) -> f32 {
+impl SignedDistanceField<Vec3, f32> for Octahedron {
+    fn evaluate(&self, p: Vec3) -> f32 {
         let p = p.abs();
         let m = p.x + p.y + p.z - self.size;
         let q = if 3.0 * p.x < m {

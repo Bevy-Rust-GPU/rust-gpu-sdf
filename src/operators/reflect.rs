@@ -31,7 +31,7 @@ impl Default for ReflectOp<Vec3> {
 impl SignedDistanceOperator<Vec2> for ReflectOp<Vec2> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
-        Sdf: SignedDistanceField<Vec2>,
+        Sdf: SignedDistanceField<Vec2, f32>,
     {
         assert!(
             self.axis.is_normalized(),
@@ -42,14 +42,14 @@ impl SignedDistanceOperator<Vec2> for ReflectOp<Vec2> {
         } else {
             p.reflect(self.axis)
         };
-        sdf.distance(q)
+        sdf.evaluate(q)
     }
 }
 
 impl SignedDistanceOperator<Vec3> for ReflectOp<Vec3> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
-        Sdf: SignedDistanceField<Vec3>,
+        Sdf: SignedDistanceField<Vec3, f32>,
     {
         assert!(
             self.axis.is_normalized(),
@@ -60,7 +60,7 @@ impl SignedDistanceOperator<Vec3> for ReflectOp<Vec3> {
         } else {
             p.reflect(self.axis)
         };
-        sdf.distance(q)
+        sdf.evaluate(q)
     }
 }
 

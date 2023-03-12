@@ -25,17 +25,17 @@ use crate::signed_distance_field::SignedDistanceField;
 pub trait SignedDistanceOperator<Dim> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
     where
-        Sdf: SignedDistanceField<Dim>,
+        Sdf: SignedDistanceField<Dim, f32>,
         Dim: Clone;
 }
 
 impl<Dim> SignedDistanceOperator<Dim> for () {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
     where
-        Sdf: SignedDistanceField<Dim>,
+        Sdf: SignedDistanceField<Dim, f32>,
         Dim: Clone,
     {
-        sdf.distance(p)
+        sdf.evaluate(p)
     }
 }
 
@@ -46,13 +46,13 @@ pub struct Operator<Sdf, Op> {
     pub op: Op,
 }
 
-impl<Sdf, Op, Dim> SignedDistanceField<Dim> for Operator<Sdf, Op>
+impl<Sdf, Op, Dim> SignedDistanceField<Dim, f32> for Operator<Sdf, Op>
 where
-    Sdf: SignedDistanceField<Dim>,
+    Sdf: SignedDistanceField<Dim, f32>,
     Op: SignedDistanceOperator<Dim>,
     Dim: Clone,
 {
-    fn distance(&self, p: Dim) -> f32 {
+    fn evaluate(&self, p: Dim) -> f32 {
         self.op.operator(&self.target, p)
     }
 }

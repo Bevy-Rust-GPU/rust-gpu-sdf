@@ -38,20 +38,20 @@ impl Default for TwistOp<Vec3> {
 impl SignedDistanceOperator<Vec2> for TwistOp<Vec2> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
     where
-        Sdf: SignedDistanceField<Vec2>,
+        Sdf: SignedDistanceField<Vec2, f32>,
     {
         let q = Vec2::from_angle(self.k * self.axis_pos.dot(p)).rotate(p);
-        return sdf.distance(q);
+        return sdf.evaluate(q);
     }
 }
 
 impl SignedDistanceOperator<Vec3> for TwistOp<Vec3> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
     where
-        Sdf: SignedDistanceField<Vec3>,
+        Sdf: SignedDistanceField<Vec3, f32>,
     {
         let q = Quat::from_axis_angle(self.axis_rot, self.k * self.axis_pos.dot(p)) * p;
-        return sdf.distance(q);
+        return sdf.evaluate(q);
     }
 }
 

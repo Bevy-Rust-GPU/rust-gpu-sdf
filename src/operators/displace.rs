@@ -14,14 +14,14 @@ pub struct DisplaceOp<Sdf> {
 
 impl<SdfB, Dim> SignedDistanceOperator<Dim> for DisplaceOp<SdfB>
 where
-    SdfB: SignedDistanceField<Dim>,
+    SdfB: SignedDistanceField<Dim, f32>,
 {
     fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
     where
-        SdfA: SignedDistanceField<Dim>,
+        SdfA: SignedDistanceField<Dim, f32>,
         Dim: Clone,
     {
-        sdf.distance(p.clone()) + self.displace.distance(p)
+        sdf.evaluate(p.clone()) + self.displace.evaluate(p)
     }
 }
 

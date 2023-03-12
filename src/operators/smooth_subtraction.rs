@@ -15,15 +15,15 @@ pub struct SmoothSubtractionOp<Sdf> {
 
 impl<SdfB, Dim> SignedDistanceOperator<Dim> for SmoothSubtractionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Dim>,
+    SdfB: SignedDistanceField<Dim, f32>,
     Dim: Clone,
 {
     fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
     where
-        SdfA: SignedDistanceField<Dim>,
+        SdfA: SignedDistanceField<Dim, f32>,
     {
-        let d1 = sdf.distance(p.clone());
-        let d2 = self.sdf.distance(p.clone());
+        let d1 = sdf.evaluate(p.clone());
+        let d2 = self.sdf.evaluate(p.clone());
         let h = (0.5 - 0.5 * (d2 + d1) / self.k).clamp(0.0, 1.0);
         d2.mix(-d1, h) + self.k * h * (1.0 - h)
     }
