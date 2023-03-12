@@ -13,14 +13,16 @@
 <a href="#13" id="13">13</a>
 <a href="#14" id="14">14</a>
 <a href="#15" id="15">15</a>
+<a href="#16" id="16">16</a>
 </pre><pre class="rust"><code><span class="kw">pub use crate</span>::{
     operators::{
         composite::<span class="kw-2">*</span>, displace::<span class="kw-2">*</span>, elongate::<span class="kw-2">*</span>, hollow::<span class="kw-2">*</span>, intersection::<span class="kw-2">*</span>, isosurface::<span class="kw-2">*</span>,
         reflect::<span class="kw-2">*</span>, repeat::<span class="kw-2">*</span>, rotate::<span class="kw-2">*</span>, scale::<span class="kw-2">*</span>, smooth_intersection::<span class="kw-2">*</span>, smooth_subtraction::<span class="kw-2">*</span>,
         smooth_union::<span class="kw-2">*</span>, stretch::<span class="kw-2">*</span>, subtraction::<span class="kw-2">*</span>, translate::<span class="kw-2">*</span>, twist::<span class="kw-2">*</span>, union::<span class="kw-2">*</span>, <span class="kw-2">*</span>,
     },
+    raymarch::{sphere_trace_lipschitz::<span class="kw-2">*</span>, sphere_trace_naive::<span class="kw-2">*</span>, <span class="kw-2">*</span>},
     signed_distance_field::{
-        adapters::{extrude::<span class="kw-2">*</span>, sweep::<span class="kw-2">*</span>, <span class="kw-2">*</span>},
+        adapters::{extrude::<span class="kw-2">*</span>, sweep::<span class="kw-2">*</span>, normals::<span class="kw-2">*</span>, <span class="kw-2">*</span>},
         attributes::{color::<span class="kw-2">*</span>, distance::<span class="kw-2">*</span>, normal::<span class="kw-2">*</span>, position::<span class="kw-2">*</span>, tangent::<span class="kw-2">*</span>, uv::<span class="kw-2">*</span>, <span class="kw-2">*</span>},
         metrics::{chebyshev::<span class="kw-2">*</span>, euclidean::<span class="kw-2">*</span>, taxicab::<span class="kw-2">*</span>, <span class="kw-2">*</span>},
         shapes::{composite::<span class="kw-2">*</span>, octahedron::<span class="kw-2">*</span>, plane::<span class="kw-2">*</span>, <span class="kw-2">*</span>},

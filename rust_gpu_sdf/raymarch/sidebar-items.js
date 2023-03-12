@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":[["sphere_trace_lipschitz",""],["sphere_trace_naive",""]],"struct":[["RaymarchOutput",""]],"trait":[["Raymarch",""]]};
