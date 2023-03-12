@@ -86,8 +86,8 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_sweep() {
         Sweep::&lt;Circle, Circle&gt;::default()
-            .with(Sweep::&lt;(), ()&gt;::CORE, Circle::default())
-            .with(Sweep::&lt;(), ()&gt;::SHELL, Circle::default());
+            .with(Sweep::core, Circle::default())
+            .with(Sweep::shell, Circle::default());
     }
 }
 </code></pre></div>

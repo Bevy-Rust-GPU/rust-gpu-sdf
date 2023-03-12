@@ -85,7 +85,6 @@
 <a href="#85" id="85">85</a>
 <a href="#86" id="86">86</a>
 <a href="#87" id="87">87</a>
-<a href="#88" id="88">88</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Reflect a distance field about an arbitrary axis.
 
 </span><span class="kw">use </span>rust_gpu_bridge::{
@@ -153,11 +152,10 @@
 <span class="doccomment">/// Reflect a distance field about an arbitrary axis.
 </span><span class="kw">pub type </span>Reflect&lt;Sdf, Dim&gt; = Operator&lt;Sdf, ReflectOp&lt;Dim&gt;&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Reflect_Axis = (<span class="kw">crate</span>::operators::Operator_Op, ReflectOp_Axis);
-
 <span class="kw">impl</span>&lt;Sdf, Dim&gt; Reflect&lt;Sdf, Dim&gt; {
-    <span class="kw">pub const </span>AXIS: Reflect_Axis = (Operator::&lt;(), ()&gt;::OP, ReflectOp::&lt;()&gt;::AXIS);
+    <span class="kw">pub fn </span>axis(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.axis
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -171,7 +169,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_reflect() {
-        Reflect::&lt;Sphere, <span class="kw">_</span>&gt;::default().with(Reflect::&lt;(), ()&gt;::AXIS, Vec3::default());
+        Reflect::&lt;Sphere, <span class="kw">_</span>&gt;::default().with(Reflect::axis, Vec3::default());
     }
 }
 </code></pre></div>

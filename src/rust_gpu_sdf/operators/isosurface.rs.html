@@ -49,14 +49,13 @@
 <a href="#49" id="49">49</a>
 <a href="#50" id="50">50</a>
 <a href="#51" id="51">51</a>
-<a href="#52" id="52">52</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Shift the isosurface of a distance field by a given amount.
 
 </span><span class="kw">use </span>core::ops::Sub;
 
 <span class="kw">use </span>type_fields::Field;
 
-<span class="kw">use </span><span class="kw">crate</span>::prelude::{Distance, SignedDistanceField, Operator, SignedDistanceOperator};
+<span class="kw">use </span><span class="kw">crate</span>::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 <span class="doccomment">/// Shift the isosurface of a distance field by a given amount.
 </span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -82,11 +81,10 @@
 <span class="doccomment">/// Add an arbitrary radius to a distance field.
 </span><span class="kw">pub type </span>Isosurface&lt;Sdf&gt; = Operator&lt;Sdf, IsosurfaceOp&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Isosurface_Delta = (<span class="kw">crate</span>::operators::Operator_Op, IsosurfaceOp_Delta);
-
 <span class="kw">impl</span>&lt;Sdf&gt; Isosurface&lt;Sdf&gt; {
-    <span class="kw">pub const </span>DELTA: Isosurface_Delta = (Operator::&lt;(), ()&gt;::OP, IsosurfaceOp::DELTA);
+    <span class="kw">pub fn </span>delta(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.delta
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -99,7 +97,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_isosurface() {
-        Isosurface::&lt;Point&gt;::default().with(Isosurface::&lt;()&gt;::DELTA, f32::default());
+        Isosurface::&lt;Point&gt;::default().with(Isosurface::delta, f32::default());
     }
 }
 </code></pre></div>

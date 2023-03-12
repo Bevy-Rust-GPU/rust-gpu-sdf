@@ -71,8 +71,6 @@
 <a href="#71" id="71">71</a>
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
-<a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Rotate a distance field.
 </span><span class="kw">use </span>rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
 <span class="kw">use </span>type_fields::Field;
@@ -97,11 +95,10 @@
 <span class="doccomment">/// Rotate a 3D distance field.
 </span><span class="kw">pub type </span>Rotate2d&lt;Sdf&gt; = Operator&lt;Sdf, Rotate2dOp&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Rotate2d_Angle = (<span class="kw">crate</span>::operators::Operator_Op, Rotate2dOp_Angle);
-
 <span class="kw">impl</span>&lt;Sdf&gt; Rotate2d&lt;Sdf&gt; {
-    <span class="kw">pub const </span>ANGLE: Rotate2d_Angle = (Operator::&lt;(), ()&gt;::OP, Rotate2dOp::ANGLE);
+    <span class="kw">pub fn </span>angle(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.angle
+    }
 }
 
 <span class="doccomment">/// Rotate a distance field.
@@ -122,11 +119,10 @@
 <span class="doccomment">/// Rotate a distance field.
 </span><span class="kw">pub type </span>Rotate3d&lt;Sdf&gt; = Operator&lt;Sdf, Rotate3dOp&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Rotate3d_Rotation = (<span class="kw">crate</span>::operators::Operator_Op, Rotate3dOp_Rotation);
-
 <span class="kw">impl</span>&lt;Sdf&gt; Rotate3d&lt;Sdf&gt; {
-    <span class="kw">pub const </span>ROTATION: Rotate3d_Rotation = (Operator::&lt;(), ()&gt;::OP, Rotate3dOp::ROTATION);
+    <span class="kw">pub fn </span>rotation(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Quat {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.rotation
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -140,12 +136,12 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_rotate_2d() {
-        Rotate2d::&lt;Square&gt;::default().with(Rotate2d::&lt;()&gt;::ANGLE, f32::default());
+        Rotate2d::&lt;Square&gt;::default().with(Rotate2d::angle, f32::default());
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_rotate_3d() {
-        Rotate3d::&lt;Cube&gt;::default().with(Rotate3d::&lt;()&gt;::ROTATION, Quat::default());
+        Rotate3d::&lt;Cube&gt;::default().with(Rotate3d::rotation, Quat::default());
     }
 }
 </code></pre></div>

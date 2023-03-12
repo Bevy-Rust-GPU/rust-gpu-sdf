@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Sweep","Create a 3D distance field by sweeping a 2D distance field around the perimiter of another 2D distance field"],["Sweep_Core",""],["Sweep_Shell",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["Sweep","Create a 3D distance field by sweeping a 2D distance field around the perimiter of another 2D distance field"]]};

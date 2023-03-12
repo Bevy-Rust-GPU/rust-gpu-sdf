@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["IsosurfaceOp","Shift the isosurface of a distance field by a given amount."],["IsosurfaceOp_Delta",""]],"type":[["Isosurface","Add an arbitrary radius to a distance field."],["Isosurface_Delta",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["IsosurfaceOp","Shift the isosurface of a distance field by a given amount."]],"type":[["Isosurface","Add an arbitrary radius to a distance field."]]};

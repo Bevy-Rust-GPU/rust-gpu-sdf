@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["SmoothUnionOp","Compute the blended boolean union of two distance fields."],["SmoothUnionOp_K",""],["SmoothUnionOp_Sdf",""]],"type":[["SmoothUnion","Compute the blended boolean union of two distance fields."],["SmoothUnion_K",""],["SmoothUnion_Sdf",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["SmoothUnionOp","Compute the blended boolean union of two distance fields."]],"type":[["SmoothUnion","Compute the blended boolean union of two distance fields."]]};

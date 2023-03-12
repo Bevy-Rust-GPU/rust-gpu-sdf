@@ -52,60 +52,34 @@
 <a href="#52" id="52">52</a>
 <a href="#53" id="53">53</a>
 <a href="#54" id="54">54</a>
-<a href="#55" id="55">55</a>
-<a href="#56" id="56">56</a>
-<a href="#57" id="57">57</a>
-<a href="#58" id="58">58</a>
-<a href="#59" id="59">59</a>
-<a href="#60" id="60">60</a>
-<a href="#61" id="61">61</a>
-<a href="#62" id="62">62</a>
-<a href="#63" id="63">63</a>
-<a href="#64" id="64">64</a>
-<a href="#65" id="65">65</a>
-<a href="#66" id="66">66</a>
-<a href="#67" id="67">67</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Operators composed from other operators.
 
-</span><span class="kw">use super</span>::{
+</span><span class="kw">use </span>rust_gpu_bridge::prelude::Quat;
+
+<span class="kw">use super</span>::{
     hollow::Hollow, isosurface::Isosurface, rotate::Rotate3d, scale::Scale, translate::Translate,
-    Operator,
 };
 
 <span class="doccomment">/// Translate, rotate, and scale the wrapped SDF.
 </span><span class="kw">pub type </span>Transform&lt;Sdf, Dim&gt; = Translate&lt;Rotate3d&lt;Scale&lt;Sdf&gt;&gt;, Dim&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Transform_Rotation = (
-    <span class="kw">crate</span>::operators::Operator_Target,
-    <span class="kw">crate</span>::operators::rotate::Rotate3d_Rotation,
-);
-
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Transform_Scale = (
-    <span class="kw">crate</span>::operators::Operator_Target,
-    <span class="kw">crate</span>::operators::Operator_Target,
-    <span class="kw">crate</span>::operators::scale::Scale_Scale,
-);
-
 <span class="kw">impl</span>&lt;Sdf, Dim&gt; Transform&lt;Sdf, Dim&gt; {
-    <span class="kw">pub const </span>ROTATION: Transform_Rotation = (Operator::&lt;(), ()&gt;::TARGET, Rotate3d::&lt;()&gt;::ROTATION);
+    <span class="kw">pub fn </span>rotation(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Quat {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.target.op.rotation
+    }
 
-    <span class="kw">pub const </span>SCALE: Transform_Scale = (
-        Operator::&lt;(), ()&gt;::TARGET,
-        Operator::&lt;(), ()&gt;::TARGET,
-        Scale::&lt;()&gt;::SCALE,
-    );
+    <span class="kw">pub fn </span>scale(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.target.target.op.scale
+    }
 }
 
 <span class="doccomment">/// Converts a solid shape into a hollow one with the given surface depth.
 </span><span class="kw">pub type </span>Onion&lt;Sdf&gt; = Isosurface&lt;Hollow&lt;Sdf&gt;&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Onion_Radius = <span class="kw">crate</span>::operators::isosurface::Isosurface_Delta;
-
 <span class="kw">impl</span>&lt;Sdf&gt; Onion&lt;Sdf&gt; {
-    <span class="kw">pub const </span>RADIUS: Onion_Radius = Isosurface::&lt;()&gt;::DELTA;
+    <span class="kw">pub fn </span>radius(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.delta
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -123,13 +97,13 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_transform() {
         Transform::&lt;Cube, D3&gt;::default()
-            .with(Transform::&lt;(), ()&gt;::ROTATION, Quat::default())
-            .with(Transform::&lt;(), ()&gt;::SCALE, f32::default());
+            .with(Transform::rotation, Quat::default())
+            .with(Transform::scale, f32::default());
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_onion() {
-        Onion::&lt;Circle&gt;::default().with(Onion::&lt;()&gt;::RADIUS, f32::default());
+        Onion::&lt;Circle&gt;::default().with(Onion::radius, f32::default());
     }
 }
 </code></pre></div>

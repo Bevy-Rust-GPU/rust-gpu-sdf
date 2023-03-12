@@ -65,10 +65,6 @@
 <a href="#65" id="65">65</a>
 <a href="#66" id="66">66</a>
 <a href="#67" id="67">67</a>
-<a href="#68" id="68">68</a>
-<a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Shapes composed from other shapes.
 
 </span><span class="kw">use crate</span>::{
@@ -93,18 +89,14 @@
 <span class="doccomment">/// A ball.
 </span><span class="kw">pub type </span>Ball = Isosurface&lt;Point&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">type </span>Ball_Radius = <span class="kw">crate</span>::operators::isosurface::Isosurface_Delta;
-
 <span class="kw">impl </span>Ball {
-    <span class="kw">pub const </span>RADIUS: Ball_Radius = Isosurface::&lt;()&gt;::DELTA;
+    <span class="kw">pub fn </span>radius(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.delta
+    }
 }
 
 <span class="doccomment">/// A 2D circle.
 </span><span class="kw">pub type </span>Circle = Ball;
-
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Circle_Radius = <span class="kw">crate</span>::operators::isosurface::Isosurface_Delta;
 
 <span class="doccomment">/// A 3D sphere.
 </span><span class="kw">pub type </span>Sphere = Ball;
@@ -132,12 +124,12 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_circle() {
-        Circle::default().with(Circle::RADIUS, f32::default());
+        Circle::default().with(Circle::radius, f32::default());
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_sphere() {
-        Sphere::default().with(Sphere::RADIUS, f32::default());
+        Sphere::default().with(Sphere::radius, f32::default());
     }
 }
 </code></pre></div>

@@ -58,9 +58,6 @@
 <a href="#58" id="58">58</a>
 <a href="#59" id="59">59</a>
 <a href="#60" id="60">60</a>
-<a href="#61" id="61">61</a>
-<a href="#62" id="62">62</a>
-<a href="#63" id="63">63</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Compute the blended boolean intersection of two distance fields.
 
 </span><span class="kw">use </span>core::ops::{Add, Mul};
@@ -87,7 +84,7 @@
         </span>SdfA: SignedDistanceField&lt;Dim, Distance&gt;,
     {
         <span class="kw">let </span>d1 = <span class="kw-2">*</span>sdf.evaluate(p.clone());
-        <span class="kw">let </span>d2 = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(p.clone());
+        <span class="kw">let </span>d2 = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(p);
         <span class="kw">let </span>h = (<span class="number">0.5 </span>- <span class="number">0.5 </span>* (d2 - d1) / <span class="self">self</span>.k).clamp(<span class="number">0.0</span>, <span class="number">1.0</span>);
         d2.mix(d1, h).add(<span class="self">self</span>.k.mul(h).mul(<span class="number">1.0 </span>- h)).into()
     }
@@ -96,17 +93,14 @@
 <span class="doccomment">/// Compute the blended boolean intersection of two distance fields.
 </span><span class="kw">pub type </span>SmoothIntersection&lt;SdfA, SdfB&gt; = Operator&lt;SdfA, SmoothIntersectionOp&lt;SdfB&gt;&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>SmoothIntersection_Sdf = (<span class="kw">crate</span>::operators::Operator_Op, SmoothIntersectionOp_Sdf);
-
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>SmoothIntersection_K = (<span class="kw">crate</span>::operators::Operator_Op, SmoothIntersectionOp_K);
-
 <span class="kw">impl</span>&lt;SdfA, SdfB&gt; SmoothIntersection&lt;SdfA, SdfB&gt; {
-    <span class="kw">pub const </span>SDF: SmoothIntersection_Sdf =
-        (Operator::&lt;(), ()&gt;::OP, SmoothIntersectionOp::&lt;()&gt;::SDF);
+    <span class="kw">pub fn </span>sdf(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>SdfB {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.sdf
+    }
 
-    <span class="kw">pub const </span>K: SmoothIntersection_K = (Operator::&lt;(), ()&gt;::OP, SmoothIntersectionOp::&lt;()&gt;::K);
+    <span class="kw">pub fn </span>k(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.k
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -120,8 +114,8 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_smooth_intersection() {
         SmoothIntersection::&lt;Cube, Sphere&gt;::default()
-            .with(SmoothIntersection::&lt;(), ()&gt;::SDF, Sphere::default())
-            .with(SmoothIntersection::&lt;(), ()&gt;::K, f32::default());
+            .with(SmoothIntersection::sdf, Sphere::default())
+            .with(SmoothIntersection::k, f32::default());
     }
 }
 </code></pre></div>

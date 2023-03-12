@@ -89,7 +89,6 @@
 <a href="#89" id="89">89</a>
 <a href="#90" id="90">90</a>
 <a href="#91" id="91">91</a>
-<a href="#92" id="92">92</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Twist a distance field around an arbitrary axis.
 
 </span><span class="kw">use </span>rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
@@ -150,19 +149,18 @@
 <span class="doccomment">/// Twist a distance field around an arbitrary axis.
 </span><span class="kw">pub type </span>Twist&lt;Sdf, Dim&gt; = Operator&lt;Sdf, TwistOp&lt;Dim&gt;&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Twist_AxisPos = (<span class="kw">crate</span>::operators::Operator_Op, TwistOp_AxisPos);
-
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Twist_AxisRot = (<span class="kw">crate</span>::operators::Operator_Op, TwistOp_AxisRot);
-
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Twist_K = (<span class="kw">crate</span>::operators::Operator_Op, TwistOp_K);
-
 <span class="kw">impl</span>&lt;Sdf, Dim&gt; Twist&lt;Sdf, Dim&gt; {
-    <span class="kw">pub const </span>AXIS_POS: Twist_AxisPos = (Operator::&lt;(), ()&gt;::OP, TwistOp::&lt;()&gt;::AXIS_POS);
-    <span class="kw">pub const </span>AXIS_ROT: Twist_AxisRot = (Operator::&lt;(), ()&gt;::OP, TwistOp::&lt;()&gt;::AXIS_ROT);
-    <span class="kw">pub const </span>K: Twist_K = (Operator::&lt;(), ()&gt;::OP, TwistOp::&lt;()&gt;::K);
+    <span class="kw">pub fn </span>axis_pos(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.axis_pos
+    }
+
+    <span class="kw">pub fn </span>axis_rot(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.axis_rot
+    }
+
+    <span class="kw">pub fn </span>k(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.k
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -177,9 +175,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_twist() {
         Twist::&lt;Torus, <span class="kw">_</span>&gt;::default()
-            .with(Twist::&lt;(), ()&gt;::AXIS_POS, Vec3::default())
-            .with(Twist::&lt;(), ()&gt;::AXIS_ROT, Vec3::default())
-            .with(Twist::&lt;(), ()&gt;::K, f32::default());
+            .with(Twist::axis_pos, Vec3::default())
+            .with(Twist::axis_rot, Vec3::default())
+            .with(Twist::k, f32::default());
     }
 }
 </code></pre></div>

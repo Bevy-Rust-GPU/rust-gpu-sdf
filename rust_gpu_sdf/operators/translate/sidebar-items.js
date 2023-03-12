@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["TranslateOp","Apply a positional translation to a distance field."],["TranslateOp_Translation",""]],"type":[["Translate","Apply a positional translation to a distance field."],["Translate_Translation",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["TranslateOp","Apply a positional translation to a distance field."]],"type":[["Translate","Apply a positional translation to a distance field."]]};

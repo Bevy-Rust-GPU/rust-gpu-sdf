@@ -85,9 +85,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_extrude() {
         Extrude::&lt;Square&gt;::default()
-            .with(Extrude::&lt;()&gt;::SDF, Square::default())
-            .with(Extrude::&lt;()&gt;::AXIS, Vec3::default())
-            .with(Extrude::&lt;()&gt;::DEPTH, f32::default());
+            .with(Extrude::sdf, Square::default())
+            .with(Extrude::axis, Vec3::default())
+            .with(Extrude::depth, f32::default());
     }
 }
 </code></pre></div>

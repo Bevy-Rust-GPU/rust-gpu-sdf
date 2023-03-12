@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Octahedron","An octahedron."],["Octahedron_Size",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["Octahedron","An octahedron."]]};

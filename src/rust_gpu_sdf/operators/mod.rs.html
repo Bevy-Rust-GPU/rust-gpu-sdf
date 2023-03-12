@@ -142,8 +142,8 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_operator() {
         Operator::&lt;Point, IsosurfaceOp&gt;::default()
-            .with(Operator::&lt;(), ()&gt;::TARGET, Point::default())
-            .with(Operator::&lt;(), ()&gt;::OP, IsosurfaceOp::default());
+            .with(Operator::target, Point::default())
+            .with(Operator::op, IsosurfaceOp::default());
     }
 }
 </code></pre></div>

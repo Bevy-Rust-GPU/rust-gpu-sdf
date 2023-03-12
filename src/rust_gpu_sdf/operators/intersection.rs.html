@@ -58,7 +58,6 @@
 <a href="#58" id="58">58</a>
 <a href="#59" id="59">59</a>
 <a href="#60" id="60">60</a>
-<a href="#61" id="61">61</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Compute the boolean intersection of two distance fields.
 
 </span><span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
@@ -99,11 +98,10 @@
 <span class="doccomment">/// Compute the boolean intersection of two distance fields.
 </span><span class="kw">pub type </span>Intersection&lt;SdfA, SdfB&gt; = Operator&lt;SdfA, IntersectionOp&lt;SdfB&gt;&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Intersection_Sdf = (<span class="kw">crate</span>::operators::Operator_Op, IntersectionOp_Sdf);
-
 <span class="kw">impl</span>&lt;SdfA, SdfB&gt; Intersection&lt;SdfA, SdfB&gt; {
-    <span class="kw">pub const </span>SDF: Intersection_Sdf = (Operator::&lt;(), ()&gt;::OP, IntersectionOp::&lt;()&gt;::SDF);
+    <span class="kw">pub fn </span>sdf(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>SdfB {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.sdf
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -117,7 +115,7 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_intersection() {
         Intersection::&lt;Cube, Sphere&gt;::default()
-            .with(Intersection::&lt;(), ()&gt;::SDF, Sphere::default());
+            .with(Intersection::sdf, Sphere::default());
     }
 }
 </code></pre></div>

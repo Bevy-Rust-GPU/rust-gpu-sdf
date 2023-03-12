@@ -72,7 +72,6 @@
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
 <a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Extrude a shape along its axes, preserving exterior geometry.
 
 </span><span class="kw">use </span>core::ops::Add;
@@ -127,11 +126,10 @@
 <span class="doccomment">/// Extrude a shape along its axes, preserving exterior geometry.
 </span><span class="kw">pub type </span>Elongate&lt;Sdf, Dim&gt; = Operator&lt;Sdf, ElongateOp&lt;Dim&gt;&gt;;
 
-<span class="attr">#[allow(non_camel_case_types)]
-</span><span class="kw">pub type </span>Elongate_Extent = (<span class="kw">crate</span>::operators::Operator_Op, ElongateOp_Extent);
-
 <span class="kw">impl</span>&lt;Sdf, Dim&gt; Elongate&lt;Sdf, Dim&gt; {
-    <span class="kw">pub const </span>EXTENT: Elongate_Extent = (Operator::&lt;(), ()&gt;::OP, ElongateOp::&lt;()&gt;::EXTENT);
+    <span class="kw">pub fn </span>extent(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.extent
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -145,7 +143,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_elongate() {
-        Elongate::&lt;Point, <span class="kw">_</span>&gt;::default().with(Elongate::&lt;(), ()&gt;::EXTENT, Vec3::default());
+        Elongate::&lt;Point, <span class="kw">_</span>&gt;::default().with(Elongate::extent, Vec3::default());
     }
 }
 </code></pre></div>

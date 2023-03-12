@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["TwistOp","Twist a distance field around an arbitrary axis."],["TwistOp_AxisPos",""],["TwistOp_AxisRot",""],["TwistOp_K",""]],"type":[["Twist","Twist a distance field around an arbitrary axis."],["Twist_AxisPos",""],["Twist_AxisRot",""],["Twist_K",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["TwistOp","Twist a distance field around an arbitrary axis."]],"type":[["Twist","Twist a distance field around an arbitrary axis."]]};
