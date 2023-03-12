@@ -1,13 +1,14 @@
 //! Twist a distance field around an arbitrary axis.
 
 use rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
+use type_fields::Field;
 
 use crate::signed_distance_field::SignedDistanceField;
 
 use super::{Operator, SignedDistanceOperator};
 
 /// Twist a distance field around an arbitrary axis.
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Field)]
 pub struct TwistOp<Dim> {
     pub axis_pos: Dim,
     pub axis_rot: Dim,
@@ -55,4 +56,37 @@ impl SignedDistanceOperator<Vec3> for TwistOp<Vec3> {
 }
 
 /// Twist a distance field around an arbitrary axis.
-pub type Twist<Sdf, Dim> = Operator<Sdf, TwistOp<Dim>, Dim>;
+pub type Twist<Sdf, Dim> = Operator<Sdf, TwistOp<Dim>>;
+
+#[allow(non_camel_case_types)]
+pub type Twist_AxisPos = (crate::operators::Operator_Op, TwistOp_AxisPos);
+
+#[allow(non_camel_case_types)]
+pub type Twist_AxisRot = (crate::operators::Operator_Op, TwistOp_AxisRot);
+
+#[allow(non_camel_case_types)]
+pub type Twist_K = (crate::operators::Operator_Op, TwistOp_K);
+
+impl<Sdf, Dim> Twist<Sdf, Dim> {
+    pub const AXIS_POS: Twist_AxisPos = (Operator::<(), ()>::OP, TwistOp::<()>::AXIS_POS);
+    pub const AXIS_ROT: Twist_AxisRot = (Operator::<(), ()>::OP, TwistOp::<()>::AXIS_ROT);
+    pub const K: Twist_K = (Operator::<(), ()>::OP, TwistOp::<()>::K);
+}
+
+#[cfg(test)]
+pub mod test {
+    use rust_gpu_bridge::prelude::Vec3;
+    use type_fields::field::Field;
+
+    use crate::signed_distance_field::shapes::composite::Torus;
+
+    use super::Twist;
+
+    #[test]
+    fn test_twist() {
+        Twist::<Torus, _>::default()
+            .with(Twist::<(), ()>::AXIS_POS, Vec3::default())
+            .with(Twist::<(), ()>::AXIS_ROT, Vec3::default())
+            .with(Twist::<(), ()>::K, f32::default());
+    }
+}

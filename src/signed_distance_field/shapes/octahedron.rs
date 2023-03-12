@@ -1,13 +1,14 @@
 //! An octahedron.
 
 use rust_gpu_bridge::prelude::Vec3;
+use type_fields::Field;
 
 use crate::signed_distance_field::SignedDistanceField;
 
 /// An octahedron.
-#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 pub struct Octahedron {
-    size: f32,
+    pub size: f32,
 }
 
 impl Default for Octahedron {
@@ -35,3 +36,14 @@ impl SignedDistanceField<Vec3> for Octahedron {
     }
 }
 
+#[cfg(test)]
+pub mod test {
+    use type_fields::field::Field;
+
+    use super::Octahedron;
+
+    #[test]
+    fn test_octahedron() {
+        Octahedron::default().with(Octahedron::SIZE, f32::default());
+    }
+}

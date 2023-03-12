@@ -1,13 +1,14 @@
 //! Compute the blended boolean union of two distance fields.
 
 use rust_gpu_bridge::mix::Mix;
+use type_fields::Field;
 
 use crate::signed_distance_field::SignedDistanceField;
 
 use super::{Operator, SignedDistanceOperator};
 
 /// Compute the blended boolean union of two distance fields.
-#[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
 pub struct SmoothUnionOp<Sdf> {
     pub sdf: Sdf,
     pub k: f32,
@@ -30,4 +31,32 @@ where
 }
 
 /// Compute the blended boolean union of two distance fields.
-pub type SmoothUnion<SdfA, SdfB, Dim> = Operator<SdfA, SmoothUnionOp<SdfB>, Dim>;
+pub type SmoothUnion<SdfA, SdfB> = Operator<SdfA, SmoothUnionOp<SdfB>>;
+
+#[allow(non_camel_case_types)]
+pub type SmoothUnion_Sdf = (crate::operators::Operator_Op, SmoothUnionOp_Sdf);
+
+#[allow(non_camel_case_types)]
+pub type SmoothUnion_K = (crate::operators::Operator_Op, SmoothUnionOp_K);
+
+impl<SdfA, SdfB> SmoothUnion<SdfA, SdfB> {
+    pub const SDF: SmoothUnion_Sdf = (Operator::<(), ()>::OP, SmoothUnionOp::<()>::SDF);
+
+    pub const K: SmoothUnion_K = (Operator::<(), ()>::OP, SmoothUnionOp::<()>::K);
+}
+
+#[cfg(test)]
+pub mod test {
+    use type_fields::field::Field;
+
+    use crate::signed_distance_field::shapes::composite::{Cube, Sphere};
+
+    use super::SmoothUnion;
+
+    #[test]
+    fn test_smooth_union() {
+        SmoothUnion::<Cube, Sphere>::default()
+            .with(SmoothUnion::<(), ()>::SDF, Sphere::default())
+            .with(SmoothUnion::<(), ()>::K, f32::default());
+    }
+}

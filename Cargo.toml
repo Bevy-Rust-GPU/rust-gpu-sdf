@@ -10,3 +10,4 @@ spirv-std = ["rust-gpu-bridge/spirv-std"]
 
 [dependencies]
 rust-gpu-bridge = { git = "https://github.com/bevy-rust-gpu/rust-gpu-bridge", branch = "master" }
+type-fields = { git = "https://github.com/bevy-rust-gpu/type-fields" }

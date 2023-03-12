@@ -1,12 +1,14 @@
 //! Displace the output of a distance field using the output of another distance field.
 
+use type_fields::Field;
+
 use crate::operators::SignedDistanceField;
 
 use super::{Operator, SignedDistanceOperator};
 
 /// Displace the output of a distance field using the output of another distance field.
-pub struct DisplaceOp<Sdf>
-{
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+pub struct DisplaceOp<Sdf> {
     pub displace: Sdf,
 }
 
@@ -24,4 +26,27 @@ where
 }
 
 /// Displace the output of a distance field using the output of another distance field.
-pub type Displace<SdfA, SdfB, Dim> = Operator<SdfA, DisplaceOp<SdfB>, Dim>;
+pub type Displace<SdfA, SdfB> = Operator<SdfA, DisplaceOp<SdfB>>;
+
+#[allow(non_camel_case_types)]
+pub type Displace_Displace = (crate::operators::Operator_Op, DisplaceOp_Displace);
+
+impl<SdfA, SdfB> Displace<SdfA, SdfB> {
+    pub const DISPLACE: Displace_Displace =
+        (Operator::<(), (),>::OP, DisplaceOp::<()>::DISPLACE);
+}
+
+#[cfg(test)]
+pub mod tests {
+    use type_fields::field::Field;
+
+    use crate::signed_distance_field::shapes::composite::{Cube, Sphere};
+
+    use super::Displace;
+
+    #[test]
+    fn test_displace() {
+        Displace::<Cube, Sphere>::default()
+            .with(Displace::<(), ()>::DISPLACE, Sphere::default());
+    }
+}

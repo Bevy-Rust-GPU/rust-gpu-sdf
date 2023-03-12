@@ -2,29 +2,45 @@
 //! around the perimiter of another 2D distance field
 
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
+use type_fields::Field;
 
 use crate::signed_distance_field::SignedDistanceField;
 
 /// Create a 3D distance field by sweeping a 2D distance field
 /// around the perimiter of another 2D distance field
-#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Sweep<SdfA, SdfB>
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+pub struct Sweep<Core, Shell>
 where
-    SdfA: SignedDistanceField<Vec2>,
-    SdfB: SignedDistanceField<Vec2>,
+    Core: SignedDistanceField<Vec2>,
+    Shell: SignedDistanceField<Vec2>,
 {
-    pub sdf_a: SdfA,
-    pub sdf_b: SdfB,
+    pub core: Core,
+    pub shell: Shell,
 }
 
-impl<SdfA, SdfB> SignedDistanceField<Vec3> for Sweep<SdfA, SdfB>
+impl<Core, Shell> SignedDistanceField<Vec3> for Sweep<Core, Shell>
 where
-    SdfA: SignedDistanceField<Vec2>,
-    SdfB: SignedDistanceField<Vec2>,
+    Core: SignedDistanceField<Vec2>,
+    Shell: SignedDistanceField<Vec2>,
 {
     fn distance(&self, p: Vec3) -> f32 {
-        let q = Vec2::new(self.sdf_a.distance(p.truncate()), p.z);
-        self.sdf_b.distance(q)
+        let q = Vec2::new(self.core.distance(p.truncate()), p.z);
+        self.shell.distance(q)
     }
 }
 
+#[cfg(test)]
+pub mod tests {
+    use type_fields::field::Field;
+
+    use crate::signed_distance_field::shapes::composite::Circle;
+
+    use super::Sweep;
+
+    #[test]
+    fn test_sweep() {
+        Sweep::<Circle, Circle>::default()
+            .with(Sweep::<(), ()>::CORE, Circle::default())
+            .with(Sweep::<(), ()>::SHELL, Circle::default());
+    }
+}

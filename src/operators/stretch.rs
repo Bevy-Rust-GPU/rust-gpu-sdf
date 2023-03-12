@@ -1,13 +1,70 @@
 //! Stretch a shape along an arbitrary axis, preserving exterior geometry as caps.
 
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
+use type_fields::Field;
 
 use crate::signed_distance_field::SignedDistanceField;
 
 use super::{Operator, SignedDistanceOperator};
 
+/// Extrude a shape infinitely along an arbitrary axis.
+#[derive(Debug, Copy, Clone, PartialEq, Field)]
+pub struct StretchInfiniteOp<Dim> {
+    pub dir: Dim,
+}
+
+impl Default for StretchInfiniteOp<Vec2> {
+    fn default() -> Self {
+        StretchInfiniteOp { dir: Vec2::X }
+    }
+}
+
+impl Default for StretchInfiniteOp<Vec3> {
+    fn default() -> Self {
+        StretchInfiniteOp { dir: Vec3::X }
+    }
+}
+
+impl SignedDistanceOperator<Vec2> for StretchInfiniteOp<Vec2> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
+    where
+        Sdf: SignedDistanceField<Vec2>,
+    {
+        assert!(
+            self.dir.is_normalized(),
+            "ExtrudeInfiniteOp dir must be normalized"
+        );
+        let q = p - p.dot(self.dir) * self.dir;
+        sdf.distance(q)
+    }
+}
+
+impl SignedDistanceOperator<Vec3> for StretchInfiniteOp<Vec3> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
+    where
+        Sdf: SignedDistanceField<Vec3>,
+    {
+        assert!(
+            self.dir.is_normalized(),
+            "ExtrudeInfiniteOp dir must be normalized"
+        );
+        let q = p - p.dot(self.dir) * self.dir;
+        sdf.distance(q)
+    }
+}
+
+/// Extrude a shape infinitely along an arbitrary axis.
+pub type StretchInfinite<Sdf, Dim> = Operator<Sdf, StretchInfiniteOp<Dim>>;
+
+#[allow(non_camel_case_types)]
+pub type StretchInfinite_Dir = (crate::operators::Operator_Op, StretchInfiniteOp_Dir);
+
+impl<Sdf, Dim> StretchInfinite<Sdf, Dim> {
+    pub const DIR: StretchInfinite_Dir = (Operator::<(), ()>::OP, StretchInfiniteOp::<()>::DIR);
+}
+
 /// Extrude a shape by an arbitrary distance along an arbitrary axis, preserving exterior geometry as caps.
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Field)]
 pub struct StretchDistOp<Dim> {
     pub dir: Dim,
     pub dist: f32,
@@ -60,53 +117,38 @@ impl SignedDistanceOperator<Vec3> for StretchDistOp<Vec3> {
 }
 
 /// Extrude a shape by an arbitrary distance along an arbitrary axis, preserving exterior geometry as caps.
-pub type StretchDist<Sdf, Dim> = Operator<Sdf, StretchDistOp<Dim>, Dim>;
+pub type StretchDist<Sdf, Dim> = Operator<Sdf, StretchDistOp<Dim>>;
 
-/// Extrude a shape infinitely along an arbitrary axis.
-#[derive(Debug, Copy, Clone, PartialEq)]
-pub struct StretchInfiniteOp<Dim> {
-    pub dir: Dim,
+#[allow(non_camel_case_types)]
+pub type StretchDist_Dir = (crate::operators::Operator_Op, StretchDistOp_Dir);
+
+#[allow(non_camel_case_types)]
+pub type StretchDist_Dist = (crate::operators::Operator_Op, StretchDistOp_Dist);
+
+impl<Sdf, Dim> StretchDist<Sdf, Dim> {
+    pub const DIR: StretchDist_Dir = (Operator::<(), ()>::OP, StretchDistOp::<()>::DIR);
+
+    pub const DIST: StretchDist_Dist = (Operator::<(), ()>::OP, StretchDistOp::<()>::DIST);
 }
 
-impl Default for StretchInfiniteOp<Vec2> {
-    fn default() -> Self {
-        StretchInfiniteOp { dir: Vec2::X }
+#[cfg(test)]
+pub mod test {
+    use rust_gpu_bridge::prelude::Vec3;
+    use type_fields::field::Field;
+
+    use crate::signed_distance_field::shapes::composite::Cube;
+
+    use super::{StretchDist, StretchInfinite};
+
+    #[test]
+    fn test_stretch_infinite() {
+        StretchInfinite::<Cube, _>::default().with(StretchInfinite::<(), ()>::DIR, Vec3::default());
+    }
+
+    #[test]
+    fn test_stretch_dist() {
+        StretchDist::<Cube, _>::default()
+            .with(StretchDist::<(), ()>::DIR, Vec3::default())
+            .with(StretchDist::<(), ()>::DIST, f32::default());
     }
 }
-
-impl Default for StretchInfiniteOp<Vec3> {
-    fn default() -> Self {
-        StretchInfiniteOp { dir: Vec3::X }
-    }
-}
-
-impl SignedDistanceOperator<Vec2> for StretchInfiniteOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
-    where
-        Sdf: SignedDistanceField<Vec2>,
-    {
-        assert!(
-            self.dir.is_normalized(),
-            "ExtrudeInfiniteOp dir must be normalized"
-        );
-        let q = p - p.dot(self.dir) * self.dir;
-        sdf.distance(q)
-    }
-}
-
-impl SignedDistanceOperator<Vec3> for StretchInfiniteOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
-    where
-        Sdf: SignedDistanceField<Vec3>,
-    {
-        assert!(
-            self.dir.is_normalized(),
-            "ExtrudeInfiniteOp dir must be normalized"
-        );
-        let q = p - p.dot(self.dir) * self.dir;
-        sdf.distance(q)
-    }
-}
-
-/// Extrude a shape infinitely along an arbitrary axis.
-pub type StretchInfinite<Sdf, Dim> = Operator<Sdf, StretchInfiniteOp<Dim>, Dim>;

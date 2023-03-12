@@ -1,7 +1,6 @@
 //! Shapes composed from other shapes.
 
 use crate::{
-    markers::Exact,
     operators::{
         elongate::Elongate,
         isosurface::{Isosurface, IsosurfaceOp},
@@ -21,19 +20,29 @@ pub type Point = EuclideanMetric;
 pub type Line<Dim> = StretchDist<Point, Dim>;
 
 /// A ball.
-pub type Ball<Dim> = Isosurface<Point, Dim>;
+pub type Ball = Isosurface<Point>;
+
+#[allow(non_camel_case_types)]
+type Ball_Radius = crate::operators::isosurface::Isosurface_Delta;
+
+impl Ball {
+    pub const RADIUS: Ball_Radius = Isosurface::<()>::DELTA;
+}
 
 /// A 2D circle.
-pub type Circle = Ball<D2>;
+pub type Circle = Ball;
+
+#[allow(non_camel_case_types)]
+pub type Circle_Radius = crate::operators::isosurface::Isosurface_Delta;
 
 /// A 3D sphere.
-pub type Sphere = Ball<D3>;
+pub type Sphere = Ball;
 
 /// A capsule.
-pub type Capsule<Dim> = Operator<Line<Dim>, IsosurfaceOp, Dim>;
+pub type Capsule<Dim> = Operator<Line<Dim>, IsosurfaceOp>;
 
 /// A box.
-pub type Box<Dim> = Elongate<Point, Exact, Dim>;
+pub type Box<Dim> = Elongate<Point, Dim>;
 
 /// A 2D square.
 pub type Square = Box<D2>;
@@ -43,3 +52,20 @@ pub type Cube = Box<D3>;
 
 /// A 3D torus.
 pub type Torus = Sweep<Circle, Circle>;
+
+#[cfg(test)]
+pub mod tests {
+    use type_fields::field::Field;
+
+    use super::{Circle, Sphere};
+
+    #[test]
+    fn test_circle() {
+        Circle::default().with(Circle::RADIUS, f32::default());
+    }
+
+    #[test]
+    fn test_sphere() {
+        Sphere::default().with(Sphere::RADIUS, f32::default());
+    }
+}

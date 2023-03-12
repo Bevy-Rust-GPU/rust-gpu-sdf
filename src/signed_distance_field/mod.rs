@@ -17,6 +17,12 @@ pub trait SignedDistanceNormal<Dim>: SignedDistanceField<Dim> {
     fn normal(&self, p: Dim) -> Vec3;
 }
 
+impl<Dim> SignedDistanceField<Dim> for () {
+    fn distance(&self, _: Dim) -> f32 {
+        0.0
+    }
+}
+
 impl<Dim> SignedDistanceField<Dim> for f32 {
     fn distance(&self, _: Dim) -> f32 {
         *self

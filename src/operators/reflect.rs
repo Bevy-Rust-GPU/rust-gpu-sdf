@@ -4,13 +4,14 @@ use rust_gpu_bridge::{
     prelude::{Vec2, Vec3},
     reflect::Reflect as ReflectTrait,
 };
+use type_fields::Field;
 
 use crate::signed_distance_field::SignedDistanceField;
 
 use super::{Operator, SignedDistanceOperator};
 
 /// Reflect a distance field about an arbitrary axis.
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Field)]
 pub struct ReflectOp<Dim> {
     pub axis: Dim,
 }
@@ -64,4 +65,26 @@ impl SignedDistanceOperator<Vec3> for ReflectOp<Vec3> {
 }
 
 /// Reflect a distance field about an arbitrary axis.
-pub type Reflect<Sdf, Dim> = Operator<Sdf, ReflectOp<Dim>, Dim>;
+pub type Reflect<Sdf, Dim> = Operator<Sdf, ReflectOp<Dim>>;
+
+#[allow(non_camel_case_types)]
+pub type Reflect_Axis = (crate::operators::Operator_Op, ReflectOp_Axis);
+
+impl<Sdf, Dim> Reflect<Sdf, Dim> {
+    pub const AXIS: Reflect_Axis = (Operator::<(), ()>::OP, ReflectOp::<()>::AXIS);
+}
+
+#[cfg(test)]
+pub mod test {
+    use rust_gpu_bridge::prelude::Vec3;
+    use type_fields::field::Field;
+
+    use crate::signed_distance_field::shapes::composite::Sphere;
+
+    use super::Reflect;
+
+    #[test]
+    fn test_reflect() {
+        Reflect::<Sphere, _>::default().with(Reflect::<(), ()>::AXIS, Vec3::default());
+    }
+}
