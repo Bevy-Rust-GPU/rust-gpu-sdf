@@ -4,9 +4,7 @@ use core::ops::Neg;
 
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Compute the boolean subtraction of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -14,18 +12,19 @@ pub struct SubtractionOp<Sdf> {
     pub sdf: Sdf,
 }
 
-impl<SdfB, Dim> SignedDistanceOperator<Dim> for SubtractionOp<SdfB>
+impl<SdfB, Dim> SignedDistanceOperator<Dim, Distance> for SubtractionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Dim, f32>,
+    SdfB: SignedDistanceField<Dim, Distance>,
     Dim: Clone,
 {
-    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> Distance
     where
-        SdfA: SignedDistanceField<Dim, f32>,
+        SdfA: SignedDistanceField<Dim, Distance>,
     {
         sdf.evaluate(p.clone())
             .neg()
-            .max(self.sdf.evaluate(p.clone()))
+            .max(*self.sdf.evaluate(p.clone()))
+            .into()
     }
 }
 

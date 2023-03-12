@@ -2,9 +2,7 @@
 
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Compute the boolean union of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -12,16 +10,18 @@ pub struct UnionOp<Sdf> {
     pub sdf: Sdf,
 }
 
-impl<SdfB, Dim> SignedDistanceOperator<Dim> for UnionOp<SdfB>
+impl<SdfB, Dim> SignedDistanceOperator<Dim, Distance> for UnionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Dim, f32>,
+    SdfB: SignedDistanceField<Dim, Distance>,
     Dim: Clone,
 {
-    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> Distance
     where
-        SdfA: SignedDistanceField<Dim, f32>,
+        SdfA: SignedDistanceField<Dim, Distance>,
     {
-        sdf.evaluate(p.clone()).min(self.sdf.evaluate(p.clone()))
+        sdf.evaluate(p.clone())
+            .min(*self.sdf.evaluate(p.clone()))
+            .into()
     }
 }
 

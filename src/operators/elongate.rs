@@ -1,11 +1,11 @@
 //! Extrude a shape along its axes, preserving exterior geometry.
 
+use core::ops::Add;
+
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Extrude a shape along its axes, preserving exterior geometry.
 #[derive(Debug, Field)]
@@ -25,23 +25,27 @@ impl Default for ElongateOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<Vec2> for ElongateOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
+impl SignedDistanceOperator<Vec2, Distance> for ElongateOp<Vec2> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
     where
-        Sdf: SignedDistanceField<Vec2, f32>,
+        Sdf: SignedDistanceField<Vec2, Distance>,
     {
         let q = p.abs() - self.extent;
-        sdf.evaluate(q.max(Vec2::ZERO)) + q.x.max(q.y).min(0.0)
+        sdf.evaluate(q.max(Vec2::ZERO))
+            .add(q.x.max(q.y).min(0.0))
+            .into()
     }
 }
 
-impl SignedDistanceOperator<Vec3> for ElongateOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
+impl SignedDistanceOperator<Vec3, Distance> for ElongateOp<Vec3> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
     where
-        Sdf: SignedDistanceField<Vec3, f32>,
+        Sdf: SignedDistanceField<Vec3, Distance>,
     {
         let q = p.abs() - self.extent;
-        sdf.evaluate(q.max(Vec3::ZERO)) + q.x.max(q.y.max(q.z)).min(0.0)
+        sdf.evaluate(q.max(Vec3::ZERO))
+            .add(q.x.max(q.y.max(q.z)).min(0.0))
+            .into()
     }
 }
 

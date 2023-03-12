@@ -3,7 +3,7 @@
 use rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
+use crate::prelude::{Distance, SignedDistanceField};
 
 use super::{Operator, SignedDistanceOperator};
 
@@ -35,23 +35,23 @@ impl Default for TwistOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<Vec2> for TwistOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
+impl SignedDistanceOperator<Vec2, Distance> for TwistOp<Vec2> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
     where
-        Sdf: SignedDistanceField<Vec2, f32>,
+        Sdf: SignedDistanceField<Vec2, Distance>,
     {
         let q = Vec2::from_angle(self.k * self.axis_pos.dot(p)).rotate(p);
-        return sdf.evaluate(q);
+        sdf.evaluate(q)
     }
 }
 
-impl SignedDistanceOperator<Vec3> for TwistOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
+impl SignedDistanceOperator<Vec3, Distance> for TwistOp<Vec3> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
     where
-        Sdf: SignedDistanceField<Vec3, f32>,
+        Sdf: SignedDistanceField<Vec3, Distance>,
     {
         let q = Quat::from_axis_angle(self.axis_rot, self.k * self.axis_pos.dot(p)) * p;
-        return sdf.evaluate(q);
+        sdf.evaluate(q)
     }
 }
 

@@ -1,10 +1,10 @@
 //! Shift the isosurface of a distance field by a given amount.
 
+use core::ops::Sub;
+
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, SignedDistanceField, Operator, SignedDistanceOperator};
 
 /// Shift the isosurface of a distance field by a given amount.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -18,12 +18,12 @@ impl Default for IsosurfaceOp {
     }
 }
 
-impl<Dim> SignedDistanceOperator<Dim> for IsosurfaceOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
+impl<Dim> SignedDistanceOperator<Dim, Distance> for IsosurfaceOp {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> Distance
     where
-        Sdf: SignedDistanceField<Dim, f32>,
+        Sdf: SignedDistanceField<Dim, Distance>,
     {
-        sdf.evaluate(p) - self.delta
+        sdf.evaluate(p).sub(self.delta).into()
     }
 }
 

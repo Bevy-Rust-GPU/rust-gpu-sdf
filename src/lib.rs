@@ -3,6 +3,8 @@
 pub mod operators;
 pub mod signed_distance_field;
 
+pub mod prelude;
+
 #[cfg(test)]
 pub mod tests;
 

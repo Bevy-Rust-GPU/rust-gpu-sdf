@@ -1,12 +1,9 @@
 use rust_gpu_bridge::prelude::Vec3;
 
-use crate::signed_distance_field::{
-    shapes::composite::{Capsule, Line, Point, Sphere},
-    SignedDistanceField,
-};
+use crate::prelude::{Capsule, Distance, Line, Point, SignedDistanceField, Sphere};
 
 // Sample a SDF several times along the provided axis, asserting expected distance output at each step
-fn sample_axis_3d<Sdf: SignedDistanceField<Vec3, f32>>(
+fn sample_axis_3d<Sdf: SignedDistanceField<Vec3, Distance>>(
     sdf: Sdf,
     axis: Vec3,
     expected: &[(f32, f32)],
@@ -14,7 +11,7 @@ fn sample_axis_3d<Sdf: SignedDistanceField<Vec3, f32>>(
     for (sample_dist, expected) in expected {
         let dist = sdf.evaluate(axis * *sample_dist);
         assert_eq!(
-            dist, *expected,
+            *dist, *expected,
             "Sample at dist {sample_dist:}, expected: {expected:}, actual: {dist:}"
         );
     }

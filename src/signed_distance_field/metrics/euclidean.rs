@@ -2,26 +2,29 @@
 
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
 
-use crate::signed_distance_field::SignedDistanceField;
+use crate::{
+    prelude::Normal,
+    signed_distance_field::{Distance, SignedDistanceField},
+};
 
 /// Euclidian distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EuclideanMetric;
 
-impl SignedDistanceField<Vec2, f32> for EuclideanMetric {
-    fn evaluate(&self, p: Vec2) -> f32 {
-        p.length()
+impl SignedDistanceField<Vec2, Distance> for EuclideanMetric {
+    fn evaluate(&self, p: Vec2) -> Distance {
+        p.length().into()
     }
 }
 
-impl SignedDistanceField<Vec3, f32> for EuclideanMetric {
-    fn evaluate(&self, p: Vec3) -> f32 {
-        p.length()
+impl SignedDistanceField<Vec3, Distance> for EuclideanMetric {
+    fn evaluate(&self, p: Vec3) -> Distance {
+        p.length().into()
     }
 }
 
-impl SignedDistanceField<Vec3, Vec3> for EuclideanMetric {
-    fn evaluate(&self, p: Vec3) -> Vec3 {
-        p.normalize()
+impl SignedDistanceField<Vec3, Normal> for EuclideanMetric {
+    fn evaluate(&self, p: Vec3) -> Normal {
+        p.normalize().into()
     }
 }

@@ -1,11 +1,11 @@
 //! Compute the blended boolean intersection of two distance fields.
 
+use core::ops::{Add, Mul};
+
 use rust_gpu_bridge::mix::Mix;
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Compute the blended boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -14,19 +14,19 @@ pub struct SmoothIntersectionOp<Sdf> {
     pub k: f32,
 }
 
-impl<SdfB, Dim> SignedDistanceOperator<Dim> for SmoothIntersectionOp<SdfB>
+impl<SdfB, Dim> SignedDistanceOperator<Dim, Distance> for SmoothIntersectionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Dim, f32>,
+    SdfB: SignedDistanceField<Dim, Distance>,
     Dim: Clone,
 {
-    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> Distance
     where
-        SdfA: SignedDistanceField<Dim, f32>,
+        SdfA: SignedDistanceField<Dim, Distance>,
     {
-        let d1 = sdf.evaluate(p.clone());
-        let d2 = self.sdf.evaluate(p.clone());
+        let d1 = *sdf.evaluate(p.clone());
+        let d2 = *self.sdf.evaluate(p.clone());
         let h = (0.5 - 0.5 * (d2 - d1) / self.k).clamp(0.0, 1.0);
-        d2.mix(d1, h) + self.k * h * (1.0 - h)
+        d2.mix(d1, h).add(self.k.mul(h).mul(1.0 - h)).into()
     }
 }
 

@@ -6,9 +6,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Repeat a distance field infinitely in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -28,20 +26,20 @@ impl Default for RepeatInfiniteOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<Vec2> for RepeatInfiniteOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
+impl SignedDistanceOperator<Vec2, Distance> for RepeatInfiniteOp<Vec2> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
     where
-        Sdf: SignedDistanceField<Vec2, f32>,
+        Sdf: SignedDistanceField<Vec2, Distance>,
     {
         let q = (p + 0.5 * self.period).modulo(self.period) - (0.5 * self.period);
         sdf.evaluate(q)
     }
 }
 
-impl SignedDistanceOperator<Vec3> for RepeatInfiniteOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
+impl SignedDistanceOperator<Vec3, Distance> for RepeatInfiniteOp<Vec3> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
     where
-        Sdf: SignedDistanceField<Vec3, f32>,
+        Sdf: SignedDistanceField<Vec3, Distance>,
     {
         let q = (p + 0.5 * self.period).modulo(self.period) - (0.5 * self.period);
         sdf.evaluate(q)
@@ -84,20 +82,20 @@ impl Default for RepeatCountOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<Vec2> for RepeatCountOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
+impl SignedDistanceOperator<Vec2, Distance> for RepeatCountOp<Vec2> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
     where
-        Sdf: SignedDistanceField<Vec2, f32>,
+        Sdf: SignedDistanceField<Vec2, Distance>,
     {
         let q = p - self.period * (p / self.period).round().clamp(-self.count, self.count);
         sdf.evaluate(q)
     }
 }
 
-impl SignedDistanceOperator<Vec3> for RepeatCountOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
+impl SignedDistanceOperator<Vec3, Distance> for RepeatCountOp<Vec3> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
     where
-        Sdf: SignedDistanceField<Vec3, f32>,
+        Sdf: SignedDistanceField<Vec3, Distance>,
     {
         let q = p - self.period * (p / self.period).round().clamp(-self.count, self.count);
         sdf.evaluate(q)

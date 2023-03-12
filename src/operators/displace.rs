@@ -1,10 +1,10 @@
 //! Displace the output of a distance field using the output of another distance field.
 
+use core::ops::Add;
+
 use type_fields::Field;
 
-use crate::operators::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Displace the output of a distance field using the output of another distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -12,16 +12,18 @@ pub struct DisplaceOp<Sdf> {
     pub displace: Sdf,
 }
 
-impl<SdfB, Dim> SignedDistanceOperator<Dim> for DisplaceOp<SdfB>
+impl<SdfB, Dim> SignedDistanceOperator<Dim, Distance> for DisplaceOp<SdfB>
 where
-    SdfB: SignedDistanceField<Dim, f32>,
+    SdfB: SignedDistanceField<Dim, Distance>,
 {
-    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> Distance
     where
-        SdfA: SignedDistanceField<Dim, f32>,
+        SdfA: SignedDistanceField<Dim, Distance>,
         Dim: Clone,
     {
-        sdf.evaluate(p.clone()) + self.displace.evaluate(p)
+        (*sdf.evaluate(p.clone()))
+            .add(*self.displace.evaluate(p))
+            .into()
     }
 }
 
@@ -32,8 +34,7 @@ pub type Displace<SdfA, SdfB> = Operator<SdfA, DisplaceOp<SdfB>>;
 pub type Displace_Displace = (crate::operators::Operator_Op, DisplaceOp_Displace);
 
 impl<SdfA, SdfB> Displace<SdfA, SdfB> {
-    pub const DISPLACE: Displace_Displace =
-        (Operator::<(), (),>::OP, DisplaceOp::<()>::DISPLACE);
+    pub const DISPLACE: Displace_Displace = (Operator::<(), ()>::OP, DisplaceOp::<()>::DISPLACE);
 }
 
 #[cfg(test)]
@@ -46,7 +47,6 @@ pub mod tests {
 
     #[test]
     fn test_displace() {
-        Displace::<Cube, Sphere>::default()
-            .with(Displace::<(), ()>::DISPLACE, Sphere::default());
+        Displace::<Cube, Sphere>::default().with(Displace::<(), ()>::DISPLACE, Sphere::default());
     }
 }

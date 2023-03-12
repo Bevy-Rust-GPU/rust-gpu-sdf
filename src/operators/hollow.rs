@@ -3,29 +3,27 @@
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, SignedDistanceField, Operator, SignedDistanceOperator};
 
 /// Convert a solid shape into a hollow one with an infinitely thin surface.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
 pub struct HollowOp;
 
-impl SignedDistanceOperator<Vec2> for HollowOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
+impl SignedDistanceOperator<Vec2, Distance> for HollowOp {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
     where
-        Sdf: SignedDistanceField<Vec2, f32>,
+        Sdf: SignedDistanceField<Vec2, Distance>,
     {
-        sdf.evaluate(p).abs()
+        sdf.evaluate(p).abs().into()
     }
 }
 
-impl SignedDistanceOperator<Vec3> for HollowOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
+impl SignedDistanceOperator<Vec3, Distance> for HollowOp {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
     where
-        Sdf: SignedDistanceField<Vec3, f32>,
+        Sdf: SignedDistanceField<Vec3, Distance>,
     {
-        sdf.evaluate(p).abs()
+        sdf.evaluate(p).abs().into()
     }
 }
 

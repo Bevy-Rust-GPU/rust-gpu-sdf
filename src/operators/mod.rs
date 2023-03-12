@@ -22,18 +22,18 @@ pub mod union;
 use crate::signed_distance_field::SignedDistanceField;
 
 /// Modifies the input / output of a [`SignedDistanceField`].
-pub trait SignedDistanceOperator<Dim> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
+pub trait SignedDistanceOperator<In, Out> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: In) -> Out
     where
-        Sdf: SignedDistanceField<Dim, f32>,
-        Dim: Clone;
+        Sdf: SignedDistanceField<In, Out>,
+        In: Clone;
 }
 
-impl<Dim> SignedDistanceOperator<Dim> for () {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
+impl<In, Out> SignedDistanceOperator<In, Out> for () {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: In) -> Out
     where
-        Sdf: SignedDistanceField<Dim, f32>,
-        Dim: Clone,
+        Sdf: SignedDistanceField<In, Out>,
+        In: Clone,
     {
         sdf.evaluate(p)
     }
@@ -46,13 +46,13 @@ pub struct Operator<Sdf, Op> {
     pub op: Op,
 }
 
-impl<Sdf, Op, Dim> SignedDistanceField<Dim, f32> for Operator<Sdf, Op>
+impl<Sdf, Op, Dim, Out> SignedDistanceField<Dim, Out> for Operator<Sdf, Op>
 where
-    Sdf: SignedDistanceField<Dim, f32>,
-    Op: SignedDistanceOperator<Dim>,
+    Sdf: SignedDistanceField<Dim, Out>,
+    Op: SignedDistanceOperator<Dim, Out>,
     Dim: Clone,
 {
-    fn evaluate(&self, p: Dim) -> f32 {
+    fn evaluate(&self, p: Dim) -> Out {
         self.op.operator(&self.target, p)
     }
 }

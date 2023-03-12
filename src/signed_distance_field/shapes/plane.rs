@@ -2,7 +2,7 @@
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
+use crate::signed_distance_field::{Distance, SignedDistanceField};
 
 /// A plane.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -22,17 +22,17 @@ impl Default for Plane<Vec3> {
     }
 }
 
-impl SignedDistanceField<Vec2, f32> for Plane<Vec2> {
-    fn evaluate(&self, p: Vec2) -> f32 {
+impl SignedDistanceField<Vec2, Distance> for Plane<Vec2> {
+    fn evaluate(&self, p: Vec2) -> Distance {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
-        p.dot(-self.dir)
+        p.dot(-self.dir).into()
     }
 }
 
-impl SignedDistanceField<Vec3, f32> for Plane<Vec3> {
-    fn evaluate(&self, p: Vec3) -> f32 {
+impl SignedDistanceField<Vec3, Distance> for Plane<Vec3> {
+    fn evaluate(&self, p: Vec3) -> Distance {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
-        p.dot(-self.dir)
+        p.dot(-self.dir).into()
     }
 }
 

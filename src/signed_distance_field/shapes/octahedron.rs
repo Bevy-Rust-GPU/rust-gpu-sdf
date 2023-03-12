@@ -3,7 +3,7 @@
 use rust_gpu_bridge::prelude::Vec3;
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
+use crate::signed_distance_field::{Distance, SignedDistanceField};
 
 /// An octahedron.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -17,8 +17,8 @@ impl Default for Octahedron {
     }
 }
 
-impl SignedDistanceField<Vec3, f32> for Octahedron {
-    fn evaluate(&self, p: Vec3) -> f32 {
+impl SignedDistanceField<Vec3, Distance> for Octahedron {
+    fn evaluate(&self, p: Vec3) -> Distance {
         let p = p.abs();
         let m = p.x + p.y + p.z - self.size;
         let q = if 3.0 * p.x < m {
@@ -28,11 +28,11 @@ impl SignedDistanceField<Vec3, f32> for Octahedron {
         } else if 3.0 * p.z < m {
             Vec3::new(p.z, p.x, p.y)
         } else {
-            return m * 0.57735027;
+            return (m * 0.57735027).into();
         };
 
         let k = (0.5 * (q.z - q.y + self.size)).clamp(0.0, self.size);
-        Vec3::new(q.x, q.y - self.size + k, q.z - k).length()
+        Vec3::new(q.x, q.y - self.size + k, q.z - k).length().into()
     }
 }
 

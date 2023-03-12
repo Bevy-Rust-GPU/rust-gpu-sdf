@@ -2,9 +2,7 @@
 use rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Rotate a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
@@ -12,10 +10,10 @@ pub struct Rotate2dOp {
     pub angle: f32,
 }
 
-impl SignedDistanceOperator<Vec2> for Rotate2dOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
+impl SignedDistanceOperator<Vec2, Distance> for Rotate2dOp {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
     where
-        Sdf: SignedDistanceField<Vec2, f32>,
+        Sdf: SignedDistanceField<Vec2, Distance>,
     {
         sdf.evaluate(Vec2::from_angle(-self.angle).rotate(p))
     }
@@ -37,10 +35,10 @@ pub struct Rotate3dOp {
     pub rotation: Quat,
 }
 
-impl SignedDistanceOperator<Vec3> for Rotate3dOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
+impl SignedDistanceOperator<Vec3, Distance> for Rotate3dOp {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
     where
-        Sdf: SignedDistanceField<Vec3, f32>,
+        Sdf: SignedDistanceField<Vec3, Distance>,
     {
         sdf.evaluate(self.rotation.inverse() * p)
     }

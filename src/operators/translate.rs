@@ -4,9 +4,7 @@ use core::ops::Sub;
 
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Apply a positional translation to a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -14,13 +12,13 @@ pub struct TranslateOp<Dim> {
     pub translation: Dim,
 }
 
-impl<Dim> SignedDistanceOperator<Dim> for TranslateOp<Dim>
+impl<Dim> SignedDistanceOperator<Dim, Distance> for TranslateOp<Dim>
 where
     Dim: Clone + Sub<Dim, Output = Dim>,
 {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> Distance
     where
-        Sdf: SignedDistanceField<Dim, f32>,
+        Sdf: SignedDistanceField<Dim, Distance>,
     {
         sdf.evaluate(p - self.translation.clone())
     }

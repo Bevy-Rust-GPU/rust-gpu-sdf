@@ -1,12 +1,10 @@
 //! Uniformly scale a distance field.
 
-use core::ops::Div;
+use core::ops::{Div, Mul};
 
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Uniformly scale a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -14,15 +12,15 @@ pub struct ScaleOp {
     pub scale: f32,
 }
 
-impl<Dim> SignedDistanceOperator<Dim> for ScaleOp
+impl<Dim> SignedDistanceOperator<Dim, Distance> for ScaleOp
 where
     Dim: Div<f32, Output = Dim>,
 {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> f32
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> Distance
     where
-        Sdf: SignedDistanceField<Dim, f32>,
+        Sdf: SignedDistanceField<Dim, Distance>,
     {
-        sdf.evaluate(p / self.scale) * self.scale
+        sdf.evaluate(p / self.scale).mul(self.scale).into()
     }
 }
 

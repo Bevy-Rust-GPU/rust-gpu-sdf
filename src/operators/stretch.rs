@@ -3,9 +3,7 @@
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Extrude a shape infinitely along an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -25,10 +23,10 @@ impl Default for StretchInfiniteOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<Vec2> for StretchInfiniteOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
+impl SignedDistanceOperator<Vec2, Distance> for StretchInfiniteOp<Vec2> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
     where
-        Sdf: SignedDistanceField<Vec2, f32>,
+        Sdf: SignedDistanceField<Vec2, Distance>,
     {
         assert!(
             self.dir.is_normalized(),
@@ -39,10 +37,10 @@ impl SignedDistanceOperator<Vec2> for StretchInfiniteOp<Vec2> {
     }
 }
 
-impl SignedDistanceOperator<Vec3> for StretchInfiniteOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
+impl SignedDistanceOperator<Vec3, Distance> for StretchInfiniteOp<Vec3> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
     where
-        Sdf: SignedDistanceField<Vec3, f32>,
+        Sdf: SignedDistanceField<Vec3, Distance>,
     {
         assert!(
             self.dir.is_normalized(),
@@ -88,10 +86,10 @@ impl Default for StretchDistOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<Vec2> for StretchDistOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> f32
+impl SignedDistanceOperator<Vec2, Distance> for StretchDistOp<Vec2> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
     where
-        Sdf: SignedDistanceField<Vec2, f32>,
+        Sdf: SignedDistanceField<Vec2, Distance>,
     {
         assert!(
             self.dir.is_normalized(),
@@ -102,10 +100,10 @@ impl SignedDistanceOperator<Vec2> for StretchDistOp<Vec2> {
     }
 }
 
-impl SignedDistanceOperator<Vec3> for StretchDistOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> f32
+impl SignedDistanceOperator<Vec3, Distance> for StretchDistOp<Vec3> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
     where
-        Sdf: SignedDistanceField<Vec3, f32>,
+        Sdf: SignedDistanceField<Vec3, Distance>,
     {
         assert!(
             self.dir.is_normalized(),

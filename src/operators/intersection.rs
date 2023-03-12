@@ -3,9 +3,7 @@
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::SignedDistanceField;
-
-use super::{Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Compute the boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -13,27 +11,27 @@ pub struct IntersectionOp<Sdf> {
     pub sdf: Sdf,
 }
 
-impl<SdfB> SignedDistanceOperator<Vec2> for IntersectionOp<SdfB>
+impl<SdfB> SignedDistanceOperator<Vec2, Distance> for IntersectionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Vec2, f32>,
+    SdfB: SignedDistanceField<Vec2, Distance>,
 {
-    fn operator<SdfA>(&self, sdf: &SdfA, p: Vec2) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Vec2) -> Distance
     where
-        SdfA: SignedDistanceField<Vec2, f32>,
+        SdfA: SignedDistanceField<Vec2, Distance>,
     {
-        sdf.evaluate(p).max(self.sdf.evaluate(p))
+        sdf.evaluate(p).max(*self.sdf.evaluate(p)).into()
     }
 }
 
-impl<SdfB> SignedDistanceOperator<Vec3> for IntersectionOp<SdfB>
+impl<SdfB> SignedDistanceOperator<Vec3, Distance> for IntersectionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Vec3, f32>,
+    SdfB: SignedDistanceField<Vec3, Distance>,
 {
-    fn operator<SdfA>(&self, sdf: &SdfA, p: Vec3) -> f32
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Vec3) -> Distance
     where
-        SdfA: SignedDistanceField<Vec3, f32>,
+        SdfA: SignedDistanceField<Vec3, Distance>,
     {
-        sdf.evaluate(p).max(self.sdf.evaluate(p))
+        sdf.evaluate(p).max(*self.sdf.evaluate(p)).into()
     }
 }
 
