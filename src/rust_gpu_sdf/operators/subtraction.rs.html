@@ -51,16 +51,13 @@
 <a href="#51" id="51">51</a>
 <a href="#52" id="52">52</a>
 <a href="#53" id="53">53</a>
-<a href="#54" id="54">54</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Compute the boolean subtraction of two distance fields.
 
 </span><span class="kw">use </span>core::ops::Neg;
 
 <span class="kw">use </span>type_fields::Field;
 
-<span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
-
-<span class="kw">use super</span>::{Operator, SignedDistanceOperator};
+<span class="kw">use </span><span class="kw">crate</span>::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 <span class="doccomment">/// Compute the boolean subtraction of two distance fields.
 </span><span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -68,18 +65,19 @@
     <span class="kw">pub </span>sdf: Sdf,
 }
 
-<span class="kw">impl</span>&lt;SdfB, Dim&gt; SignedDistanceOperator&lt;Dim&gt; <span class="kw">for </span>SubtractionOp&lt;SdfB&gt;
+<span class="kw">impl</span>&lt;SdfB, Dim&gt; SignedDistanceOperator&lt;Dim, Distance&gt; <span class="kw">for </span>SubtractionOp&lt;SdfB&gt;
 <span class="kw">where
-    </span>SdfB: SignedDistanceField&lt;Dim, f32&gt;,
+    </span>SdfB: SignedDistanceField&lt;Dim, Distance&gt;,
     Dim: Clone,
 {
-    <span class="kw">fn </span>operator&lt;SdfA&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>SdfA, p: Dim) -&gt; f32
+    <span class="kw">fn </span>operator&lt;SdfA&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>SdfA, p: Dim) -&gt; Distance
     <span class="kw">where
-        </span>SdfA: SignedDistanceField&lt;Dim, f32&gt;,
+        </span>SdfA: SignedDistanceField&lt;Dim, Distance&gt;,
     {
         sdf.evaluate(p.clone())
             .neg()
-            .max(<span class="self">self</span>.sdf.evaluate(p.clone()))
+            .max(<span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(p.clone()))
+            .into()
     }
 }
 

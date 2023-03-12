@@ -49,17 +49,13 @@
 <a href="#49" id="49">49</a>
 <a href="#50" id="50">50</a>
 <a href="#51" id="51">51</a>
-<a href="#52" id="52">52</a>
-<a href="#53" id="53">53</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Apply a positional translation to a distance field.
 
 </span><span class="kw">use </span>core::ops::Sub;
 
 <span class="kw">use </span>type_fields::Field;
 
-<span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
-
-<span class="kw">use super</span>::{Operator, SignedDistanceOperator};
+<span class="kw">use </span><span class="kw">crate</span>::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 <span class="doccomment">/// Apply a positional translation to a distance field.
 </span><span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -67,13 +63,13 @@
     <span class="kw">pub </span>translation: Dim,
 }
 
-<span class="kw">impl</span>&lt;Dim&gt; SignedDistanceOperator&lt;Dim&gt; <span class="kw">for </span>TranslateOp&lt;Dim&gt;
+<span class="kw">impl</span>&lt;Dim&gt; SignedDistanceOperator&lt;Dim, Distance&gt; <span class="kw">for </span>TranslateOp&lt;Dim&gt;
 <span class="kw">where
     </span>Dim: Clone + Sub&lt;Dim, Output = Dim&gt;,
 {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Dim) -&gt; f32
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Dim) -&gt; Distance
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Dim, f32&gt;,
+        </span>Sdf: SignedDistanceField&lt;Dim, Distance&gt;,
     {
         sdf.evaluate(p - <span class="self">self</span>.translation.clone())
     }

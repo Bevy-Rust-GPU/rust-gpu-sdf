@@ -19,25 +19,29 @@
 <a href="#19" id="19">19</a>
 <a href="#20" id="20">20</a>
 <a href="#21" id="21">21</a>
+<a href="#22" id="22">22</a>
+<a href="#23" id="23">23</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Taxicab distance metric.
 
-</span><span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
+</span><span class="kw">use </span>core::ops::Add;
 
-<span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
+<span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
+
+<span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::{Distance, SignedDistanceField};
 
 <span class="doccomment">/// Taxicab distance metric.
 </span><span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 </span><span class="kw">pub struct </span>TaxicabMetric;
 
-<span class="kw">impl </span>SignedDistanceField&lt;Vec2, f32&gt; <span class="kw">for </span>TaxicabMetric {
-    <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Vec2) -&gt; f32 {
-        p.x.abs() + p.y.abs()
+<span class="kw">impl </span>SignedDistanceField&lt;Vec2, Distance&gt; <span class="kw">for </span>TaxicabMetric {
+    <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Vec2) -&gt; Distance {
+        p.x.abs().add(p.y.abs()).into()
     }
 }
 
-<span class="kw">impl </span>SignedDistanceField&lt;Vec3, f32&gt; <span class="kw">for </span>TaxicabMetric {
-    <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Vec3) -&gt; f32 {
-        p.x.abs() + p.y.abs() + p.z.abs()
+<span class="kw">impl </span>SignedDistanceField&lt;Vec3, Distance&gt; <span class="kw">for </span>TaxicabMetric {
+    <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Vec3) -&gt; Distance {
+        p.x.abs().add(p.y.abs()).add(p.z.abs()).into()
     }
 }
 </code></pre></div>

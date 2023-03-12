@@ -96,18 +96,18 @@
 <span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
 
 <span class="doccomment">/// Modifies the input / output of a [`SignedDistanceField`].
-</span><span class="kw">pub trait </span>SignedDistanceOperator&lt;Dim&gt; {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Dim) -&gt; f32
+</span><span class="kw">pub trait </span>SignedDistanceOperator&lt;In, Out&gt; {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: In) -&gt; Out
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Dim, f32&gt;,
-        Dim: Clone;
+        </span>Sdf: SignedDistanceField&lt;In, Out&gt;,
+        In: Clone;
 }
 
-<span class="kw">impl</span>&lt;Dim&gt; SignedDistanceOperator&lt;Dim&gt; <span class="kw">for </span>() {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Dim) -&gt; f32
+<span class="kw">impl</span>&lt;In, Out&gt; SignedDistanceOperator&lt;In, Out&gt; <span class="kw">for </span>() {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: In) -&gt; Out
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Dim, f32&gt;,
-        Dim: Clone,
+        </span>Sdf: SignedDistanceField&lt;In, Out&gt;,
+        In: Clone,
     {
         sdf.evaluate(p)
     }
@@ -120,13 +120,13 @@
     <span class="kw">pub </span>op: Op,
 }
 
-<span class="kw">impl</span>&lt;Sdf, Op, Dim&gt; SignedDistanceField&lt;Dim, f32&gt; <span class="kw">for </span>Operator&lt;Sdf, Op&gt;
+<span class="kw">impl</span>&lt;Sdf, Op, Dim, Out&gt; SignedDistanceField&lt;Dim, Out&gt; <span class="kw">for </span>Operator&lt;Sdf, Op&gt;
 <span class="kw">where
-    </span>Sdf: SignedDistanceField&lt;Dim, f32&gt;,
-    Op: SignedDistanceOperator&lt;Dim&gt;,
+    </span>Sdf: SignedDistanceField&lt;Dim, Out&gt;,
+    Op: SignedDistanceOperator&lt;Dim, Out&gt;,
     Dim: Clone,
 {
-    <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Dim) -&gt; f32 {
+    <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Dim) -&gt; Out {
         <span class="self">self</span>.op.operator(<span class="kw-2">&amp;</span><span class="self">self</span>.target, p)
     }
 }

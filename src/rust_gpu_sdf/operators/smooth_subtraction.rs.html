@@ -60,12 +60,12 @@
 <a href="#60" id="60">60</a>
 <a href="#61" id="61">61</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Compute the blended boolean subtraction of two distance fields.
-</span><span class="kw">use </span>rust_gpu_bridge::mix::Mix;
+</span><span class="kw">use </span>core::ops::{Add, Mul};
+
+<span class="kw">use </span>rust_gpu_bridge::mix::Mix;
 <span class="kw">use </span>type_fields::Field;
 
-<span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
-
-<span class="kw">use super</span>::{Operator, SignedDistanceOperator};
+<span class="kw">use </span><span class="kw">crate</span>::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 <span class="doccomment">/// Compute the blended boolean subtraction of two distance fields.
 </span><span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -74,19 +74,19 @@
     <span class="kw">pub </span>k: f32,
 }
 
-<span class="kw">impl</span>&lt;SdfB, Dim&gt; SignedDistanceOperator&lt;Dim&gt; <span class="kw">for </span>SmoothSubtractionOp&lt;SdfB&gt;
+<span class="kw">impl</span>&lt;SdfB, Dim&gt; SignedDistanceOperator&lt;Dim, Distance&gt; <span class="kw">for </span>SmoothSubtractionOp&lt;SdfB&gt;
 <span class="kw">where
-    </span>SdfB: SignedDistanceField&lt;Dim, f32&gt;,
+    </span>SdfB: SignedDistanceField&lt;Dim, Distance&gt;,
     Dim: Clone,
 {
-    <span class="kw">fn </span>operator&lt;SdfA&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>SdfA, p: Dim) -&gt; f32
+    <span class="kw">fn </span>operator&lt;SdfA&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>SdfA, p: Dim) -&gt; Distance
     <span class="kw">where
-        </span>SdfA: SignedDistanceField&lt;Dim, f32&gt;,
+        </span>SdfA: SignedDistanceField&lt;Dim, Distance&gt;,
     {
-        <span class="kw">let </span>d1 = sdf.evaluate(p.clone());
-        <span class="kw">let </span>d2 = <span class="self">self</span>.sdf.evaluate(p.clone());
+        <span class="kw">let </span>d1 = <span class="kw-2">*</span>sdf.evaluate(p.clone());
+        <span class="kw">let </span>d2 = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(p.clone());
         <span class="kw">let </span>h = (<span class="number">0.5 </span>- <span class="number">0.5 </span>* (d2 + d1) / <span class="self">self</span>.k).clamp(<span class="number">0.0</span>, <span class="number">1.0</span>);
-        d2.mix(-d1, h) + <span class="self">self</span>.k * h * (<span class="number">1.0 </span>- h)
+        d2.mix(-d1, h).add(<span class="self">self</span>.k.mul(h).mul(<span class="number">1.0 </span>- h)).into()
     }
 }
 

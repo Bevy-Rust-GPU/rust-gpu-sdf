@@ -29,36 +29,32 @@
 <a href="#29" id="29">29</a>
 <a href="#30" id="30">30</a>
 <a href="#31" id="31">31</a>
-<a href="#32" id="32">32</a>
-<a href="#33" id="33">33</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Convert a solid shape into a hollow one with an infinitely thin surface.
 
 </span><span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
 <span class="kw">use </span>type_fields::Field;
 
-<span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
-
-<span class="kw">use super</span>::{Operator, SignedDistanceOperator};
+<span class="kw">use </span><span class="kw">crate</span>::prelude::{Distance, SignedDistanceField, Operator, SignedDistanceOperator};
 
 <span class="doccomment">/// Convert a solid shape into a hollow one with an infinitely thin surface.
 </span><span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
 </span><span class="kw">pub struct </span>HollowOp;
 
-<span class="kw">impl </span>SignedDistanceOperator&lt;Vec2&gt; <span class="kw">for </span>HollowOp {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec2) -&gt; f32
+<span class="kw">impl </span>SignedDistanceOperator&lt;Vec2, Distance&gt; <span class="kw">for </span>HollowOp {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec2) -&gt; Distance
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Vec2, f32&gt;,
+        </span>Sdf: SignedDistanceField&lt;Vec2, Distance&gt;,
     {
-        sdf.evaluate(p).abs()
+        sdf.evaluate(p).abs().into()
     }
 }
 
-<span class="kw">impl </span>SignedDistanceOperator&lt;Vec3&gt; <span class="kw">for </span>HollowOp {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec3) -&gt; f32
+<span class="kw">impl </span>SignedDistanceOperator&lt;Vec3, Distance&gt; <span class="kw">for </span>HollowOp {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec3) -&gt; Distance
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Vec3, f32&gt;,
+        </span>Sdf: SignedDistanceField&lt;Vec3, Distance&gt;,
     {
-        sdf.evaluate(p).abs()
+        sdf.evaluate(p).abs().into()
     }
 }
 

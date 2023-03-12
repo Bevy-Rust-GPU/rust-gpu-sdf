@@ -95,7 +95,7 @@
 </span><span class="kw">use </span>rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
 <span class="kw">use </span>type_fields::Field;
 
-<span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
+<span class="kw">use </span><span class="kw">crate</span>::prelude::{Distance, SignedDistanceField};
 
 <span class="kw">use super</span>::{Operator, SignedDistanceOperator};
 
@@ -127,23 +127,23 @@
     }
 }
 
-<span class="kw">impl </span>SignedDistanceOperator&lt;Vec2&gt; <span class="kw">for </span>TwistOp&lt;Vec2&gt; {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec2) -&gt; f32
+<span class="kw">impl </span>SignedDistanceOperator&lt;Vec2, Distance&gt; <span class="kw">for </span>TwistOp&lt;Vec2&gt; {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec2) -&gt; Distance
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Vec2, f32&gt;,
+        </span>Sdf: SignedDistanceField&lt;Vec2, Distance&gt;,
     {
         <span class="kw">let </span>q = Vec2::from_angle(<span class="self">self</span>.k * <span class="self">self</span>.axis_pos.dot(p)).rotate(p);
-        <span class="kw">return </span>sdf.evaluate(q);
+        sdf.evaluate(q)
     }
 }
 
-<span class="kw">impl </span>SignedDistanceOperator&lt;Vec3&gt; <span class="kw">for </span>TwistOp&lt;Vec3&gt; {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec3) -&gt; f32
+<span class="kw">impl </span>SignedDistanceOperator&lt;Vec3, Distance&gt; <span class="kw">for </span>TwistOp&lt;Vec3&gt; {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec3) -&gt; Distance
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Vec3, f32&gt;,
+        </span>Sdf: SignedDistanceField&lt;Vec3, Distance&gt;,
     {
         <span class="kw">let </span>q = Quat::from_axis_angle(<span class="self">self</span>.axis_rot, <span class="self">self</span>.k * <span class="self">self</span>.axis_pos.dot(p)) * p;
-        <span class="kw">return </span>sdf.evaluate(q);
+        sdf.evaluate(q)
     }
 }
 

@@ -52,11 +52,11 @@
 <a href="#52" id="52">52</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Displace the output of a distance field using the output of another distance field.
 
-</span><span class="kw">use </span>type_fields::Field;
+</span><span class="kw">use </span>core::ops::Add;
 
-<span class="kw">use </span><span class="kw">crate</span>::operators::SignedDistanceField;
+<span class="kw">use </span>type_fields::Field;
 
-<span class="kw">use super</span>::{Operator, SignedDistanceOperator};
+<span class="kw">use </span><span class="kw">crate</span>::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 <span class="doccomment">/// Displace the output of a distance field using the output of another distance field.
 </span><span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -64,16 +64,18 @@
     <span class="kw">pub </span>displace: Sdf,
 }
 
-<span class="kw">impl</span>&lt;SdfB, Dim&gt; SignedDistanceOperator&lt;Dim&gt; <span class="kw">for </span>DisplaceOp&lt;SdfB&gt;
+<span class="kw">impl</span>&lt;SdfB, Dim&gt; SignedDistanceOperator&lt;Dim, Distance&gt; <span class="kw">for </span>DisplaceOp&lt;SdfB&gt;
 <span class="kw">where
-    </span>SdfB: SignedDistanceField&lt;Dim, f32&gt;,
+    </span>SdfB: SignedDistanceField&lt;Dim, Distance&gt;,
 {
-    <span class="kw">fn </span>operator&lt;SdfA&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>SdfA, p: Dim) -&gt; f32
+    <span class="kw">fn </span>operator&lt;SdfA&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>SdfA, p: Dim) -&gt; Distance
     <span class="kw">where
-        </span>SdfA: SignedDistanceField&lt;Dim, f32&gt;,
+        </span>SdfA: SignedDistanceField&lt;Dim, Distance&gt;,
         Dim: Clone,
     {
-        sdf.evaluate(p.clone()) + <span class="self">self</span>.displace.evaluate(p)
+        (<span class="kw-2">*</span>sdf.evaluate(p.clone()))
+            .add(<span class="kw-2">*</span><span class="self">self</span>.displace.evaluate(p))
+            .into()
     }
 }
 
@@ -84,8 +86,7 @@
 </span><span class="kw">pub type </span>Displace_Displace = (<span class="kw">crate</span>::operators::Operator_Op, DisplaceOp_Displace);
 
 <span class="kw">impl</span>&lt;SdfA, SdfB&gt; Displace&lt;SdfA, SdfB&gt; {
-    <span class="kw">pub const </span>DISPLACE: Displace_Displace =
-        (Operator::&lt;(), (),&gt;::OP, DisplaceOp::&lt;()&gt;::DISPLACE);
+    <span class="kw">pub const </span>DISPLACE: Displace_Displace = (Operator::&lt;(), ()&gt;::OP, DisplaceOp::&lt;()&gt;::DISPLACE);
 }
 
 <span class="attr">#[cfg(test)]
@@ -98,8 +99,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_displace() {
-        Displace::&lt;Cube, Sphere&gt;::default()
-            .with(Displace::&lt;(), ()&gt;::DISPLACE, Sphere::default());
+        Displace::&lt;Cube, Sphere&gt;::default().with(Displace::&lt;(), ()&gt;::DISPLACE, Sphere::default());
     }
 }
 </code></pre></div>
