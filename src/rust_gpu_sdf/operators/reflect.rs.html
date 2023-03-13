@@ -81,10 +81,6 @@
 <a href="#81" id="81">81</a>
 <a href="#82" id="82">82</a>
 <a href="#83" id="83">83</a>
-<a href="#84" id="84">84</a>
-<a href="#85" id="85">85</a>
-<a href="#86" id="86">86</a>
-<a href="#87" id="87">87</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Reflect a distance field about an arbitrary axis.
 
 </span><span class="kw">use </span>rust_gpu_bridge::{
@@ -122,11 +118,9 @@
             <span class="self">self</span>.axis.is_normalized(),
             <span class="string">&quot;ReflectOp axis must be normalized&quot;
         </span>);
-        <span class="kw">let </span>q = <span class="kw">if </span>p.dot(<span class="self">self</span>.axis) &gt;= <span class="number">0.0 </span>{
-            p
-        } <span class="kw">else </span>{
-            p.reflect(<span class="self">self</span>.axis)
-        };
+
+        <span class="kw">let </span>q = p - <span class="number">2.0 </span>* p.dot(<span class="self">self</span>.axis).min(<span class="number">0.0</span>) * <span class="self">self</span>.axis;
+
         sdf.evaluate(q)
     }
 }
@@ -140,11 +134,9 @@
             <span class="self">self</span>.axis.is_normalized(),
             <span class="string">&quot;ReflectOp axis must be normalized&quot;
         </span>);
-        <span class="kw">let </span>q = <span class="kw">if </span>p.dot(<span class="self">self</span>.axis) &gt;= <span class="number">0.0 </span>{
-            p
-        } <span class="kw">else </span>{
-            p.reflect(<span class="self">self</span>.axis)
-        };
+
+        <span class="kw">let </span>q = p - <span class="number">2.0 </span>* p.dot(<span class="self">self</span>.axis).min(<span class="number">0.0</span>) * <span class="self">self</span>.axis;
+
         sdf.evaluate(q)
     }
 }

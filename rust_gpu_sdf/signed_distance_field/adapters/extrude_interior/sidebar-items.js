@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["ExtrudeInterior","Extrude a 2D distance field into 3D, using its interior distance to determine depth. NOTE: The present implementation is a bound, not a field"]]};

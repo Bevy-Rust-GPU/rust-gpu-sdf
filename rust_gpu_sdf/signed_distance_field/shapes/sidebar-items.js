@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["composite","Shapes composed from other shapes."],["octahedron","An octahedron."],["plane","A plane."]]};
+window.SIDEBAR_ITEMS = {"mod":[["composite","Shapes composed from other shapes."],["ngon",""],["octahedron","An octahedron."],["plane","A plane."]]};
