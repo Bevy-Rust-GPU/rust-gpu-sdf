@@ -35,11 +35,9 @@ impl SignedDistanceOperator<Vec2, Distance> for ReflectOp<Vec2> {
             self.axis.is_normalized(),
             "ReflectOp axis must be normalized"
         );
-        let q = if p.dot(self.axis) >= 0.0 {
-            p
-        } else {
-            p.reflect(self.axis)
-        };
+
+        let q = p - 2.0 * p.dot(self.axis).min(0.0) * self.axis;
+
         sdf.evaluate(q)
     }
 }
@@ -53,11 +51,9 @@ impl SignedDistanceOperator<Vec3, Distance> for ReflectOp<Vec3> {
             self.axis.is_normalized(),
             "ReflectOp axis must be normalized"
         );
-        let q = if p.dot(self.axis) >= 0.0 {
-            p
-        } else {
-            p.reflect(self.axis)
-        };
+
+        let q = p - 2.0 * p.dot(self.axis).min(0.0) * self.axis;
+
         sdf.evaluate(q)
     }
 }
