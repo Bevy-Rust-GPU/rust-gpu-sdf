@@ -1,5 +1,6 @@
 //! Types that modify a distance field.
 
+pub mod axial_reflect;
 pub mod composite;
 pub mod displace;
 pub mod elongate;
@@ -18,6 +19,7 @@ pub mod subtraction;
 pub mod translate;
 pub mod twist;
 pub mod union;
+pub mod sided;
 
 use crate::signed_distance_field::SignedDistanceField;
 
