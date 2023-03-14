@@ -251,17 +251,6 @@
 <a href="#251" id="251">251</a>
 <a href="#252" id="252">252</a>
 <a href="#253" id="253">253</a>
-<a href="#254" id="254">254</a>
-<a href="#255" id="255">255</a>
-<a href="#256" id="256">256</a>
-<a href="#257" id="257">257</a>
-<a href="#258" id="258">258</a>
-<a href="#259" id="259">259</a>
-<a href="#260" id="260">260</a>
-<a href="#261" id="261">261</a>
-<a href="#262" id="262">262</a>
-<a href="#263" id="263">263</a>
-<a href="#264" id="264">264</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Attributes that can be computed by a distance field
 
 </span><span class="kw">pub mod </span>distance {
@@ -356,38 +345,33 @@
         ops::{Deref, DerefMut},
     };
 
-    <span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
-
     <span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq)]
-    </span><span class="kw">pub struct </span>Normal(<span class="kw">pub </span>Vec3);
+    </span><span class="kw">pub struct </span>Normal&lt;Dim&gt;(<span class="kw">pub </span>Dim);
 
-    <span class="kw">impl </span>Deref <span class="kw">for </span>Normal {
-        <span class="kw">type </span>Target = Vec3;
+    <span class="kw">impl</span>&lt;Dim&gt; Deref <span class="kw">for </span>Normal&lt;Dim&gt; {
+        <span class="kw">type </span>Target = Dim;
 
         <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
         </span>}
     }
 
-    <span class="kw">impl </span>DerefMut <span class="kw">for </span>Normal {
+    <span class="kw">impl</span>&lt;Dim&gt; DerefMut <span class="kw">for </span>Normal&lt;Dim&gt; {
         <span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
             <span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0
         </span>}
     }
 
-    <span class="kw">impl </span>From&lt;Vec3&gt; <span class="kw">for </span>Normal {
-        <span class="kw">fn </span>from(value: Vec3) -&gt; <span class="self">Self </span>{
+    <span class="kw">impl</span>&lt;Dim&gt; From&lt;Dim&gt; <span class="kw">for </span>Normal&lt;Dim&gt; {
+        <span class="kw">fn </span>from(value: Dim) -&gt; <span class="self">Self </span>{
             Normal(value)
         }
     }
 
-    <span class="kw">impl </span>From&lt;Normal&gt; <span class="kw">for </span>Vec3 {
-        <span class="kw">fn </span>from(value: Normal) -&gt; <span class="self">Self </span>{
-            value.<span class="number">0
-        </span>}
-    }
-
-    <span class="kw">impl </span>Display <span class="kw">for </span>Normal {
+    <span class="kw">impl</span>&lt;Dim&gt; Display <span class="kw">for </span>Normal&lt;Dim&gt;
+    <span class="kw">where
+        </span>Dim: Display,
+    {
         <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; core::fmt::Result {
             <span class="self">self</span>.<span class="number">0</span>.fmt(f)
         }
@@ -444,38 +428,33 @@
         ops::{Deref, DerefMut},
     };
 
-    <span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
-
     <span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq)]
-    </span><span class="kw">pub struct </span>Tangent(<span class="kw">pub </span>Vec3);
+    </span><span class="kw">pub struct </span>Tangent&lt;Dim&gt;(<span class="kw">pub </span>Dim);
 
-    <span class="kw">impl </span>Deref <span class="kw">for </span>Tangent {
-        <span class="kw">type </span>Target = Vec3;
+    <span class="kw">impl</span>&lt;Dim&gt; Deref <span class="kw">for </span>Tangent&lt;Dim&gt; {
+        <span class="kw">type </span>Target = Dim;
 
         <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
         </span>}
     }
 
-    <span class="kw">impl </span>DerefMut <span class="kw">for </span>Tangent {
+    <span class="kw">impl</span>&lt;Dim&gt; DerefMut <span class="kw">for </span>Tangent&lt;Dim&gt; {
         <span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
             <span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0
         </span>}
     }
 
-    <span class="kw">impl </span>From&lt;Vec3&gt; <span class="kw">for </span>Tangent {
-        <span class="kw">fn </span>from(value: Vec3) -&gt; <span class="self">Self </span>{
+    <span class="kw">impl</span>&lt;Dim&gt; From&lt;Dim&gt; <span class="kw">for </span>Tangent&lt;Dim&gt; {
+        <span class="kw">fn </span>from(value: Dim) -&gt; <span class="self">Self </span>{
             Tangent(value)
         }
     }
 
-    <span class="kw">impl </span>From&lt;Tangent&gt; <span class="kw">for </span>Vec3 {
-        <span class="kw">fn </span>from(value: Tangent) -&gt; <span class="self">Self </span>{
-            value.<span class="number">0
-        </span>}
-    }
-
-    <span class="kw">impl </span>Display <span class="kw">for </span>Tangent {
+    <span class="kw">impl</span>&lt;Dim&gt; Display <span class="kw">for </span>Tangent&lt;Dim&gt;
+    <span class="kw">where
+        </span>Dim: Display,
+    {
         <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; core::fmt::Result {
             <span class="self">self</span>.<span class="number">0</span>.fmt(f)
         }
@@ -525,6 +504,5 @@
         }
     }
 }
-
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rust_gpu_sdf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.1 (d5a82bbd2 2023-02-07)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>

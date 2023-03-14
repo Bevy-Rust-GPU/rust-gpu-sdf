@@ -72,6 +72,22 @@
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
 <a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
+<a href="#80" id="80">80</a>
+<a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Extrude a shape along its axes, preserving exterior geometry.
 
 </span><span class="kw">use </span>core::ops::Add;
@@ -87,6 +103,12 @@
     <span class="kw">pub </span>extent: Dim,
 }
 
+<span class="kw">impl </span>Default <span class="kw">for </span>ElongateOp&lt;f32&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        ElongateOp { extent: <span class="number">1.0 </span>}
+    }
+}
+
 <span class="kw">impl </span>Default <span class="kw">for </span>ElongateOp&lt;Vec2&gt; {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         ElongateOp { extent: Vec2::ONE }
@@ -96,6 +118,16 @@
 <span class="kw">impl </span>Default <span class="kw">for </span>ElongateOp&lt;Vec3&gt; {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         ElongateOp { extent: Vec3::ONE }
+    }
+}
+
+<span class="kw">impl </span>SignedDistanceOperator&lt;f32, Distance&gt; <span class="kw">for </span>ElongateOp&lt;f32&gt; {
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: f32) -&gt; Distance
+    <span class="kw">where
+        </span>Sdf: SignedDistanceField&lt;f32, Distance&gt;,
+    {
+        <span class="kw">let </span>q = p.abs() - <span class="self">self</span>.extent;
+        sdf.evaluate(q.max(<span class="number">0.0</span>)).add(q.min(<span class="number">0.0</span>)).into()
     }
 }
 

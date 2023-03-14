@@ -135,9 +135,19 @@
 <a href="#135" id="135">135</a>
 <a href="#136" id="136">136</a>
 <a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Operators for repeating distance fields across a domain.
 
-</span><span class="kw">use </span>rust_gpu_bridge::{
+</span><span class="kw">use </span>core::ops::{Add, Mul, Sub};
+
+<span class="kw">use </span>rust_gpu_bridge::{
     modulo::Mod,
     prelude::{Vec2, Vec3},
 };
@@ -149,6 +159,12 @@
 </span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Field)]
 </span><span class="kw">pub struct </span>RepeatInfiniteOp&lt;Dim&gt; {
     <span class="kw">pub </span>period: Dim,
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>RepeatInfiniteOp&lt;f32&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        RepeatInfiniteOp { period: <span class="number">1.0 </span>}
+    }
 }
 
 <span class="kw">impl </span>Default <span class="kw">for </span>RepeatInfiniteOp&lt;Vec2&gt; {
@@ -163,22 +179,23 @@
     }
 }
 
-<span class="kw">impl </span>SignedDistanceOperator&lt;Vec2, Distance&gt; <span class="kw">for </span>RepeatInfiniteOp&lt;Vec2&gt; {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec2) -&gt; Distance
+<span class="kw">impl</span>&lt;Dim&gt; SignedDistanceOperator&lt;Dim, Distance&gt; <span class="kw">for </span>RepeatInfiniteOp&lt;Dim&gt;
+<span class="kw">where
+    </span>Dim: Add&lt;Dim, Output = Dim&gt;
+        + Add&lt;f32, Output = Dim&gt;
+        + Sub&lt;Dim, Output = Dim&gt;
+        + Mul&lt;Dim, Output = Dim&gt;
+        + Mul&lt;f32, Output = Dim&gt;
+        + Mod
+        + Clone,
+{
+    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Dim) -&gt; Distance
     <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Vec2, Distance&gt;,
+        </span>Sdf: SignedDistanceField&lt;Dim, Distance&gt;,
     {
-        <span class="kw">let </span>q = (p + <span class="number">0.5 </span>* <span class="self">self</span>.period).modulo(<span class="self">self</span>.period) - (<span class="number">0.5 </span>* <span class="self">self</span>.period);
-        sdf.evaluate(q)
-    }
-}
-
-<span class="kw">impl </span>SignedDistanceOperator&lt;Vec3, Distance&gt; <span class="kw">for </span>RepeatInfiniteOp&lt;Vec3&gt; {
-    <span class="kw">fn </span>operator&lt;Sdf&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, sdf: <span class="kw-2">&amp;</span>Sdf, p: Vec3) -&gt; Distance
-    <span class="kw">where
-        </span>Sdf: SignedDistanceField&lt;Vec3, Distance&gt;,
-    {
-        <span class="kw">let </span>q = (p + <span class="number">0.5 </span>* <span class="self">self</span>.period).modulo(<span class="self">self</span>.period) - (<span class="number">0.5 </span>* <span class="self">self</span>.period);
+        <span class="kw">let </span>q = (p.add(<span class="number">0.5</span>).mul(<span class="self">self</span>.period.clone()))
+            .modulo(<span class="self">self</span>.period.clone())
+            .sub(<span class="self">self</span>.period.clone().mul(<span class="number">0.5</span>));
         sdf.evaluate(q)
     }
 }
@@ -261,8 +278,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_repeat_infinite() {
-        RepeatInfinite::&lt;Sphere, <span class="kw">_</span>&gt;::default()
-            .with(RepeatInfinite::period, Vec3::default());
+        RepeatInfinite::&lt;Sphere, <span class="kw">_</span>&gt;::default().with(RepeatInfinite::period, Vec3::default());
     }
 
     <span class="attr">#[test]
