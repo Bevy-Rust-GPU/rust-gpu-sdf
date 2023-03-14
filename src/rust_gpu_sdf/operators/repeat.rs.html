@@ -201,9 +201,9 @@
 }
 
 <span class="doccomment">/// Repeat a distance field infinitely in one or more axes.
-</span><span class="kw">pub type </span>RepeatInfinite&lt;Sdf, Dim&gt; = Operator&lt;Sdf, RepeatInfiniteOp&lt;Dim&gt;&gt;;
+</span><span class="kw">pub type </span>RepeatInfinite&lt;Dim, Sdf&gt; = Operator&lt;RepeatInfiniteOp&lt;Dim&gt;, Sdf&gt;;
 
-<span class="kw">impl</span>&lt;Sdf, Dim&gt; RepeatInfinite&lt;Sdf, Dim&gt; {
+<span class="kw">impl</span>&lt;Dim, Sdf&gt; RepeatInfinite&lt;Dim, Sdf&gt; {
     <span class="kw">pub fn </span>period(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.period
     }
@@ -255,9 +255,9 @@
 }
 
 <span class="doccomment">/// Repeat a distance field a set number of times in one or more axes.
-</span><span class="kw">pub type </span>RepeatCount&lt;Sdf, Dim&gt; = Operator&lt;Sdf, RepeatCountOp&lt;Dim&gt;&gt;;
+</span><span class="kw">pub type </span>RepeatCount&lt;Dim, Sdf&gt; = Operator&lt;RepeatCountOp&lt;Dim&gt;, Sdf&gt;;
 
-<span class="kw">impl</span>&lt;Sdf, Dim&gt; RepeatCount&lt;Sdf, Dim&gt; {
+<span class="kw">impl</span>&lt;Dim, Sdf&gt; RepeatCount&lt;Dim, Sdf&gt; {
     <span class="kw">pub fn </span>period(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.period
     }
@@ -278,12 +278,12 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_repeat_infinite() {
-        RepeatInfinite::&lt;Sphere, <span class="kw">_</span>&gt;::default().with(RepeatInfinite::period, Vec3::default());
+        RepeatInfinite::&lt;<span class="kw">_</span>, Sphere&gt;::default().with(RepeatInfinite::period, Vec3::default());
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_repeat_count() {
-        RepeatCount::&lt;Sphere, <span class="kw">_</span>&gt;::default()
+        RepeatCount::&lt;<span class="kw">_</span>, Sphere&gt;::default()
             .with(RepeatCount::period, Vec3::default())
             .with(RepeatCount::count, Vec3::default());
     }

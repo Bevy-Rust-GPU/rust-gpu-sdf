@@ -93,7 +93,7 @@
 }
 
 <span class="doccomment">/// Rotate a 3D distance field.
-</span><span class="kw">pub type </span>Rotate2d&lt;Sdf&gt; = Operator&lt;Sdf, Rotate2dOp&gt;;
+</span><span class="kw">pub type </span>Rotate2d&lt;Sdf&gt; = Operator&lt;Rotate2dOp, Sdf&gt;;
 
 <span class="kw">impl</span>&lt;Sdf&gt; Rotate2d&lt;Sdf&gt; {
     <span class="kw">pub fn </span>angle(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
@@ -117,7 +117,7 @@
 }
 
 <span class="doccomment">/// Rotate a distance field.
-</span><span class="kw">pub type </span>Rotate3d&lt;Sdf&gt; = Operator&lt;Sdf, Rotate3dOp&gt;;
+</span><span class="kw">pub type </span>Rotate3d&lt;Sdf&gt; = Operator&lt;Rotate3dOp, Sdf&gt;;
 
 <span class="kw">impl</span>&lt;Sdf&gt; Rotate3d&lt;Sdf&gt; {
     <span class="kw">pub fn </span>rotation(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Quat {

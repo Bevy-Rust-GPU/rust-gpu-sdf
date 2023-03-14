@@ -73,6 +73,23 @@
 <a href="#73" id="73">73</a>
 <a href="#74" id="74">74</a>
 <a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
+<a href="#80" id="80">80</a>
+<a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Given an infinitely-thin surface,
 //! divide space into interior and exterior based on axis.
 
@@ -85,9 +102,27 @@
 
 <span class="doccomment">/// Given an infinitely-thin surface,
 /// divide space into interior and exterior based on axis.
-</span><span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+</span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 </span><span class="kw">pub struct </span>SidedOp&lt;Dim&gt; {
     <span class="kw">pub </span>axis: Dim,
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>SidedOp&lt;f32&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        SidedOp { axis: <span class="number">1.0 </span>}
+    }
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>SidedOp&lt;Vec2&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        SidedOp { axis: Vec2::Y }
+    }
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>SidedOp&lt;Vec3&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        SidedOp { axis: Vec3::Y }
+    }
 }
 
 <span class="kw">impl </span>SignedDistanceOperator&lt;f32, Distance&gt; <span class="kw">for </span>SidedOp&lt;f32&gt; {
@@ -123,11 +158,11 @@
     }
 }
 
-<span class="kw">pub type </span>Sided&lt;Sdf, Dim&gt; = Operator&lt;Sdf, SidedOp&lt;Dim&gt;&gt;;
+<span class="kw">pub type </span>Sided&lt;Dim, Sdf&gt; = Operator&lt;SidedOp&lt;Dim&gt;, Sdf&gt;;
 
 <span class="doccomment">/// Given an infinitely-thin surface,
 /// divide space into interior and exterior based on axis.
-</span><span class="kw">impl</span>&lt;Sdf, Dim&gt; Sided&lt;Sdf, Dim&gt; {
+</span><span class="kw">impl</span>&lt;Dim, Sdf&gt; Sided&lt;Dim, Sdf&gt; {
     <span class="kw">pub fn </span>axis(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.axis
     }
@@ -144,9 +179,8 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_sided() {
-        Sided::&lt;Line&lt;Vec3&gt;, <span class="kw">_</span>&gt;::default().with(Sided::axis, Vec3::default());
+        Sided::&lt;<span class="kw">_</span>, Line&lt;Vec3&gt;&gt;::default().with(Sided::axis, Vec3::default());
     }
 }
-
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rust_gpu_sdf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.1 (d5a82bbd2 2023-02-07)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>

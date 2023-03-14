@@ -147,9 +147,9 @@
 }
 
 <span class="doccomment">/// Twist a distance field around an arbitrary axis.
-</span><span class="kw">pub type </span>Twist&lt;Sdf, Dim&gt; = Operator&lt;Sdf, TwistOp&lt;Dim&gt;&gt;;
+</span><span class="kw">pub type </span>Twist&lt;Dim, Sdf&gt; = Operator&lt;TwistOp&lt;Dim&gt;, Sdf&gt;;
 
-<span class="kw">impl</span>&lt;Sdf, Dim&gt; Twist&lt;Sdf, Dim&gt; {
+<span class="kw">impl</span>&lt;Dim, Sdf&gt; Twist&lt;Dim, Sdf&gt; {
     <span class="kw">pub fn </span>axis_pos(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.axis_pos
     }
@@ -174,7 +174,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_twist() {
-        Twist::&lt;Torus, <span class="kw">_</span>&gt;::default()
+        Twist::&lt;<span class="kw">_</span>, Torus&gt;::default()
             .with(Twist::axis_pos, Vec3::default())
             .with(Twist::axis_rot, Vec3::default())
             .with(Twist::k, f32::default());

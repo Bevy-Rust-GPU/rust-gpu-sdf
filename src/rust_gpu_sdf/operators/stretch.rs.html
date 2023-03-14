@@ -175,6 +175,15 @@
 <a href="#175" id="175">175</a>
 <a href="#176" id="176">176</a>
 <a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Stretch a shape along an arbitrary axis, preserving exterior geometry as caps.
 
 </span><span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
@@ -243,9 +252,9 @@
 }
 
 <span class="doccomment">/// Extrude a shape infinitely along an arbitrary axis.
-</span><span class="kw">pub type </span>StretchInfinite&lt;Sdf, Dim&gt; = Operator&lt;Sdf, StretchInfiniteOp&lt;Dim&gt;&gt;;
+</span><span class="kw">pub type </span>StretchInfinite&lt;Dim, Sdf&gt; = Operator&lt;StretchInfiniteOp&lt;Dim&gt;, Sdf&gt;;
 
-<span class="kw">impl</span>&lt;Sdf, Dim&gt; StretchInfinite&lt;Sdf, Dim&gt; {
+<span class="kw">impl</span>&lt;Dim, Sdf&gt; StretchInfinite&lt;Dim, Sdf&gt; {
     <span class="kw">pub fn </span>dir(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.dir
     }
@@ -256,6 +265,15 @@
 </span><span class="kw">pub struct </span>StretchDistOp&lt;Dim&gt; {
     <span class="kw">pub </span>dir: Dim,
     <span class="kw">pub </span>dist: f32,
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>StretchDistOp&lt;f32&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        StretchDistOp {
+            dir: <span class="number">1.0</span>,
+            dist: <span class="number">1.0</span>,
+        }
+    }
 }
 
 <span class="kw">impl </span>Default <span class="kw">for </span>StretchDistOp&lt;Vec2&gt; {
@@ -319,9 +337,9 @@
 }
 
 <span class="doccomment">/// Extrude a shape by an arbitrary distance along an arbitrary axis, preserving exterior geometry as caps.
-</span><span class="kw">pub type </span>StretchDist&lt;Sdf, Dim&gt; = Operator&lt;Sdf, StretchDistOp&lt;Dim&gt;&gt;;
+</span><span class="kw">pub type </span>StretchDist&lt;Dim, Sdf&gt; = Operator&lt;StretchDistOp&lt;Dim&gt;, Sdf&gt;;
 
-<span class="kw">impl</span>&lt;Sdf, Dim&gt; StretchDist&lt;Sdf, Dim&gt; {
+<span class="kw">impl</span>&lt;Dim, Sdf&gt; StretchDist&lt;Dim, Sdf&gt; {
     <span class="kw">pub fn </span>dir(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Dim {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.dir
     }
@@ -342,12 +360,12 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_stretch_infinite() {
-        StretchInfinite::&lt;Cube, <span class="kw">_</span>&gt;::default().with(StretchInfinite::dir, Vec3::default());
+        StretchInfinite::&lt;<span class="kw">_</span>, Cube&gt;::default().with(StretchInfinite::dir, Vec3::default());
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_stretch_dist() {
-        StretchDist::&lt;Cube, <span class="kw">_</span>&gt;::default()
+        StretchDist::&lt;<span class="kw">_</span>, Cube&gt;::default()
             .with(StretchDist::dir, Vec3::default())
             .with(StretchDist::dist, f32::default());
     }

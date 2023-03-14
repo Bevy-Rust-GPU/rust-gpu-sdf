@@ -78,7 +78,7 @@
 }
 
 <span class="doccomment">/// Displace the output of a distance field using the output of another distance field.
-</span><span class="kw">pub type </span>Displace&lt;SdfA, SdfB&gt; = Operator&lt;SdfA, DisplaceOp&lt;SdfB&gt;&gt;;
+</span><span class="kw">pub type </span>Displace&lt;SdfA, SdfB&gt; = Operator&lt;DisplaceOp&lt;SdfB&gt;, SdfA&gt;;
 <span class="kw">impl</span>&lt;SdfA, SdfB&gt; Displace&lt;SdfA, SdfB&gt; {
     <span class="kw">pub fn </span>displace(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>SdfB {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.op.displace

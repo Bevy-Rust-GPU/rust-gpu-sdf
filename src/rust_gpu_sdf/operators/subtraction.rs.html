@@ -81,7 +81,7 @@
 }
 
 <span class="doccomment">/// Compute the boolean subtraction of two distance fields.
-</span><span class="kw">pub type </span>Subtraction&lt;SdfA, SdfB&gt; = Operator&lt;SdfA, SubtractionOp&lt;SdfB&gt;&gt;;
+</span><span class="kw">pub type </span>Subtraction&lt;SdfA, SdfB&gt; = Operator&lt;SubtractionOp&lt;SdfB&gt;, SdfA&gt;;
 
 <span class="kw">impl</span>&lt;SdfA, SdfB&gt; Subtraction&lt;SdfA, SdfB&gt; {
     <span class="kw">pub fn </span>sdf(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>SdfB {

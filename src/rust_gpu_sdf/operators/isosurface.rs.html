@@ -79,7 +79,7 @@
 }
 
 <span class="doccomment">/// Add an arbitrary radius to a distance field.
-</span><span class="kw">pub type </span>Isosurface&lt;Sdf&gt; = Operator&lt;Sdf, IsosurfaceOp&gt;;
+</span><span class="kw">pub type </span>Isosurface&lt;Sdf&gt; = Operator&lt;IsosurfaceOp, Sdf&gt;;
 
 <span class="kw">impl</span>&lt;Sdf&gt; Isosurface&lt;Sdf&gt; {
     <span class="kw">pub fn </span>delta(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {

@@ -61,9 +61,9 @@
 };
 
 <span class="doccomment">/// Translate, rotate, and scale the wrapped SDF.
-</span><span class="kw">pub type </span>Transform&lt;Sdf, Dim&gt; = Translate&lt;Rotate3d&lt;Scale&lt;Sdf&gt;&gt;, Dim&gt;;
+</span><span class="kw">pub type </span>Transform&lt;Dim, Sdf&gt; = Translate&lt;Dim, Rotate3d&lt;Scale&lt;Sdf&gt;&gt;&gt;;
 
-<span class="kw">impl</span>&lt;Sdf, Dim&gt; Transform&lt;Sdf, Dim&gt; {
+<span class="kw">impl</span>&lt;Dim, Sdf&gt; Transform&lt;Dim, Sdf&gt; {
     <span class="kw">pub fn </span>rotation(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Quat {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.target.op.rotation
     }

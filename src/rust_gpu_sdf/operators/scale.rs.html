@@ -73,7 +73,7 @@
 }
 
 <span class="doccomment">/// Uniformly scale a distance field.
-</span><span class="kw">pub type </span>Scale&lt;Sdf&gt; = Operator&lt;Sdf, ScaleOp&gt;;
+</span><span class="kw">pub type </span>Scale&lt;Sdf&gt; = Operator&lt;ScaleOp, Sdf&gt;;
 
 <span class="kw">impl</span>&lt;Sdf&gt; Scale&lt;Sdf&gt; {
     <span class="kw">pub fn </span>scale(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
