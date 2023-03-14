@@ -72,9 +72,12 @@
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
 <a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Types that modify a distance field.
 
-</span><span class="kw">pub mod </span>composite;
+</span><span class="kw">pub mod </span>axial_reflect;
+<span class="kw">pub mod </span>composite;
 <span class="kw">pub mod </span>displace;
 <span class="kw">pub mod </span>elongate;
 <span class="kw">pub mod </span>hollow;
@@ -92,6 +95,7 @@
 <span class="kw">pub mod </span>translate;
 <span class="kw">pub mod </span>twist;
 <span class="kw">pub mod </span>union;
+<span class="kw">pub mod </span>sided;
 
 <span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::SignedDistanceField;
 

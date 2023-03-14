@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":[["AXIS_X",""],["AXIS_Y",""],["AXIS_Z",""]],"struct":[["AxialReflectOp","Cheaply reflect a distance field about X / Y / Z using a const axis bitmask. NOTE: Will produce a bound unless any geometry crossing the reflecting planes is already a field w.r.t. its reflection."]],"type":[["AxialReflect","Reflect a distance field about X / Y / Z"]]};
