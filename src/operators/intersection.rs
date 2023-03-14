@@ -1,6 +1,5 @@
 //! Compute the boolean intersection of two distance fields.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3};
 use type_fields::Field;
 
 use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
@@ -11,27 +10,16 @@ pub struct IntersectionOp<Sdf> {
     pub sdf: Sdf,
 }
 
-impl<SdfB> SignedDistanceOperator<Vec2, Distance> for IntersectionOp<SdfB>
+impl<SdfB, Dim> SignedDistanceOperator<Dim, Distance> for IntersectionOp<SdfB>
 where
-    SdfB: SignedDistanceField<Vec2, Distance>,
+    SdfB: SignedDistanceField<Dim, Distance>,
 {
-    fn operator<SdfA>(&self, sdf: &SdfA, p: Vec2) -> Distance
+    fn operator<SdfA>(&self, sdf: &SdfA, p: Dim) -> Distance
     where
-        SdfA: SignedDistanceField<Vec2, Distance>,
+        SdfA: SignedDistanceField<Dim, Distance>,
+        Dim: Clone,
     {
-        sdf.evaluate(p).max(*self.sdf.evaluate(p)).into()
-    }
-}
-
-impl<SdfB> SignedDistanceOperator<Vec3, Distance> for IntersectionOp<SdfB>
-where
-    SdfB: SignedDistanceField<Vec3, Distance>,
-{
-    fn operator<SdfA>(&self, sdf: &SdfA, p: Vec3) -> Distance
-    where
-        SdfA: SignedDistanceField<Vec3, Distance>,
-    {
-        sdf.evaluate(p).max(*self.sdf.evaluate(p)).into()
+        sdf.evaluate(p.clone()).max(*self.sdf.evaluate(p)).into()
     }
 }
 
@@ -54,7 +42,6 @@ pub mod test {
 
     #[test]
     fn test_intersection() {
-        Intersection::<Cube, Sphere>::default()
-            .with(Intersection::sdf, Sphere::default());
+        Intersection::<Cube, Sphere>::default().with(Intersection::sdf, Sphere::default());
     }
 }

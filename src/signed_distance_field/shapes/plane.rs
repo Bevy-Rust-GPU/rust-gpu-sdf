@@ -10,6 +10,12 @@ pub struct Plane<Dim> {
     pub dir: Dim,
 }
 
+impl Default for Plane<f32> {
+    fn default() -> Self {
+        Plane { dir: 1.0 }
+    }
+}
+
 impl Default for Plane<Vec2> {
     fn default() -> Self {
         Plane { dir: Vec2::Y }
@@ -19,6 +25,13 @@ impl Default for Plane<Vec2> {
 impl Default for Plane<Vec3> {
     fn default() -> Self {
         Plane { dir: Vec3::Y }
+    }
+}
+
+impl SignedDistanceField<f32, Distance> for Plane<f32> {
+    fn evaluate(&self, p: f32) -> Distance {
+        assert!(self.dir.abs() == 1.0, "Plane dir must be normalized");
+        (p * -self.dir).into()
     }
 }
 

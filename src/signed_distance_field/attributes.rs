@@ -92,38 +92,33 @@ pub mod normal {
         ops::{Deref, DerefMut},
     };
 
-    use rust_gpu_bridge::prelude::Vec3;
-
     #[derive(Debug, Default, Copy, Clone, PartialEq)]
-    pub struct Normal(pub Vec3);
+    pub struct Normal<Dim>(pub Dim);
 
-    impl Deref for Normal {
-        type Target = Vec3;
+    impl<Dim> Deref for Normal<Dim> {
+        type Target = Dim;
 
         fn deref(&self) -> &Self::Target {
             &self.0
         }
     }
 
-    impl DerefMut for Normal {
+    impl<Dim> DerefMut for Normal<Dim> {
         fn deref_mut(&mut self) -> &mut Self::Target {
             &mut self.0
         }
     }
 
-    impl From<Vec3> for Normal {
-        fn from(value: Vec3) -> Self {
+    impl<Dim> From<Dim> for Normal<Dim> {
+        fn from(value: Dim) -> Self {
             Normal(value)
         }
     }
 
-    impl From<Normal> for Vec3 {
-        fn from(value: Normal) -> Self {
-            value.0
-        }
-    }
-
-    impl Display for Normal {
+    impl<Dim> Display for Normal<Dim>
+    where
+        Dim: Display,
+    {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
             self.0.fmt(f)
         }
@@ -180,38 +175,33 @@ pub mod tangent {
         ops::{Deref, DerefMut},
     };
 
-    use rust_gpu_bridge::prelude::Vec3;
-
     #[derive(Debug, Default, Copy, Clone, PartialEq)]
-    pub struct Tangent(pub Vec3);
+    pub struct Tangent<Dim>(pub Dim);
 
-    impl Deref for Tangent {
-        type Target = Vec3;
+    impl<Dim> Deref for Tangent<Dim> {
+        type Target = Dim;
 
         fn deref(&self) -> &Self::Target {
             &self.0
         }
     }
 
-    impl DerefMut for Tangent {
+    impl<Dim> DerefMut for Tangent<Dim> {
         fn deref_mut(&mut self) -> &mut Self::Target {
             &mut self.0
         }
     }
 
-    impl From<Vec3> for Tangent {
-        fn from(value: Vec3) -> Self {
+    impl<Dim> From<Dim> for Tangent<Dim> {
+        fn from(value: Dim) -> Self {
             Tangent(value)
         }
     }
 
-    impl From<Tangent> for Vec3 {
-        fn from(value: Tangent) -> Self {
-            value.0
-        }
-    }
-
-    impl Display for Tangent {
+    impl<Dim> Display for Tangent<Dim>
+    where
+        Dim: Display,
+    {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
             self.0.fmt(f)
         }
@@ -261,4 +251,3 @@ pub mod color {
         }
     }
 }
-

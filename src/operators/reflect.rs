@@ -1,9 +1,6 @@
 //! Reflect a distance field about an arbitrary axis.
 
-use rust_gpu_bridge::{
-    prelude::{Vec2, Vec3},
-    reflect::Reflect as ReflectTrait,
-};
+use rust_gpu_bridge::prelude::{Vec2, Vec3};
 use type_fields::Field;
 
 use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
@@ -23,6 +20,19 @@ impl Default for ReflectOp<Vec2> {
 impl Default for ReflectOp<Vec3> {
     fn default() -> Self {
         ReflectOp { axis: Vec3::X }
+    }
+}
+
+impl SignedDistanceOperator<f32, Distance> for ReflectOp<f32> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Distance
+    where
+        Sdf: SignedDistanceField<f32, Distance>,
+    {
+        assert!(self.axis.abs() == 1.0, "ReflectOp axis must be normalized");
+
+        let q = p - 2.0 * (p * self.axis).min(0.0) * self.axis;
+
+        sdf.evaluate(q)
     }
 }
 

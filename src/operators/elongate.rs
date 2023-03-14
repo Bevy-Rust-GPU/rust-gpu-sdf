@@ -13,6 +13,12 @@ pub struct ElongateOp<Dim> {
     pub extent: Dim,
 }
 
+impl Default for ElongateOp<f32> {
+    fn default() -> Self {
+        ElongateOp { extent: 1.0 }
+    }
+}
+
 impl Default for ElongateOp<Vec2> {
     fn default() -> Self {
         ElongateOp { extent: Vec2::ONE }
@@ -22,6 +28,16 @@ impl Default for ElongateOp<Vec2> {
 impl Default for ElongateOp<Vec3> {
     fn default() -> Self {
         ElongateOp { extent: Vec3::ONE }
+    }
+}
+
+impl SignedDistanceOperator<f32, Distance> for ElongateOp<f32> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Distance
+    where
+        Sdf: SignedDistanceField<f32, Distance>,
+    {
+        let q = p.abs() - self.extent;
+        sdf.evaluate(q.max(0.0)).add(q.min(0.0)).into()
     }
 }
 

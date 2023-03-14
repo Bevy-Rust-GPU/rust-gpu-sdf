@@ -26,6 +26,19 @@ where
     }
 }
 
+impl<Sdf> SignedDistanceField<Vec2, Distance> for ExtrudeInterior<Sdf>
+where
+    Sdf: SignedDistanceField<f32, Distance>,
+{
+    fn evaluate(&self, p: Vec2) -> Distance {
+        let d = self.sdf.evaluate(p.x);
+        let w = Vec2::new(*d, p.y.abs() + d.min(0.0) * self.depth);
+        let exterior = w.max(Vec2::ZERO).length();
+        let interior = w.x.max(w.y).min(0.0);
+        Distance(interior + exterior)
+    }
+}
+
 impl<Sdf> SignedDistanceField<Vec3, Distance> for ExtrudeInterior<Sdf>
 where
     Sdf: SignedDistanceField<Vec2, Distance>,
@@ -38,4 +51,3 @@ where
         Distance(interior + exterior)
     }
 }
-

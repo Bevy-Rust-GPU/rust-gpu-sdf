@@ -1,5 +1,7 @@
 //! Operators for repeating distance fields across a domain.
 
+use core::ops::{Add, Mul, Sub};
+
 use rust_gpu_bridge::{
     modulo::Mod,
     prelude::{Vec2, Vec3},
@@ -14,6 +16,12 @@ pub struct RepeatInfiniteOp<Dim> {
     pub period: Dim,
 }
 
+impl Default for RepeatInfiniteOp<f32> {
+    fn default() -> Self {
+        RepeatInfiniteOp { period: 1.0 }
+    }
+}
+
 impl Default for RepeatInfiniteOp<Vec2> {
     fn default() -> Self {
         RepeatInfiniteOp { period: Vec2::ONE }
@@ -26,22 +34,23 @@ impl Default for RepeatInfiniteOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<Vec2, Distance> for RepeatInfiniteOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
+impl<Dim> SignedDistanceOperator<Dim, Distance> for RepeatInfiniteOp<Dim>
+where
+    Dim: Add<Dim, Output = Dim>
+        + Add<f32, Output = Dim>
+        + Sub<Dim, Output = Dim>
+        + Mul<Dim, Output = Dim>
+        + Mul<f32, Output = Dim>
+        + Mod
+        + Clone,
+{
+    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> Distance
     where
-        Sdf: SignedDistanceField<Vec2, Distance>,
+        Sdf: SignedDistanceField<Dim, Distance>,
     {
-        let q = (p + 0.5 * self.period).modulo(self.period) - (0.5 * self.period);
-        sdf.evaluate(q)
-    }
-}
-
-impl SignedDistanceOperator<Vec3, Distance> for RepeatInfiniteOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec3, Distance>,
-    {
-        let q = (p + 0.5 * self.period).modulo(self.period) - (0.5 * self.period);
+        let q = (p.add(0.5).mul(self.period.clone()))
+            .modulo(self.period.clone())
+            .sub(self.period.clone().mul(0.5));
         sdf.evaluate(q)
     }
 }
@@ -124,8 +133,7 @@ pub mod tests {
 
     #[test]
     fn test_repeat_infinite() {
-        RepeatInfinite::<Sphere, _>::default()
-            .with(RepeatInfinite::period, Vec3::default());
+        RepeatInfinite::<Sphere, _>::default().with(RepeatInfinite::period, Vec3::default());
     }
 
     #[test]

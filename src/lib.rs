@@ -11,6 +11,7 @@ pub mod tests;
 
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
 
+pub type D1 = f32;
 pub type D2 = Vec2;
 pub type D3 = Vec3;
 

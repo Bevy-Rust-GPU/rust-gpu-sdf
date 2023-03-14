@@ -23,6 +23,20 @@ impl Default for StretchInfiniteOp<Vec3> {
     }
 }
 
+impl SignedDistanceOperator<f32, Distance> for StretchInfiniteOp<f32> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Distance
+    where
+        Sdf: SignedDistanceField<f32, Distance>,
+    {
+        assert!(
+            self.dir.abs() == 1.0,
+            "ExtrudeInfiniteOp dir must be normalized"
+        );
+        let q = p - p * self.dir * self.dir;
+        sdf.evaluate(q)
+    }
+}
+
 impl SignedDistanceOperator<Vec2, Distance> for StretchInfiniteOp<Vec2> {
     fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
     where
@@ -82,6 +96,20 @@ impl Default for StretchDistOp<Vec3> {
             dir: Vec3::X,
             dist: 1.0,
         }
+    }
+}
+
+impl SignedDistanceOperator<f32, Distance> for StretchDistOp<f32> {
+    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Distance
+    where
+        Sdf: SignedDistanceField<f32, Distance>,
+    {
+        assert!(
+            self.dir.abs() == 1.0,
+            "ExtrudeDistOp dir must be normalized"
+        );
+        let q = p - ((p * self.dir).clamp(-self.dist, self.dist) * self.dir);
+        sdf.evaluate(q)
     }
 }
 

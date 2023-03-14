@@ -8,6 +8,12 @@ use crate::signed_distance_field::{Distance, SignedDistanceField};
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChebyshevMetric;
 
+impl SignedDistanceField<f32, Distance> for ChebyshevMetric {
+    fn evaluate(&self, p: f32) -> Distance {
+        p.abs().into()
+    }
+}
+
 impl SignedDistanceField<Vec2, Distance> for ChebyshevMetric {
     fn evaluate(&self, p: Vec2) -> Distance {
         p.x.abs().max(p.y.abs()).into()

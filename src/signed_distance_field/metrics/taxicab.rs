@@ -10,6 +10,12 @@ use crate::signed_distance_field::{Distance, SignedDistanceField};
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TaxicabMetric;
 
+impl SignedDistanceField<f32, Distance> for TaxicabMetric {
+    fn evaluate(&self, p: f32) -> Distance {
+        p.abs().into()
+    }
+}
+
 impl SignedDistanceField<Vec2, Distance> for TaxicabMetric {
     fn evaluate(&self, p: Vec2) -> Distance {
         p.x.abs().add(p.y.abs()).into()
