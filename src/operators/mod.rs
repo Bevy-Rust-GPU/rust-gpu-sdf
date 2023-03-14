@@ -11,6 +11,7 @@ pub mod reflect;
 pub mod repeat;
 pub mod rotate;
 pub mod scale;
+pub mod sided;
 pub mod smooth_intersection;
 pub mod smooth_subtraction;
 pub mod smooth_union;
@@ -19,7 +20,7 @@ pub mod subtraction;
 pub mod translate;
 pub mod twist;
 pub mod union;
-pub mod sided;
+pub mod conditional;
 
 use crate::signed_distance_field::SignedDistanceField;
 
