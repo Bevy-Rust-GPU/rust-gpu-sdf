@@ -24,7 +24,7 @@ where
 }
 
 /// Compute the boolean intersection of two distance fields.
-pub type Intersection<SdfA, SdfB> = Operator<SdfA, IntersectionOp<SdfB>>;
+pub type Intersection<SdfA, SdfB> = Operator<IntersectionOp<SdfB>, SdfA>;
 
 impl<SdfA, SdfB> Intersection<SdfA, SdfB> {
     pub fn sdf(&mut self) -> &mut SdfB {

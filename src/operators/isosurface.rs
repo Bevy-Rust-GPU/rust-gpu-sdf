@@ -28,7 +28,7 @@ impl<Dim> SignedDistanceOperator<Dim, Distance> for IsosurfaceOp {
 }
 
 /// Add an arbitrary radius to a distance field.
-pub type Isosurface<Sdf> = Operator<Sdf, IsosurfaceOp>;
+pub type Isosurface<Sdf> = Operator<IsosurfaceOp, Sdf>;
 
 impl<Sdf> Isosurface<Sdf> {
     pub fn delta(&mut self) -> &mut f32 {

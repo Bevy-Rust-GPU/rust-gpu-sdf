@@ -30,7 +30,7 @@ where
 }
 
 /// Compute the blended boolean subtraction of two distance fields.
-pub type SmoothSubtraction<SdfA, SdfB> = Operator<SdfA, SmoothSubtractionOp<SdfB>>;
+pub type SmoothSubtraction<SdfA, SdfB> = Operator<SmoothSubtractionOp<SdfB>, SdfA>;
 
 impl<SdfA, SdfB> SmoothSubtraction<SdfA, SdfB> {
     pub fn sdf(&mut self) -> &mut SdfB {

@@ -20,7 +20,7 @@ impl SignedDistanceOperator<Vec2, Distance> for Rotate2dOp {
 }
 
 /// Rotate a 3D distance field.
-pub type Rotate2d<Sdf> = Operator<Sdf, Rotate2dOp>;
+pub type Rotate2d<Sdf> = Operator<Rotate2dOp, Sdf>;
 
 impl<Sdf> Rotate2d<Sdf> {
     pub fn angle(&mut self) -> &mut f32 {
@@ -44,7 +44,7 @@ impl SignedDistanceOperator<Vec3, Distance> for Rotate3dOp {
 }
 
 /// Rotate a distance field.
-pub type Rotate3d<Sdf> = Operator<Sdf, Rotate3dOp>;
+pub type Rotate3d<Sdf> = Operator<Rotate3dOp, Sdf>;
 
 impl<Sdf> Rotate3d<Sdf> {
     pub fn rotation(&mut self) -> &mut Quat {

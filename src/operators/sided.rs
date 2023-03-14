@@ -10,9 +10,27 @@ use super::{Operator, SignedDistanceOperator};
 
 /// Given an infinitely-thin surface,
 /// divide space into interior and exterior based on axis.
-#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 pub struct SidedOp<Dim> {
     pub axis: Dim,
+}
+
+impl Default for SidedOp<f32> {
+    fn default() -> Self {
+        SidedOp { axis: 1.0 }
+    }
+}
+
+impl Default for SidedOp<Vec2> {
+    fn default() -> Self {
+        SidedOp { axis: Vec2::Y }
+    }
+}
+
+impl Default for SidedOp<Vec3> {
+    fn default() -> Self {
+        SidedOp { axis: Vec3::Y }
+    }
 }
 
 impl SignedDistanceOperator<f32, Distance> for SidedOp<f32> {
@@ -48,11 +66,11 @@ impl SignedDistanceOperator<Vec3, Distance> for SidedOp<Vec3> {
     }
 }
 
-pub type Sided<Sdf, Dim> = Operator<Sdf, SidedOp<Dim>>;
+pub type Sided<Dim, Sdf> = Operator<SidedOp<Dim>, Sdf>;
 
 /// Given an infinitely-thin surface,
 /// divide space into interior and exterior based on axis.
-impl<Sdf, Dim> Sided<Sdf, Dim> {
+impl<Dim, Sdf> Sided<Dim, Sdf> {
     pub fn axis(&mut self) -> &mut Dim {
         &mut self.op.axis
     }
@@ -69,7 +87,6 @@ pub mod test {
 
     #[test]
     fn test_sided() {
-        Sided::<Line<Vec3>, _>::default().with(Sided::axis, Vec3::default());
+        Sided::<_, Line<Vec3>>::default().with(Sided::axis, Vec3::default());
     }
 }
-

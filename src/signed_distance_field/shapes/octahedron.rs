@@ -19,8 +19,12 @@ impl Default for Octahedron {
 
 impl SignedDistanceField<Vec3, Distance> for Octahedron {
     fn evaluate(&self, p: Vec3) -> Distance {
+        // Axial reflection
         let p = p.abs();
+
+        // Signed distance minus size
         let m = p.x + p.y + p.z - self.size;
+
         let q = if 3.0 * p.x < m {
             p
         } else if 3.0 * p.y < m {
@@ -32,7 +36,11 @@ impl SignedDistanceField<Vec3, Distance> for Octahedron {
         };
 
         let k = (0.5 * (q.z - q.y + self.size)).clamp(0.0, self.size);
-        Vec3::new(q.x, q.y - self.size + k, q.z - k).length().into()
+
+        let j = Vec3::new(q.x, q.y - self.size + k, q.z - k);
+
+        // Euclidean metric
+        j.length().into()
     }
 }
 

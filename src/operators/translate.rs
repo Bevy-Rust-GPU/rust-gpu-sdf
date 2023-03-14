@@ -25,9 +25,9 @@ where
 }
 
 /// Apply a positional translation to a distance field.
-pub type Translate<Sdf, Dim> = Operator<Sdf, TranslateOp<Dim>>;
+pub type Translate<Dim, Sdf> = Operator<TranslateOp<Dim>, Sdf>;
 
-impl<Sdf, Dim> Translate<Sdf, Dim> {
+impl<Dim, Sdf> Translate<Dim, Sdf> {
     pub fn translation(&mut self) -> &mut Dim {
         &mut self.op.translation
     }
@@ -44,6 +44,6 @@ pub mod test {
 
     #[test]
     fn test_translation() {
-        Translate::<Sphere, _>::default().with(Translate::translation, Vec3::default());
+        Translate::<_, Sphere>::default().with(Translate::translation, Vec3::default());
     }
 }

@@ -66,9 +66,9 @@ impl SignedDistanceOperator<Vec3, Distance> for ElongateOp<Vec3> {
 }
 
 /// Extrude a shape along its axes, preserving exterior geometry.
-pub type Elongate<Sdf, Dim> = Operator<Sdf, ElongateOp<Dim>>;
+pub type Elongate<Dim, Sdf> = Operator<ElongateOp<Dim>, Sdf>;
 
-impl<Sdf, Dim> Elongate<Sdf, Dim> {
+impl<Dim, Sdf> Elongate<Dim, Sdf> {
     pub fn extent(&mut self) -> &mut Dim {
         &mut self.op.extent
     }
@@ -85,6 +85,6 @@ pub mod test {
 
     #[test]
     fn test_elongate() {
-        Elongate::<Point, _>::default().with(Elongate::extent, Vec3::default());
+        Elongate::<_, Point>::default().with(Elongate::extent, Vec3::default());
     }
 }

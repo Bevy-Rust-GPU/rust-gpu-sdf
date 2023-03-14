@@ -7,9 +7,9 @@ use super::{
 };
 
 /// Translate, rotate, and scale the wrapped SDF.
-pub type Transform<Sdf, Dim> = Translate<Rotate3d<Scale<Sdf>>, Dim>;
+pub type Transform<Dim, Sdf> = Translate<Dim, Rotate3d<Scale<Sdf>>>;
 
-impl<Sdf, Dim> Transform<Sdf, Dim> {
+impl<Dim, Sdf> Transform<Dim, Sdf> {
     pub fn rotation(&mut self) -> &mut Quat {
         &mut self.target.op.rotation
     }

@@ -75,9 +75,9 @@ impl SignedDistanceOperator<Vec3, Distance> for ReflectOp<Vec3> {
 }
 
 /// Reflect a distance field about an arbitrary axis.
-pub type Reflect<Sdf, Dim> = Operator<Sdf, ReflectOp<Dim>>;
+pub type Reflect<Dim, Sdf> = Operator<ReflectOp<Dim>, Sdf>;
 
-impl<Sdf, Dim> Reflect<Sdf, Dim> {
+impl<Dim, Sdf> Reflect<Dim, Sdf> {
     pub fn axis(&mut self) -> &mut Dim {
         &mut self.op.axis
     }
@@ -94,6 +94,6 @@ pub mod test {
 
     #[test]
     fn test_reflect() {
-        Reflect::<Sphere, _>::default().with(Reflect::axis, Vec3::default());
+        Reflect::<_, Sphere>::default().with(Reflect::axis, Vec3::default());
     }
 }

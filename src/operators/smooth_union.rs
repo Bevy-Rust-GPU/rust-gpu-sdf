@@ -31,7 +31,7 @@ where
 }
 
 /// Compute the blended boolean union of two distance fields.
-pub type SmoothUnion<SdfA, SdfB> = Operator<SdfA, SmoothUnionOp<SdfB>>;
+pub type SmoothUnion<SdfA, SdfB> = Operator<SmoothUnionOp<SdfB>, SdfA>;
 
 impl<SdfA, SdfB> SmoothUnion<SdfA, SdfB> {
     pub fn sdf(&mut self) -> &mut SdfB {

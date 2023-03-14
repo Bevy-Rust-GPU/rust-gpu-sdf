@@ -26,7 +26,7 @@ where
 }
 
 /// Compute the boolean union of two distance fields.
-pub type Union<SdfA, SdfB> = Operator<SdfA, UnionOp<SdfB>>;
+pub type Union<SdfA, SdfB> = Operator<UnionOp<SdfB>, SdfA>;
 
 impl<SdfA, SdfB> Union<SdfA, SdfB> {
     pub fn sdf(&mut self) -> &mut SdfB {

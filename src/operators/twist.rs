@@ -56,9 +56,9 @@ impl SignedDistanceOperator<Vec3, Distance> for TwistOp<Vec3> {
 }
 
 /// Twist a distance field around an arbitrary axis.
-pub type Twist<Sdf, Dim> = Operator<Sdf, TwistOp<Dim>>;
+pub type Twist<Dim, Sdf> = Operator<TwistOp<Dim>, Sdf>;
 
-impl<Sdf, Dim> Twist<Sdf, Dim> {
+impl<Dim, Sdf> Twist<Dim, Sdf> {
     pub fn axis_pos(&mut self) -> &mut Dim {
         &mut self.op.axis_pos
     }
@@ -83,7 +83,7 @@ pub mod test {
 
     #[test]
     fn test_twist() {
-        Twist::<Torus, _>::default()
+        Twist::<_, Torus>::default()
             .with(Twist::axis_pos, Vec3::default())
             .with(Twist::axis_rot, Vec3::default())
             .with(Twist::k, f32::default());

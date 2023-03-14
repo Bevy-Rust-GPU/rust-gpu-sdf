@@ -25,7 +25,7 @@ where
 }
 
 /// Uniformly scale a distance field.
-pub type Scale<Sdf> = Operator<Sdf, ScaleOp>;
+pub type Scale<Sdf> = Operator<ScaleOp, Sdf>;
 
 impl<Sdf> Scale<Sdf> {
     pub fn scale(&mut self) -> &mut f32 {

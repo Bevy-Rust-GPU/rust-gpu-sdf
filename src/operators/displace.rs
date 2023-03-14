@@ -28,7 +28,7 @@ where
 }
 
 /// Displace the output of a distance field using the output of another distance field.
-pub type Displace<SdfA, SdfB> = Operator<SdfA, DisplaceOp<SdfB>>;
+pub type Displace<SdfA, SdfB> = Operator<DisplaceOp<SdfB>, SdfA>;
 impl<SdfA, SdfB> Displace<SdfA, SdfB> {
     pub fn displace(&mut self) -> &mut SdfB {
         &mut self.op.displace

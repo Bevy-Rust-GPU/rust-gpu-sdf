@@ -66,9 +66,9 @@ impl SignedDistanceOperator<Vec3, Distance> for StretchInfiniteOp<Vec3> {
 }
 
 /// Extrude a shape infinitely along an arbitrary axis.
-pub type StretchInfinite<Sdf, Dim> = Operator<Sdf, StretchInfiniteOp<Dim>>;
+pub type StretchInfinite<Dim, Sdf> = Operator<StretchInfiniteOp<Dim>, Sdf>;
 
-impl<Sdf, Dim> StretchInfinite<Sdf, Dim> {
+impl<Dim, Sdf> StretchInfinite<Dim, Sdf> {
     pub fn dir(&mut self) -> &mut Dim {
         &mut self.op.dir
     }
@@ -79,6 +79,15 @@ impl<Sdf, Dim> StretchInfinite<Sdf, Dim> {
 pub struct StretchDistOp<Dim> {
     pub dir: Dim,
     pub dist: f32,
+}
+
+impl Default for StretchDistOp<f32> {
+    fn default() -> Self {
+        StretchDistOp {
+            dir: 1.0,
+            dist: 1.0,
+        }
+    }
 }
 
 impl Default for StretchDistOp<Vec2> {
@@ -142,9 +151,9 @@ impl SignedDistanceOperator<Vec3, Distance> for StretchDistOp<Vec3> {
 }
 
 /// Extrude a shape by an arbitrary distance along an arbitrary axis, preserving exterior geometry as caps.
-pub type StretchDist<Sdf, Dim> = Operator<Sdf, StretchDistOp<Dim>>;
+pub type StretchDist<Dim, Sdf> = Operator<StretchDistOp<Dim>, Sdf>;
 
-impl<Sdf, Dim> StretchDist<Sdf, Dim> {
+impl<Dim, Sdf> StretchDist<Dim, Sdf> {
     pub fn dir(&mut self) -> &mut Dim {
         &mut self.op.dir
     }
@@ -165,12 +174,12 @@ pub mod test {
 
     #[test]
     fn test_stretch_infinite() {
-        StretchInfinite::<Cube, _>::default().with(StretchInfinite::dir, Vec3::default());
+        StretchInfinite::<_, Cube>::default().with(StretchInfinite::dir, Vec3::default());
     }
 
     #[test]
     fn test_stretch_dist() {
-        StretchDist::<Cube, _>::default()
+        StretchDist::<_, Cube>::default()
             .with(StretchDist::dir, Vec3::default())
             .with(StretchDist::dist, f32::default());
     }

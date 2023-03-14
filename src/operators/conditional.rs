@@ -27,10 +27,9 @@ where
     }
 }
 
-pub type Conditional<Sdf, Op, const CONDITION: bool> =
-    Operator<Sdf, ConditionalOp<Op, CONDITION>>;
+pub type Conditional<Op, Sdf, const CONDITION: bool> = Operator<ConditionalOp<Op, CONDITION>, Sdf>;
 
-impl<Sdf, Op, const CONDITION: bool> Conditional<Sdf, Op, CONDITION> {
+impl<Op, Sdf, const CONDITION: bool> Conditional<Op, Sdf, CONDITION> {
     pub fn conditional_op(&mut self) -> &mut Op {
         &mut self.op.conditional_op
     }
@@ -47,8 +46,7 @@ pub mod test {
 
     #[test]
     pub fn test_conditional() {
-        Conditional::<Sphere, StretchDistOp<Vec3>, true>::default()
+        Conditional::<StretchDistOp<Vec3>, Sphere, true>::default()
             .with(Conditional::conditional_op, StretchDistOp::default());
     }
 }
-

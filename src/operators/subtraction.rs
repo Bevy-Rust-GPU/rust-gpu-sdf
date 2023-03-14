@@ -29,7 +29,7 @@ where
 }
 
 /// Compute the boolean subtraction of two distance fields.
-pub type Subtraction<SdfA, SdfB> = Operator<SdfA, SubtractionOp<SdfB>>;
+pub type Subtraction<SdfA, SdfB> = Operator<SubtractionOp<SdfB>, SdfA>;
 
 impl<SdfA, SdfB> Subtraction<SdfA, SdfB> {
     pub fn sdf(&mut self) -> &mut SdfB {

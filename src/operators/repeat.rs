@@ -56,9 +56,9 @@ where
 }
 
 /// Repeat a distance field infinitely in one or more axes.
-pub type RepeatInfinite<Sdf, Dim> = Operator<Sdf, RepeatInfiniteOp<Dim>>;
+pub type RepeatInfinite<Dim, Sdf> = Operator<RepeatInfiniteOp<Dim>, Sdf>;
 
-impl<Sdf, Dim> RepeatInfinite<Sdf, Dim> {
+impl<Dim, Sdf> RepeatInfinite<Dim, Sdf> {
     pub fn period(&mut self) -> &mut Dim {
         &mut self.op.period
     }
@@ -110,9 +110,9 @@ impl SignedDistanceOperator<Vec3, Distance> for RepeatCountOp<Vec3> {
 }
 
 /// Repeat a distance field a set number of times in one or more axes.
-pub type RepeatCount<Sdf, Dim> = Operator<Sdf, RepeatCountOp<Dim>>;
+pub type RepeatCount<Dim, Sdf> = Operator<RepeatCountOp<Dim>, Sdf>;
 
-impl<Sdf, Dim> RepeatCount<Sdf, Dim> {
+impl<Dim, Sdf> RepeatCount<Dim, Sdf> {
     pub fn period(&mut self) -> &mut Dim {
         &mut self.op.period
     }
@@ -133,12 +133,12 @@ pub mod tests {
 
     #[test]
     fn test_repeat_infinite() {
-        RepeatInfinite::<Sphere, _>::default().with(RepeatInfinite::period, Vec3::default());
+        RepeatInfinite::<_, Sphere>::default().with(RepeatInfinite::period, Vec3::default());
     }
 
     #[test]
     fn test_repeat_count() {
-        RepeatCount::<Sphere, _>::default()
+        RepeatCount::<_, Sphere>::default()
             .with(RepeatCount::period, Vec3::default())
             .with(RepeatCount::count, Vec3::default());
     }

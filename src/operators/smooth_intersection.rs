@@ -31,7 +31,7 @@ where
 }
 
 /// Compute the blended boolean intersection of two distance fields.
-pub type SmoothIntersection<SdfA, SdfB> = Operator<SdfA, SmoothIntersectionOp<SdfB>>;
+pub type SmoothIntersection<SdfA, SdfB> = Operator<SmoothIntersectionOp<SdfB>, SdfA>;
 
 impl<SdfA, SdfB> SmoothIntersection<SdfA, SdfB> {
     pub fn sdf(&mut self) -> &mut SdfB {
