@@ -1,3 +1,6 @@
+//! Given an infinitely-thin surface,
+//! divide space into interior and exterior based on axis.
+
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
 use type_fields::Field;
 
@@ -5,6 +8,8 @@ use crate::signed_distance_field::attributes::distance::Distance;
 
 use super::{Operator, SignedDistanceOperator};
 
+/// Given an infinitely-thin surface,
+/// divide space into interior and exterior based on axis.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 pub struct SidedOp<Dim> {
     pub axis: Dim,
@@ -45,6 +50,8 @@ impl SignedDistanceOperator<Vec3, Distance> for SidedOp<Vec3> {
 
 pub type Sided<Sdf, Dim> = Operator<Sdf, SidedOp<Dim>>;
 
+/// Given an infinitely-thin surface,
+/// divide space into interior and exterior based on axis.
 impl<Sdf, Dim> Sided<Sdf, Dim> {
     pub fn axis(&mut self) -> &mut Dim {
         &mut self.op.axis
