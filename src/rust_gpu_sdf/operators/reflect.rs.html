@@ -91,6 +91,12 @@
 <a href="#91" id="91">91</a>
 <a href="#92" id="92">92</a>
 <a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Reflect a distance field about an arbitrary axis.
 
 </span><span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
@@ -102,6 +108,12 @@
 </span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Field)]
 </span><span class="kw">pub struct </span>ReflectOp&lt;Dim&gt; {
     <span class="kw">pub </span>axis: Dim,
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>ReflectOp&lt;f32&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        ReflectOp { axis: <span class="number">1.0 </span>}
+    }
 }
 
 <span class="kw">impl </span>Default <span class="kw">for </span>ReflectOp&lt;Vec2&gt; {
