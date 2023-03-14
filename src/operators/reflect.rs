@@ -11,6 +11,12 @@ pub struct ReflectOp<Dim> {
     pub axis: Dim,
 }
 
+impl Default for ReflectOp<f32> {
+    fn default() -> Self {
+        ReflectOp { axis: 1.0 }
+    }
+}
+
 impl Default for ReflectOp<Vec2> {
     fn default() -> Self {
         ReflectOp { axis: Vec2::X }
