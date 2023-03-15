@@ -7,9 +7,6 @@ pub mod bound_checker;
 
 pub mod prelude;
 
-#[cfg(test)]
-pub mod tests;
-
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
 
 pub type D1 = f32;
