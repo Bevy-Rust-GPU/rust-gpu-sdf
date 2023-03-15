@@ -11,10 +11,16 @@ pub mod superellipsoid {
 
     use crate::signed_distance_field::{attributes::distance::Distance, SignedDistanceField};
 
-    #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+    #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
     pub struct Superellipsoid {
         pub e1: f32,
         pub e2: f32,
+    }
+
+    impl Default for Superellipsoid {
+        fn default() -> Self {
+            Superellipsoid { e1: 1.0, e2: 1.0 }
+        }
     }
 
     impl SignedDistanceField<Vec3, Distance> for Superellipsoid {
