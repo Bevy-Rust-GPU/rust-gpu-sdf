@@ -1,6 +1,7 @@
 use core::{marker::PhantomData, ops::RangeInclusive};
 
 use rust_gpu_bridge::prelude::{Vec2, Vec3};
+use type_fields::field::Field;
 
 use crate::{
     default,
@@ -14,6 +15,8 @@ use crate::{
 pub struct BoundChecker<Dim, Sdf> {
     pub sdf: Sdf,
     pub samples: RangeInclusive<isize>,
+    pub step: f32,
+    pub epsilon: f32,
     pub _phantom: PhantomData<Dim>,
 }
 
@@ -25,6 +28,8 @@ where
         BoundChecker {
             sdf: default(),
             samples: -10..=10,
+            step: 2.0 / 20.0,
+            epsilon: 0.5,
             _phantom: default(),
         }
     }
@@ -36,16 +41,8 @@ impl<Dim, Sdf> BoundChecker<Dim, Sdf> {
 
 impl<Sdf> BoundChecker<Vec2, Sdf>
 where
-    Sdf: SignedDistanceField<Vec2, Distance> + Clone,
+    Sdf: SignedDistanceField<Vec2, Distance> + Clone + 'static,
 {
-    pub fn new(sdf: Sdf) -> Self {
-        Self {
-            sdf,
-            samples: -10..=10,
-            _phantom: default(),
-        }
-    }
-
     pub fn is_field(self) -> bool {
         !self.is_bound()
     }
@@ -55,25 +52,22 @@ where
         for x in self.samples.clone() {
             for y in self.samples.clone() {
                 // Create sample coordinate
-                let pos = Vec2::new(x as f32, y as f32) * 0.5;
+                let pos = Vec2::new(x as f32, y as f32) * self.step;
 
                 // Calculate normal
-                let normal = *CentralDiffNormal::<Sdf>::new(self.sdf.clone(), 0.5).evaluate(pos);
-
-                // Skip invalid normals (ex. crossing zero)
-                if normal.is_nan() {
-                    continue;
-                }
+                let normal = *CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
+                    .with(CentralDiffNormal::epsilon, self.epsilon)
+                    .evaluate(pos);
 
                 // Apply 1D central differencing along normal,
                 // resulting in distance-space derivative
-                let a = *self.sdf.evaluate(pos - normal * 0.5);
-                let b = *self.sdf.evaluate(pos + normal * 0.5);
+                let a = *self.sdf.evaluate(pos - normal * self.epsilon);
+                let b = *self.sdf.evaluate(pos + normal * self.epsilon);
                 let deriv = b - a;
 
                 // Assert that derivative is 1 (w.r.t. floating-point error)
-                if deriv.abs() - 1.0 > Self::DERIV_EPSILON {
-                    // panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
+                if deriv.abs() - (self.epsilon * 2.0) > Self::DERIV_EPSILON {
+                    panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
                     return true;
                 }
             }
@@ -85,16 +79,8 @@ where
 
 impl<Sdf> BoundChecker<Vec3, Sdf>
 where
-    Sdf: SignedDistanceField<Vec3, Distance> + Clone,
+    Sdf: SignedDistanceField<Vec3, Distance> + Clone + 'static,
 {
-    pub fn new(sdf: Sdf) -> Self {
-        Self {
-            sdf,
-            samples: -10..=10,
-            _phantom: default(),
-        }
-    }
-
     pub fn is_field(self) -> bool {
         !self.is_bound()
     }
@@ -105,26 +91,22 @@ where
             for y in self.samples.clone() {
                 for z in self.samples.clone() {
                     // Create sample coordinate
-                    let pos = Vec3::new(x as f32, y as f32, z as f32) * 0.5;
+                    let pos = Vec3::new(x as f32, y as f32, z as f32) * self.step;
 
                     // Calculate normal
-                    let normal =
-                        *CentralDiffNormal::<Sdf>::new(self.sdf.clone(), 0.5).evaluate(pos);
-
-                    // Skip invalid normals (ex. crossing zero)
-                    if normal.is_nan() {
-                        continue;
-                    }
+                    let normal = *CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
+                        .with(CentralDiffNormal::epsilon, self.epsilon)
+                        .evaluate(pos);
 
                     // Apply 1D central differencing along normal,
                     // resulting in distance-space derivative
-                    let a = *self.sdf.evaluate(pos - normal * 0.5);
-                    let b = *self.sdf.evaluate(pos + normal * 0.5);
+                    let a = *self.sdf.evaluate(pos - normal * self.epsilon);
+                    let b = *self.sdf.evaluate(pos + normal * self.epsilon);
                     let deriv = b - a;
 
                     // Assert that derivative is 1 (w.r.t. floating-point error)
-                    if deriv.abs() - 1.0 > Self::DERIV_EPSILON {
-                        // panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
+                    if deriv.abs() - (self.epsilon * 2.0) > Self::DERIV_EPSILON {
+                        panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
                         return true;
                     }
                 }

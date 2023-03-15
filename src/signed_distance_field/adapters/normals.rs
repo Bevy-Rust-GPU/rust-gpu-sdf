@@ -124,6 +124,16 @@ where
 pub type CentralDiffNormal<Sdf> = Normalize<CentralDiffDerivative<Sdf>>;
 
 impl<Sdf> CentralDiffNormal<Sdf> {
+    pub fn sdf(&mut self) -> &mut Sdf {
+        &mut self.target.sdf
+    }
+
+    pub fn epsilon(&mut self) -> &mut f32 {
+        &mut self.target.epsilon
+    }
+}
+
+impl<Sdf> CentralDiffNormal<Sdf> {
     pub fn new(sdf: Sdf, epsilon: f32) -> Self {
         CentralDiffNormal {
             target: CentralDiffDerivative { sdf, epsilon },
