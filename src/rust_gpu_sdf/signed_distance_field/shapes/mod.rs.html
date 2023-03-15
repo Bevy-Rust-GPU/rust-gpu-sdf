@@ -41,35 +41,29 @@
 <a href="#41" id="41">41</a>
 <a href="#42" id="42">42</a>
 <a href="#43" id="43">43</a>
-<a href="#44" id="44">44</a>
-<a href="#45" id="45">45</a>
-<a href="#46" id="46">46</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Distance field shapes.
 
 </span><span class="kw">pub mod </span>composite;
 <span class="kw">pub mod </span>octahedron;
 <span class="kw">pub mod </span>plane;
 <span class="kw">pub mod </span>squircle;
-<span class="kw">pub mod </span>lame_curve {
-    <span class="kw">use </span>rust_gpu_bridge::prelude::Vec2;
+<span class="kw">pub mod </span>superellipse;
+<span class="kw">pub mod </span>superellipsoid {
+    <span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
     <span class="kw">use </span>type_fields::Field;
 
     <span class="kw">use </span><span class="kw">crate</span>::signed_distance_field::{attributes::distance::Distance, SignedDistanceField};
 
-    <span class="attr">#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
-    </span><span class="kw">pub struct </span>LameCurve {
-        <span class="kw">pub </span>n: f32,
+    <span class="attr">#[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+    </span><span class="kw">pub struct </span>Superellipsoid {
+        <span class="kw">pub </span>e1: f32,
+        <span class="kw">pub </span>e2: f32,
     }
 
-    <span class="kw">impl </span>Default <span class="kw">for </span>LameCurve {
-        <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-            LameCurve { n: <span class="number">1.0 </span>}
-        }
-    }
-
-    <span class="kw">impl </span>SignedDistanceField&lt;Vec2, Distance&gt; <span class="kw">for </span>LameCurve {
-        <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Vec2) -&gt; Distance {
-            <span class="kw">let </span>d = p.x.abs().powf(<span class="self">self</span>.n) + p.y.abs().powf(<span class="self">self</span>.n);
+    <span class="kw">impl </span>SignedDistanceField&lt;Vec3, Distance&gt; <span class="kw">for </span>Superellipsoid {
+        <span class="kw">fn </span>evaluate(<span class="kw-2">&amp;</span><span class="self">self</span>, p: Vec3) -&gt; Distance {
+            <span class="kw">let </span>d = (p.x.abs().powf(<span class="self">self</span>.e1) + p.y.abs().powf(<span class="self">self</span>.e2)).powf(<span class="self">self</span>.e2 / <span class="self">self</span>.e1)
+                + p.z.abs().powf(<span class="self">self</span>.e1);
             <span class="kw">let </span>d = d - <span class="number">1.0</span>;
             Distance(d)
         }
@@ -77,16 +71,16 @@
 
     <span class="attr">#[cfg(test)]
     </span><span class="kw">pub mod </span>test {
-        <span class="kw">use </span>rust_gpu_bridge::prelude::Vec2;
+        <span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
 
         <span class="kw">use </span><span class="kw">crate</span>::prelude::BoundChecker;
 
-        <span class="kw">use </span><span class="kw">super</span>::LameCurve;
+        <span class="kw">use </span><span class="kw">super</span>::Superellipsoid;
 
         <span class="attr">#[test]
         #[should_panic]
-        </span><span class="kw">fn </span>test_lame_curve() {
-            <span class="macro">assert!</span>(BoundChecker::&lt;Vec2, LameCurve&gt;::default().is_field())
+        </span><span class="kw">fn </span>test_superellipsoid() {
+            <span class="macro">assert!</span>(BoundChecker::&lt;Vec3, Superellipsoid&gt;::default().is_field())
         }
     }
 }
