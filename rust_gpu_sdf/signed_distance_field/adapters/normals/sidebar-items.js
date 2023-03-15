@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["CentralDiffNormals",""],["TetrahedronNormals",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["CentralDiffDerivative",""],["NormalizeOp",""],["TetrahedronDerivative",""]],"type":[["CentralDiffNormal",""],["Normalize",""],["TetrahedronNormal",""]]};

@@ -55,6 +55,8 @@
 <a href="#55" id="55">55</a>
 <a href="#56" id="56">56</a>
 <a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
 </pre><pre class="rust"><code><span class="doccomment">//! An octahedron.
 
 </span><span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
@@ -103,13 +105,15 @@
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">pub mod </span>test {
-    <span class="kw">use </span>type_fields::field::Field;
+    <span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
+
+    <span class="kw">use </span><span class="kw">crate</span>::prelude::BoundChecker;
 
     <span class="kw">use </span><span class="kw">super</span>::Octahedron;
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_octahedron() {
-        Octahedron::default().with(Octahedron::size, f32::default());
+        <span class="macro">assert!</span>(BoundChecker::&lt;Vec3, Octahedron&gt;::default().is_field())
     }
 }
 </code></pre></div>

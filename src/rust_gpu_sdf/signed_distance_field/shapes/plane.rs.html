@@ -61,6 +61,12 @@
 <a href="#61" id="61">61</a>
 <a href="#62" id="62">62</a>
 <a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
+<a href="#65" id="65">65</a>
+<a href="#66" id="66">66</a>
+<a href="#67" id="67">67</a>
+<a href="#68" id="68">68</a>
+<a href="#69" id="69">69</a>
 </pre><pre class="rust"><code><span class="doccomment">//! A plane.
 </span><span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
 <span class="kw">use </span>type_fields::Field;
@@ -114,14 +120,20 @@
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">pub mod </span>test {
-    <span class="kw">use </span>rust_gpu_bridge::prelude::Vec3;
-    <span class="kw">use </span>type_fields::field::Field;
+    <span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
+
+    <span class="kw">use </span><span class="kw">crate</span>::prelude::BoundChecker;
 
     <span class="kw">use </span><span class="kw">super</span>::Plane;
 
     <span class="attr">#[test]
-    </span><span class="kw">pub fn </span>test_plane() {
-        Plane::&lt;<span class="kw">_</span>&gt;::default().with(Plane::dir, Vec3::default());
+    </span><span class="kw">pub fn </span>test_plane_2d() {
+        <span class="macro">assert!</span>(BoundChecker::&lt;Vec2, Plane&lt;<span class="kw">_</span>&gt;&gt;::default().is_field())
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">pub fn </span>test_plane_3d() {
+        <span class="macro">assert!</span>(BoundChecker::&lt;Vec3, Plane&lt;<span class="kw">_</span>&gt;&gt;::default().is_field())
     }
 }
 </code></pre></div>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["BoundChecker","Asserts that the provided distance function is a field rather than a bound"]]};

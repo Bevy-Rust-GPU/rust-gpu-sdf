@@ -98,7 +98,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 <span class="doccomment">/// Extrude a shape along its axes, preserving exterior geometry.
-</span><span class="attr">#[derive(Debug, Field)]
+</span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 </span><span class="kw">pub struct </span>ElongateOp&lt;Dim&gt; {
     <span class="kw">pub </span>extent: Dim,
 }
