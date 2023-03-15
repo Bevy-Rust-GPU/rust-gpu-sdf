@@ -116,27 +116,10 @@
 <a href="#116" id="116">116</a>
 <a href="#117" id="117">117</a>
 <a href="#118" id="118">118</a>
-<a href="#119" id="119">119</a>
-<a href="#120" id="120">120</a>
-<a href="#121" id="121">121</a>
-<a href="#122" id="122">122</a>
-<a href="#123" id="123">123</a>
-<a href="#124" id="124">124</a>
-<a href="#125" id="125">125</a>
-<a href="#126" id="126">126</a>
-<a href="#127" id="127">127</a>
-<a href="#128" id="128">128</a>
-<a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a>
-<a href="#131" id="131">131</a>
-<a href="#132" id="132">132</a>
-<a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
 </pre><pre class="rust"><code><span class="kw">use </span>core::{marker::PhantomData, ops::RangeInclusive};
 
 <span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec3};
+<span class="kw">use </span>type_fields::field::Field;
 
 <span class="kw">use crate</span>::{
     default,
@@ -150,6 +133,8 @@
 </span><span class="kw">pub struct </span>BoundChecker&lt;Dim, Sdf&gt; {
     <span class="kw">pub </span>sdf: Sdf,
     <span class="kw">pub </span>samples: RangeInclusive&lt;isize&gt;,
+    <span class="kw">pub </span>step: f32,
+    <span class="kw">pub </span>epsilon: f32,
     <span class="kw">pub </span>_phantom: PhantomData&lt;Dim&gt;,
 }
 
@@ -161,6 +146,8 @@
         BoundChecker {
             sdf: default(),
             samples: -<span class="number">10</span>..=<span class="number">10</span>,
+            step: <span class="number">2.0 </span>/ <span class="number">20.0</span>,
+            epsilon: <span class="number">0.5</span>,
             _phantom: default(),
         }
     }
@@ -172,16 +159,8 @@
 
 <span class="kw">impl</span>&lt;Sdf&gt; BoundChecker&lt;Vec2, Sdf&gt;
 <span class="kw">where
-    </span>Sdf: SignedDistanceField&lt;Vec2, Distance&gt; + Clone,
+    </span>Sdf: SignedDistanceField&lt;Vec2, Distance&gt; + Clone + <span class="lifetime">&#39;static</span>,
 {
-    <span class="kw">pub fn </span>new(sdf: Sdf) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            sdf,
-            samples: -<span class="number">10</span>..=<span class="number">10</span>,
-            _phantom: default(),
-        }
-    }
-
     <span class="kw">pub fn </span>is_field(<span class="self">self</span>) -&gt; bool {
         !<span class="self">self</span>.is_bound()
     }
@@ -191,26 +170,23 @@
         </span><span class="kw">for </span>x <span class="kw">in </span><span class="self">self</span>.samples.clone() {
             <span class="kw">for </span>y <span class="kw">in </span><span class="self">self</span>.samples.clone() {
                 <span class="comment">// Create sample coordinate
-                </span><span class="kw">let </span>pos = Vec2::new(x <span class="kw">as </span>f32, y <span class="kw">as </span>f32) * <span class="number">0.5</span>;
+                </span><span class="kw">let </span>pos = Vec2::new(x <span class="kw">as </span>f32, y <span class="kw">as </span>f32) * <span class="self">self</span>.step;
 
                 <span class="comment">// Calculate normal
-                </span><span class="kw">let </span>normal = <span class="kw-2">*</span>CentralDiffNormal::&lt;Sdf&gt;::new(<span class="self">self</span>.sdf.clone(), <span class="number">0.5</span>).evaluate(pos);
-
-                <span class="comment">// Skip invalid normals (ex. crossing zero)
-                </span><span class="kw">if </span>normal.is_nan() {
-                    <span class="kw">continue</span>;
-                }
+                </span><span class="kw">let </span>normal = <span class="kw-2">*</span>CentralDiffNormal::&lt;Sdf&gt;::new(<span class="self">self</span>.sdf.clone(), <span class="self">self</span>.step)
+                    .with(CentralDiffNormal::epsilon, <span class="self">self</span>.epsilon)
+                    .evaluate(pos);
 
                 <span class="comment">// Apply 1D central differencing along normal,
                 // resulting in distance-space derivative
-                </span><span class="kw">let </span>a = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(pos - normal * <span class="number">0.5</span>);
-                <span class="kw">let </span>b = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(pos + normal * <span class="number">0.5</span>);
+                </span><span class="kw">let </span>a = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(pos - normal * <span class="self">self</span>.epsilon);
+                <span class="kw">let </span>b = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(pos + normal * <span class="self">self</span>.epsilon);
                 <span class="kw">let </span>deriv = b - a;
 
                 <span class="comment">// Assert that derivative is 1 (w.r.t. floating-point error)
-                </span><span class="kw">if </span>deriv.abs() - <span class="number">1.0 </span>&gt; <span class="self">Self</span>::DERIV_EPSILON {
-                    <span class="comment">// panic!(&quot;{deriv:?} at position {pos:?} is non-unit, resulting in a bound.&quot;);
-                    </span><span class="kw">return </span><span class="bool-val">true</span>;
+                </span><span class="kw">if </span>deriv.abs() - (<span class="self">self</span>.epsilon * <span class="number">2.0</span>) &gt; <span class="self">Self</span>::DERIV_EPSILON {
+                    <span class="macro">panic!</span>(<span class="string">&quot;{deriv:?} at position {pos:?} is non-unit, resulting in a bound.&quot;</span>);
+                    <span class="kw">return </span><span class="bool-val">true</span>;
                 }
             }
         }
@@ -221,16 +197,8 @@
 
 <span class="kw">impl</span>&lt;Sdf&gt; BoundChecker&lt;Vec3, Sdf&gt;
 <span class="kw">where
-    </span>Sdf: SignedDistanceField&lt;Vec3, Distance&gt; + Clone,
+    </span>Sdf: SignedDistanceField&lt;Vec3, Distance&gt; + Clone + <span class="lifetime">&#39;static</span>,
 {
-    <span class="kw">pub fn </span>new(sdf: Sdf) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            sdf,
-            samples: -<span class="number">10</span>..=<span class="number">10</span>,
-            _phantom: default(),
-        }
-    }
-
     <span class="kw">pub fn </span>is_field(<span class="self">self</span>) -&gt; bool {
         !<span class="self">self</span>.is_bound()
     }
@@ -241,27 +209,23 @@
             <span class="kw">for </span>y <span class="kw">in </span><span class="self">self</span>.samples.clone() {
                 <span class="kw">for </span>z <span class="kw">in </span><span class="self">self</span>.samples.clone() {
                     <span class="comment">// Create sample coordinate
-                    </span><span class="kw">let </span>pos = Vec3::new(x <span class="kw">as </span>f32, y <span class="kw">as </span>f32, z <span class="kw">as </span>f32) * <span class="number">0.5</span>;
+                    </span><span class="kw">let </span>pos = Vec3::new(x <span class="kw">as </span>f32, y <span class="kw">as </span>f32, z <span class="kw">as </span>f32) * <span class="self">self</span>.step;
 
                     <span class="comment">// Calculate normal
-                    </span><span class="kw">let </span>normal =
-                        <span class="kw-2">*</span>CentralDiffNormal::&lt;Sdf&gt;::new(<span class="self">self</span>.sdf.clone(), <span class="number">0.5</span>).evaluate(pos);
-
-                    <span class="comment">// Skip invalid normals (ex. crossing zero)
-                    </span><span class="kw">if </span>normal.is_nan() {
-                        <span class="kw">continue</span>;
-                    }
+                    </span><span class="kw">let </span>normal = <span class="kw-2">*</span>CentralDiffNormal::&lt;Sdf&gt;::new(<span class="self">self</span>.sdf.clone(), <span class="self">self</span>.step)
+                        .with(CentralDiffNormal::epsilon, <span class="self">self</span>.epsilon)
+                        .evaluate(pos);
 
                     <span class="comment">// Apply 1D central differencing along normal,
                     // resulting in distance-space derivative
-                    </span><span class="kw">let </span>a = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(pos - normal * <span class="number">0.5</span>);
-                    <span class="kw">let </span>b = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(pos + normal * <span class="number">0.5</span>);
+                    </span><span class="kw">let </span>a = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(pos - normal * <span class="self">self</span>.epsilon);
+                    <span class="kw">let </span>b = <span class="kw-2">*</span><span class="self">self</span>.sdf.evaluate(pos + normal * <span class="self">self</span>.epsilon);
                     <span class="kw">let </span>deriv = b - a;
 
                     <span class="comment">// Assert that derivative is 1 (w.r.t. floating-point error)
-                    </span><span class="kw">if </span>deriv.abs() - <span class="number">1.0 </span>&gt; <span class="self">Self</span>::DERIV_EPSILON {
-                        <span class="comment">// panic!(&quot;{deriv:?} at position {pos:?} is non-unit, resulting in a bound.&quot;);
-                        </span><span class="kw">return </span><span class="bool-val">true</span>;
+                    </span><span class="kw">if </span>deriv.abs() - (<span class="self">self</span>.epsilon * <span class="number">2.0</span>) &gt; <span class="self">Self</span>::DERIV_EPSILON {
+                        <span class="macro">panic!</span>(<span class="string">&quot;{deriv:?} at position {pos:?} is non-unit, resulting in a bound.&quot;</span>);
+                        <span class="kw">return </span><span class="bool-val">true</span>;
                     }
                 }
             }

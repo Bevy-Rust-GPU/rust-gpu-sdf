@@ -131,6 +131,16 @@
 <a href="#131" id="131">131</a>
 <a href="#132" id="132">132</a>
 <a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
 </pre><pre class="rust"><code><span class="kw">use </span>rust_gpu_bridge::prelude::{Vec2, Vec2Swizzles, Vec3};
 <span class="kw">use </span>type_fields::Field;
 
@@ -255,6 +265,16 @@
 }
 
 <span class="kw">pub type </span>CentralDiffNormal&lt;Sdf&gt; = Normalize&lt;CentralDiffDerivative&lt;Sdf&gt;&gt;;
+
+<span class="kw">impl</span>&lt;Sdf&gt; CentralDiffNormal&lt;Sdf&gt; {
+    <span class="kw">pub fn </span>sdf(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Sdf {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.target.sdf
+    }
+
+    <span class="kw">pub fn </span>epsilon(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>f32 {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.target.epsilon
+    }
+}
 
 <span class="kw">impl</span>&lt;Sdf&gt; CentralDiffNormal&lt;Sdf&gt; {
     <span class="kw">pub fn </span>new(sdf: Sdf, epsilon: f32) -&gt; <span class="self">Self </span>{
