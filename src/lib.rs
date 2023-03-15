@@ -1,8 +1,9 @@
 #![no_std]
 
 pub mod operators;
-pub mod signed_distance_field;
 pub mod raymarch;
+pub mod signed_distance_field;
+pub mod bound_checker;
 
 pub mod prelude;
 

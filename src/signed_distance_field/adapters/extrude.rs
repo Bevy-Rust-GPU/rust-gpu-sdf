@@ -7,8 +7,7 @@ use crate::signed_distance_field::{Distance, SignedDistanceField};
 
 /// Extrude a 2D distance field into 3D.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
-pub struct Extrude<Sdf>
-{
+pub struct Extrude<Sdf> {
     pub sdf: Sdf,
     pub axis: Vec3,
     pub depth: f32,
@@ -39,17 +38,13 @@ where
 #[cfg(test)]
 pub mod test {
     use rust_gpu_bridge::prelude::Vec3;
-    use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Square;
+    use crate::{prelude::BoundChecker, signed_distance_field::shapes::composite::Square};
 
     use super::Extrude;
 
     #[test]
     fn test_extrude() {
-        Extrude::<Square>::default()
-            .with(Extrude::sdf, Square::default())
-            .with(Extrude::axis, Vec3::default())
-            .with(Extrude::depth, f32::default());
+        assert!(BoundChecker::<Vec3, Extrude::<Square>>::default().is_field());
     }
 }

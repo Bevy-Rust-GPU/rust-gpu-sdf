@@ -38,16 +38,14 @@ where
 
 #[cfg(test)]
 pub mod tests {
-    use type_fields::field::Field;
+    use rust_gpu_bridge::prelude::Vec3;
 
-    use crate::signed_distance_field::shapes::composite::Circle;
+    use crate::{prelude::BoundChecker, signed_distance_field::shapes::composite::Circle};
 
     use super::Sweep;
 
     #[test]
     fn test_sweep() {
-        Sweep::<Circle, Circle>::default()
-            .with(Sweep::core, Circle::default())
-            .with(Sweep::shell, Circle::default());
+        assert!(BoundChecker::<Vec3, Sweep::<Circle, Circle>>::default().is_field());
     }
 }

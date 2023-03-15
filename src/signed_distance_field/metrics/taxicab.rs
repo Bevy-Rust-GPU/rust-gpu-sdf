@@ -27,3 +27,22 @@ impl SignedDistanceField<Vec3, Distance> for TaxicabMetric {
         p.x.abs().add(p.y.abs()).add(p.z.abs()).into()
     }
 }
+
+#[cfg(test)]
+pub mod test {
+    use rust_gpu_bridge::prelude::{Vec2, Vec3};
+
+    use crate::{prelude::BoundChecker, signed_distance_field::metrics::taxicab::TaxicabMetric};
+
+    #[test]
+    #[should_panic]
+    pub fn test_taxicab_metric_2d() {
+        assert!(BoundChecker::<Vec2, TaxicabMetric>::default().is_field());
+    }
+
+    #[test]
+    #[should_panic]
+    pub fn test_taxicab_metric_3d() {
+        assert!(BoundChecker::<Vec3, TaxicabMetric>::default().is_field());
+    }
+}

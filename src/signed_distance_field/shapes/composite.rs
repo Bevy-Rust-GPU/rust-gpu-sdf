@@ -46,6 +46,12 @@ pub type Box<Dim> = Elongate<Dim, Point>;
 /// A 2D square.
 pub type Square = Box<D2>;
 
+/// A 3D cube.
+pub type Cube = Box<D3>;
+
+/// A 3D torus.
+pub type Torus = Sweep<Circle, Circle>;
+
 pub type NgonMirror<Sdf> = Reflect<Vec2, Sdf>;
 
 impl<Sdf> NgonMirror<Sdf> {
@@ -296,25 +302,107 @@ impl Decagon {
     }
 }
 
-/// A 3D cube.
-pub type Cube = Box<D3>;
-
-/// A 3D torus.
-pub type Torus = Sweep<Circle, Circle>;
 
 #[cfg(test)]
 pub mod tests {
-    use type_fields::field::Field;
+    use rust_gpu_bridge::prelude::{Vec2, Vec3};
 
-    use super::{Circle, Sphere};
+    use crate::{prelude::BoundChecker, signed_distance_field::shapes::composite::{Line, Capsule, Square, Cube, Torus, Triangle, Quadrilateral, Pentagon, Hexagon, Septagon, Octagon, Nonagon, Decagon}};
+
+    use super::{Circle, Point, Sphere};
+
+    #[test]
+    fn test_point_2d() {
+        assert!(BoundChecker::<Vec2, Point>::default().is_field());
+    }
+
+    #[test]
+    fn test_line_2d() {
+        assert!(BoundChecker::<Vec2, Line<_>>::default().is_field());
+    }
+
+    #[test]
+    fn test_point_3d() {
+        assert!(BoundChecker::<Vec3, Point>::default().is_field());
+    }
+
+    #[test]
+    fn test_line_3d() {
+        assert!(BoundChecker::<Vec3, Line<_>>::default().is_field());
+    }
 
     #[test]
     fn test_circle() {
-        Circle::default().with(Circle::radius, f32::default());
+        assert!(BoundChecker::<Vec2, Circle>::default().is_field());
     }
 
     #[test]
     fn test_sphere() {
-        Sphere::default().with(Sphere::radius, f32::default());
+        assert!(BoundChecker::<Vec3, Sphere>::default().is_field());
+    }
+
+    #[test]
+    fn test_capsule_2d() {
+        assert!(BoundChecker::<Vec2, Capsule<_>>::default().is_field());
+    }
+
+    #[test]
+    fn test_capsule_3d() {
+        assert!(BoundChecker::<Vec3, Capsule<_>>::default().is_field());
+    }
+
+    #[test]
+    fn test_square() {
+        assert!(BoundChecker::<Vec2, Square>::default().is_field());
+    }
+
+    #[test]
+    fn test_cube() {
+        assert!(BoundChecker::<Vec3, Cube>::default().is_field());
+    }
+
+    #[test]
+    fn test_torus() {
+        assert!(BoundChecker::<Vec3, Torus>::default().is_field());
+    }
+
+    #[test]
+    fn test_triangle() {
+        assert!(BoundChecker::<Vec2, Triangle>::default().is_field());
+    }
+
+    #[test]
+    fn test_quadrilateral() {
+        assert!(BoundChecker::<Vec2, Quadrilateral>::default().is_field());
+    }
+
+    #[test]
+    fn test_pentagon() {
+        assert!(BoundChecker::<Vec2, Pentagon>::default().is_field());
+    }
+
+    #[test]
+    fn test_hexagon() {
+        assert!(BoundChecker::<Vec2, Hexagon>::default().is_field());
+    }
+
+    #[test]
+    fn test_septagon() {
+        assert!(BoundChecker::<Vec2, Septagon>::default().is_field());
+    }
+
+    #[test]
+    fn test_octagon() {
+        assert!(BoundChecker::<Vec2, Octagon>::default().is_field());
+    }
+
+    #[test]
+    fn test_nonagon() {
+        assert!(BoundChecker::<Vec2, Nonagon>::default().is_field());
+    }
+
+    #[test]
+    fn test_decagon() {
+        assert!(BoundChecker::<Vec2, Decagon>::default().is_field());
     }
 }

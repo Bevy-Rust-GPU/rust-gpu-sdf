@@ -51,3 +51,16 @@ where
         Distance(interior + exterior)
     }
 }
+
+#[cfg(test)]
+pub mod test {
+    use rust_gpu_bridge::prelude::Vec3;
+
+    use crate::{prelude::BoundChecker, signed_distance_field::shapes::composite::Circle};
+
+    #[test]
+    #[should_panic]
+    pub fn extrude_interior() {
+        assert!(BoundChecker::<Vec3, Circle>::default().is_field())
+    }
+}

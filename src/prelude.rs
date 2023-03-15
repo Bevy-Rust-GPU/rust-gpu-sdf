@@ -12,5 +12,6 @@ pub use crate::{
         shapes::{composite::*, octahedron::*, plane::*, *},
         *,
     },
+    bound_checker::*,
     *,
 };

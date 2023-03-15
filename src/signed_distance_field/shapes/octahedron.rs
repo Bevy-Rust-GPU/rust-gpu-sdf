@@ -46,12 +46,14 @@ impl SignedDistanceField<Vec3, Distance> for Octahedron {
 
 #[cfg(test)]
 pub mod test {
-    use type_fields::field::Field;
+    use rust_gpu_bridge::prelude::Vec3;
+
+    use crate::prelude::BoundChecker;
 
     use super::Octahedron;
 
     #[test]
     fn test_octahedron() {
-        Octahedron::default().with(Octahedron::size, f32::default());
+        assert!(BoundChecker::<Vec3, Octahedron>::default().is_field())
     }
 }

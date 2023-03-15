@@ -46,3 +46,22 @@ impl SignedDistanceField<Vec3, Normal<Vec3>> for EuclideanMetric {
         p.normalize().into()
     }
 }
+
+#[cfg(test)]
+pub mod test {
+    use rust_gpu_bridge::prelude::{Vec2, Vec3};
+
+    use crate::{
+        prelude::BoundChecker, signed_distance_field::metrics::euclidean::EuclideanMetric,
+    };
+
+    #[test]
+    fn test_euclidean_metric_2d() {
+        assert!(BoundChecker::<Vec2, EuclideanMetric>::default().is_field());
+    }
+
+    #[test]
+    fn test_euclidean_metric_3d() {
+        assert!(BoundChecker::<Vec3, EuclideanMetric>::default().is_field());
+    }
+}

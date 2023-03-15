@@ -8,7 +8,7 @@ use type_fields::Field;
 use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
 
 /// Extrude a shape along its axes, preserving exterior geometry.
-#[derive(Debug, Field)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 pub struct ElongateOp<Dim> {
     pub extent: Dim,
 }

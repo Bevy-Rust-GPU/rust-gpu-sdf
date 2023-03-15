@@ -51,13 +51,19 @@ impl SignedDistanceField<Vec3, Distance> for Plane<Vec3> {
 
 #[cfg(test)]
 pub mod test {
-    use rust_gpu_bridge::prelude::Vec3;
-    use type_fields::field::Field;
+    use rust_gpu_bridge::prelude::{Vec2, Vec3};
+
+    use crate::prelude::BoundChecker;
 
     use super::Plane;
 
     #[test]
-    pub fn test_plane() {
-        Plane::<_>::default().with(Plane::dir, Vec3::default());
+    pub fn test_plane_2d() {
+        assert!(BoundChecker::<Vec2, Plane<_>>::default().is_field())
+    }
+
+    #[test]
+    pub fn test_plane_3d() {
+        assert!(BoundChecker::<Vec3, Plane<_>>::default().is_field())
     }
 }
