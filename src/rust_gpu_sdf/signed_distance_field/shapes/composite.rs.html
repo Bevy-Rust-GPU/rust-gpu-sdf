@@ -486,7 +486,7 @@
 }
 
 <span class="kw">pub type </span>Triangle =
-    AxialReflect&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;, AXIS_X&gt;;
+    AxialReflect&lt;AXIS_X, NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;;
 
 <span class="kw">impl </span>Triangle {
     <span class="kw">pub fn </span>triangle() -&gt; <span class="self">Self </span>{
@@ -510,7 +510,7 @@
 }
 
 <span class="kw">pub type </span>Quadrilateral =
-    AxialReflect&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;, AXIS_XY&gt;;
+    AxialReflect&lt;AXIS_XY, NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;;
 
 <span class="kw">impl </span>Quadrilateral {
     <span class="kw">pub fn </span>quadrilateral() -&gt; <span class="self">Self </span>{
@@ -534,8 +534,8 @@
 }
 
 <span class="kw">pub type </span>Pentagon = AxialReflect&lt;
-    NgonMirror&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;,
     AXIS_X,
+    NgonMirror&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;,
 &gt;;
 
 <span class="kw">impl </span>Pentagon {
@@ -562,7 +562,7 @@
 }
 
 <span class="kw">pub type </span>Hexagon =
-    AxialReflect&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;, AXIS_XY&gt;;
+    AxialReflect&lt;AXIS_XY, NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;;
 
 <span class="kw">impl </span>Hexagon {
     <span class="kw">pub fn </span>hexagon() -&gt; <span class="self">Self </span>{
@@ -579,8 +579,8 @@
 }
 
 <span class="kw">pub type </span>Septagon = AxialReflect&lt;
-    NgonMirror&lt;NgonMirror&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;&gt;,
     AXIS_X,
+    NgonMirror&lt;NgonMirror&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;&gt;,
 &gt;;
 
 <span class="kw">impl </span>Septagon {
@@ -611,8 +611,8 @@
 }
 
 <span class="kw">pub type </span>Octagon = AxialReflect&lt;
-    NgonMirror&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;,
     AXIS_XY,
+    NgonMirror&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;,
 &gt;;
 
 <span class="kw">impl </span>Octagon {
@@ -639,10 +639,10 @@
 }
 
 <span class="kw">pub type </span>Nonagon = AxialReflect&lt;
+    AXIS_X,
     NgonMirror&lt;
         NgonMirror&lt;NgonMirror&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;&gt;,
     &gt;,
-    AXIS_X,
 &gt;;
 
 <span class="kw">impl </span>Nonagon {
@@ -691,8 +691,8 @@
 }
 
 <span class="kw">pub type </span>Decagon = AxialReflect&lt;
-    NgonMirror&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;,
     AXIS_XY,
+    NgonMirror&lt;NgonMirror&lt;StretchDist&lt;Vec2, Translate&lt;Vec2, Sided&lt;Vec2, Point&gt;&gt;&gt;&gt;&gt;,
 &gt;;
 
 <span class="kw">impl </span>Decagon {
