@@ -78,7 +78,7 @@ impl<Sdf> NgonMirror<Sdf> {
 }
 
 pub type Triangle =
-    AxialReflect<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>, AXIS_X>;
+    AxialReflect<AXIS_X, NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>;
 
 impl Triangle {
     pub fn triangle() -> Self {
@@ -102,7 +102,7 @@ impl Triangle {
 }
 
 pub type Quadrilateral =
-    AxialReflect<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>, AXIS_XY>;
+    AxialReflect<AXIS_XY, NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>;
 
 impl Quadrilateral {
     pub fn quadrilateral() -> Self {
@@ -126,8 +126,8 @@ impl Quadrilateral {
 }
 
 pub type Pentagon = AxialReflect<
-    NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>,
     AXIS_X,
+    NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>,
 >;
 
 impl Pentagon {
@@ -154,7 +154,7 @@ impl Pentagon {
 }
 
 pub type Hexagon =
-    AxialReflect<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>, AXIS_XY>;
+    AxialReflect<AXIS_XY, NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>;
 
 impl Hexagon {
     pub fn hexagon() -> Self {
@@ -171,8 +171,8 @@ impl Hexagon {
 }
 
 pub type Septagon = AxialReflect<
-    NgonMirror<NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>>,
     AXIS_X,
+    NgonMirror<NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>>,
 >;
 
 impl Septagon {
@@ -203,8 +203,8 @@ impl Septagon {
 }
 
 pub type Octagon = AxialReflect<
-    NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>,
     AXIS_XY,
+    NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>,
 >;
 
 impl Octagon {
@@ -231,10 +231,10 @@ impl Octagon {
 }
 
 pub type Nonagon = AxialReflect<
+    AXIS_X,
     NgonMirror<
         NgonMirror<NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>>,
     >,
-    AXIS_X,
 >;
 
 impl Nonagon {
@@ -283,8 +283,8 @@ impl Nonagon {
 }
 
 pub type Decagon = AxialReflect<
-    NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>,
     AXIS_XY,
+    NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>,
 >;
 
 impl Decagon {

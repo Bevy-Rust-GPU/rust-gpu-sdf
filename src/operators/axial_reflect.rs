@@ -70,4 +70,4 @@ impl<const AXIS: usize> SignedDistanceOperator<Vec3, Distance> for AxialReflectO
 }
 
 /// Reflect a distance field about X / Y / Z
-pub type AxialReflect<Sdf, const AXIS: usize> = Operator<AxialReflectOp<AXIS>, Sdf>;
+pub type AxialReflect<const AXIS: usize, Sdf> = Operator<AxialReflectOp<AXIS>, Sdf>;
