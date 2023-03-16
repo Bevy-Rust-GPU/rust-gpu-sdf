@@ -1,6 +1,6 @@
 //! Stretch a shape along an arbitrary axis, preserving exterior geometry as caps.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3};
+use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
 use type_fields::Field;
 
 use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};

@@ -1,10 +1,10 @@
 //! Attributes that can be computed by a distance field
 
 pub mod distance {
-    use core::{
-        fmt::Display,
-        ops::{Deref, DerefMut},
-    };
+    use core::ops::{Deref, DerefMut};
+
+    #[cfg(not(feature = "spirv-std"))]
+    use core::fmt::Display;
 
     #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
     pub struct Distance(pub f32);
@@ -35,6 +35,7 @@ pub mod distance {
         }
     }
 
+    #[cfg(not(feature = "spirv-std"))]
     impl Display for Distance {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
             self.0.fmt(f)
@@ -43,15 +44,22 @@ pub mod distance {
 }
 
 pub mod position {
-    use core::{
-        fmt::Display,
-        ops::{Deref, DerefMut},
-    };
+    use core::ops::{Deref, DerefMut};
+
+    #[cfg(not(feature = "spirv-std"))]
+    use core::fmt::{Debug, Display};
 
     use rust_gpu_bridge::prelude::Vec3;
 
-    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    #[derive(Default, Copy, Clone, PartialEq)]
     pub struct Position(pub Vec3);
+
+    #[cfg(not(feature = "spirv-std"))]
+    impl Debug for Position {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            self.0.fmt(f)
+        }
+    }
 
     impl Deref for Position {
         type Target = Vec3;
@@ -79,6 +87,7 @@ pub mod position {
         }
     }
 
+    #[cfg(not(feature = "spirv-std"))]
     impl Display for Position {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
             self.0.fmt(f)
@@ -126,15 +135,22 @@ pub mod normal {
 }
 
 pub mod uv {
-    use core::{
-        fmt::Display,
-        ops::{Deref, DerefMut},
-    };
+    use core::ops::{Deref, DerefMut};
+
+    #[cfg(not(feature = "spirv-std"))]
+    use core::fmt::{Debug, Display};
 
     use rust_gpu_bridge::prelude::Vec2;
 
-    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    #[derive(Default, Copy, Clone, PartialEq)]
     pub struct Uv(pub Vec2);
+
+    #[cfg(not(feature = "spirv-std"))]
+    impl Debug for Uv {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            self.0.fmt(f)
+        }
+    }
 
     impl Deref for Uv {
         type Target = Vec2;
@@ -162,6 +178,7 @@ pub mod uv {
         }
     }
 
+    #[cfg(not(feature = "spirv-std"))]
     impl Display for Uv {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
             self.0.fmt(f)
@@ -209,15 +226,22 @@ pub mod tangent {
 }
 
 pub mod color {
-    use core::{
-        fmt::Display,
-        ops::{Deref, DerefMut},
-    };
+    use core::ops::{Deref, DerefMut};
+
+    #[cfg(not(feature = "spirv-std"))]
+    use core::fmt::{Debug, Display};
 
     use rust_gpu_bridge::prelude::Vec4;
 
-    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    #[derive(Default, Copy, Clone, PartialEq)]
     pub struct Color(pub Vec4);
+
+    #[cfg(not(feature = "spirv-std"))]
+    impl Debug for Color {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            self.0.fmt(f)
+        }
+    }
 
     impl Deref for Color {
         type Target = Vec4;
@@ -245,6 +269,7 @@ pub mod color {
         }
     }
 
+    #[cfg(not(feature = "spirv-std"))]
     impl Display for Color {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
             self.0.fmt(f)

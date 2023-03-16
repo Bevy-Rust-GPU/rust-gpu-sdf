@@ -1,4 +1,6 @@
 //! Rotate a distance field.
+use core::fmt::Debug;
+
 use rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
@@ -29,9 +31,16 @@ impl<Sdf> Rotate2d<Sdf> {
 }
 
 /// Rotate a distance field.
-#[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
+#[derive(Default, Copy, Clone, PartialEq, Field)]
 pub struct Rotate3dOp {
     pub rotation: Quat,
+}
+
+#[cfg(not(feature = "spirv-std"))]
+impl Debug for Rotate3dOp {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        self.rotation.fmt(f)
+    }
 }
 
 impl SignedDistanceOperator<Vec3, Distance> for Rotate3dOp {

@@ -1,16 +1,32 @@
 //! Extrude a 2D distance field into 3D.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3};
+#[cfg(not(feature = "spirv-std"))]
+use core::fmt::Debug;
+
+use rust_gpu_bridge::prelude::{Abs, Vec2, Vec3};
 use type_fields::Field;
 
 use crate::signed_distance_field::{Distance, SignedDistanceField};
 
 /// Extrude a 2D distance field into 3D.
-#[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
+#[derive(Default, Copy, Clone, PartialEq, Field)]
 pub struct Extrude<Sdf> {
     pub sdf: Sdf,
     pub axis: Vec3,
     pub depth: f32,
+}
+
+#[cfg(not(feature = "spirv-std"))]
+impl<Sdf> Debug for Extrude<Sdf>
+where
+    Sdf: Debug,
+{
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        self.sdf.fmt(f)?;
+        self.axis.fmt(f)?;
+        self.depth.fmt(f)?;
+        Ok(())
+    }
 }
 
 impl<Sdf> SignedDistanceField<Vec2, Distance> for Extrude<Sdf>

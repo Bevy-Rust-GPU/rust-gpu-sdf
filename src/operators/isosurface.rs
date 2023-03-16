@@ -8,6 +8,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Shift the isosurface of a distance field by a given amount.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[repr(C)]
 pub struct IsosurfaceOp {
     pub delta: f32,
 }

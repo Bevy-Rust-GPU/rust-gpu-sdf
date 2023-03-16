@@ -1,4 +1,4 @@
-use rust_gpu_bridge::prelude::Vec3;
+use rust_gpu_bridge::prelude::{Vec3, Abs};
 
 use crate::prelude::{Distance, SignedDistanceField};
 

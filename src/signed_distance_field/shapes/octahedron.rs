@@ -7,6 +7,7 @@ use crate::signed_distance_field::{Distance, SignedDistanceField};
 
 /// An octahedron.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[repr(C)]
 pub struct Octahedron {
     pub size: f32,
 }

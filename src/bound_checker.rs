@@ -1,6 +1,6 @@
 use core::{marker::PhantomData, ops::RangeInclusive};
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3};
+use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
 use type_fields::field::Field;
 
 use crate::{
@@ -67,7 +67,7 @@ where
 
                 // Assert that derivative is 1 (w.r.t. floating-point error)
                 if deriv.abs() - (self.epsilon * 2.0) > Self::DERIV_EPSILON {
-                    panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
+                    //panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
                     return true;
                 }
             }
@@ -106,7 +106,7 @@ where
 
                     // Assert that derivative is 1 (w.r.t. floating-point error)
                     if deriv.abs() - (self.epsilon * 2.0) > Self::DERIV_EPSILON {
-                        panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
+                        //panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
                         return true;
                     }
                 }

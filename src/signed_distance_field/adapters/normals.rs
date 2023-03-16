@@ -1,4 +1,4 @@
-use rust_gpu_bridge::prelude::{Vec2, Vec2Swizzles, Vec3};
+use rust_gpu_bridge::prelude::{Vec2, Vec2Swizzles, Vec3, Sign};
 use type_fields::Field;
 
 use crate::{
@@ -14,7 +14,7 @@ impl SignedDistanceOperator<f32, Normal<f32>> for NormalizeOp {
     where
         Sdf: SignedDistanceField<f32, Normal<f32>>,
     {
-        Normal((*sdf.evaluate(p)).signum())
+        Normal((*sdf.evaluate(p)).sign())
     }
 }
 

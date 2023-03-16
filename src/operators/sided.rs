@@ -1,7 +1,7 @@
 //! Given an infinitely-thin surface,
 //! divide space into interior and exterior based on axis.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3};
+use rust_gpu_bridge::prelude::{Sign, Vec2, Vec3};
 use type_fields::Field;
 
 use crate::signed_distance_field::attributes::distance::Distance;
@@ -39,7 +39,7 @@ impl SignedDistanceOperator<f32, Distance> for SidedOp<f32> {
         Sdf: crate::signed_distance_field::SignedDistanceField<f32, Distance>,
     {
         let mut d = *sdf.evaluate(p);
-        d *= (p * self.axis).signum();
+        d *= (p * self.axis).sign();
         d.into()
     }
 }
@@ -50,7 +50,7 @@ impl SignedDistanceOperator<Vec2, Distance> for SidedOp<Vec2> {
         Sdf: crate::signed_distance_field::SignedDistanceField<Vec2, Distance>,
     {
         let mut d = *sdf.evaluate(p);
-        d *= p.dot(self.axis).signum();
+        d *= p.dot(self.axis).sign();
         d.into()
     }
 }
@@ -61,7 +61,7 @@ impl SignedDistanceOperator<Vec3, Distance> for SidedOp<Vec3> {
         Sdf: crate::signed_distance_field::SignedDistanceField<Vec3, Distance>,
     {
         let mut d = *sdf.evaluate(p);
-        d *= p.dot(self.axis).signum();
+        d *= p.dot(self.axis).sign();
         d.into()
     }
 }

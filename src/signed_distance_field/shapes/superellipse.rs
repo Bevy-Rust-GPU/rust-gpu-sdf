@@ -1,4 +1,4 @@
-use rust_gpu_bridge::prelude::Vec2;
+use rust_gpu_bridge::prelude::{Vec2, Abs, Pow};
 use type_fields::Field;
 
 use crate::signed_distance_field::{attributes::distance::Distance, SignedDistanceField};
@@ -16,7 +16,7 @@ impl Default for Superellipse {
 
 impl SignedDistanceField<Vec2, Distance> for Superellipse {
     fn evaluate(&self, p: Vec2) -> Distance {
-        let d = p.x.abs().powf(self.n) + p.y.abs().powf(self.n);
+        let d = p.x.abs().pow(self.n) + p.y.abs().pow(self.n);
         let d = d - 1.0;
         Distance(d)
     }

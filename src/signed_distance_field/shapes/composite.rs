@@ -1,6 +1,6 @@
 //! Shapes composed from other shapes.
 
-use rust_gpu_bridge::prelude::Vec2;
+use rust_gpu_bridge::prelude::{Vec2, Sin, Cos, Tan};
 use type_fields::field::Field;
 
 use crate::{

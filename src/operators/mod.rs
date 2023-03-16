@@ -101,6 +101,7 @@ impl<In, Out> SignedDistanceOperator<In, Out> for () {
 
 /// Applies a [`SignedDistanceOperator`] to a [`SignedDistanceField`].
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, type_fields::Field)]
+#[repr(C)]
 pub struct Operator<Op, Sdf> {
     pub target: Sdf,
     pub op: Op,

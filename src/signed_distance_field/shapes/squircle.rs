@@ -1,4 +1,4 @@
-use rust_gpu_bridge::prelude::{Vec2, Vec2Swizzles};
+use rust_gpu_bridge::prelude::{Abs, Acos, Pow, Sign, Sqrt, Sin, Cos, Vec2, Vec2Swizzles};
 
 use crate::signed_distance_field::{attributes::distance::Distance, SignedDistanceField};
 
@@ -36,7 +36,7 @@ impl SignedDistanceField<Vec2, Distance> for Squircle {
             // Appears identical to h in graph plot, maybe field related
             let h = h.sqrt();
             // Uneven circular curve
-            (h - a).signum() * (h - a).abs().powf(1.0 / 3.0) - (h + a).powf(1.0 / 3.0)
+            (h - a).sign() * (h - a).abs().pow(1.0 / 3.0) - (h + a).pow(1.0 / 3.0)
         } else {
             // Negative Y minimum
             let z = (-c).sqrt();
@@ -50,7 +50,7 @@ impl SignedDistanceField<Vec2, Distance> for Squircle {
         let w = Vec2::new(-t, t) + 0.75 - t * t - p;
 
         // Quadratic curve sign
-        let s = (a * a * 0.5 + b - 1.5).signum();
+        let s = (a * a * 0.5 + b - 1.5).sign();
 
         // Final curve w / sign
         (w.length() * s).into()

@@ -1,6 +1,6 @@
 //! Euclidean distance metric.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3};
+use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs, Sign};
 
 use crate::{
     prelude::Normal,
@@ -9,6 +9,7 @@ use crate::{
 
 /// Euclidian distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(C)]
 pub struct EuclideanMetric;
 
 impl SignedDistanceField<f32, Distance> for EuclideanMetric {
@@ -31,7 +32,7 @@ impl SignedDistanceField<Vec3, Distance> for EuclideanMetric {
 
 impl SignedDistanceField<f32, Normal<f32>> for EuclideanMetric {
     fn evaluate(&self, p: f32) -> Normal<f32> {
-        p.signum().into()
+        p.sign().into()
     }
 }
 

@@ -2,7 +2,7 @@
 
 use core::ops::Add;
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3};
+use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
 
 use crate::signed_distance_field::{Distance, SignedDistanceField};
 
