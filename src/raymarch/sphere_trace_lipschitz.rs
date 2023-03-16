@@ -5,6 +5,7 @@ use crate::prelude::{Distance, SignedDistanceField};
 use super::{Raymarch, RaymarchOutput};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
+#[repr(C)]
 pub struct SphereTraceLipschitz {
     pub k: f32,
 }

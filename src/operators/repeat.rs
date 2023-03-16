@@ -12,6 +12,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Repeat a distance field infinitely in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct RepeatInfiniteOp<Dim> {
     pub period: Dim,
 }
@@ -66,6 +67,7 @@ impl<Dim, Sdf> RepeatInfinite<Dim, Sdf> {
 
 /// Repeat a distance field a set number of times in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct RepeatCountOp<Dim> {
     pub period: Dim,
     pub count: Dim,

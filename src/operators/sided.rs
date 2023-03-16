@@ -11,6 +11,7 @@ use super::{Operator, SignedDistanceOperator};
 /// Given an infinitely-thin surface,
 /// divide space into interior and exterior based on axis.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[repr(C)]
 pub struct SidedOp<Dim> {
     pub axis: Dim,
 }

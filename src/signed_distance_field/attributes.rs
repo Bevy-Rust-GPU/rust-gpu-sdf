@@ -7,6 +7,7 @@ pub mod distance {
     use core::fmt::Display;
 
     #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
+    #[repr(C)]
     pub struct Distance(pub f32);
 
     impl Deref for Distance {
@@ -52,6 +53,7 @@ pub mod position {
     use rust_gpu_bridge::prelude::Vec3;
 
     #[derive(Default, Copy, Clone, PartialEq)]
+    #[repr(C)]
     pub struct Position(pub Vec3);
 
     #[cfg(not(feature = "spirv-std"))]
@@ -102,6 +104,7 @@ pub mod normal {
     };
 
     #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    #[repr(C)]
     pub struct Normal<Dim>(pub Dim);
 
     impl<Dim> Deref for Normal<Dim> {
@@ -143,6 +146,7 @@ pub mod uv {
     use rust_gpu_bridge::prelude::Vec2;
 
     #[derive(Default, Copy, Clone, PartialEq)]
+    #[repr(C)]
     pub struct Uv(pub Vec2);
 
     #[cfg(not(feature = "spirv-std"))]
@@ -193,6 +197,7 @@ pub mod tangent {
     };
 
     #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    #[repr(C)]
     pub struct Tangent<Dim>(pub Dim);
 
     impl<Dim> Deref for Tangent<Dim> {
@@ -234,6 +239,7 @@ pub mod color {
     use rust_gpu_bridge::prelude::Vec4;
 
     #[derive(Default, Copy, Clone, PartialEq)]
+    #[repr(C)]
     pub struct Color(pub Vec4);
 
     #[cfg(not(feature = "spirv-std"))]

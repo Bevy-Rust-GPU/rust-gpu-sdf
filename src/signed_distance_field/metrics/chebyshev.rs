@@ -6,6 +6,7 @@ use crate::signed_distance_field::{Distance, SignedDistanceField};
 
 /// Chebyshev distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(C)]
 pub struct ChebyshevMetric;
 
 impl SignedDistanceField<f32, Distance> for ChebyshevMetric {

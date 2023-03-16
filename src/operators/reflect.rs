@@ -7,6 +7,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Reflect a distance field about an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct ReflectOp<Dim> {
     pub axis: Dim,
 }

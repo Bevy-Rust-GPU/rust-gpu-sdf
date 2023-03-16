@@ -4,6 +4,7 @@ use type_fields::Field;
 use crate::signed_distance_field::{attributes::distance::Distance, SignedDistanceField};
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[repr(C)]
 pub struct Superellipsoid {
     pub e1: f32,
     pub e2: f32,

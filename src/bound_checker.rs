@@ -1,6 +1,6 @@
 use core::{marker::PhantomData, ops::RangeInclusive};
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
+use rust_gpu_bridge::prelude::{Abs, Vec2, Vec3};
 use type_fields::field::Field;
 
 use crate::{
@@ -12,6 +12,7 @@ use crate::{
 
 /// Asserts that the provided distance function is a field rather than a bound
 #[derive(Debug, Clone, PartialEq)]
+#[repr(C)]
 pub struct BoundChecker<Dim, Sdf> {
     pub sdf: Sdf,
     pub samples: RangeInclusive<isize>,

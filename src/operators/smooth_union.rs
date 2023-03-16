@@ -9,6 +9,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Compute the blended boolean union of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[repr(C)]
 pub struct SmoothUnionOp<Sdf> {
     pub sdf: Sdf,
     pub k: f32,

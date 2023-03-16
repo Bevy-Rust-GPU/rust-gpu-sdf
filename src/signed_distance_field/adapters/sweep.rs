@@ -9,6 +9,7 @@ use crate::signed_distance_field::{Distance, SignedDistanceField};
 /// Create a 3D distance field by sweeping a 2D distance field
 /// around the perimiter of another 2D distance field
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[repr(C)]
 pub struct Sweep<Core, Shell> {
     pub core: Core,
     pub shell: Shell,

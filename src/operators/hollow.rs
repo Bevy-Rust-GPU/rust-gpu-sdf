@@ -7,6 +7,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Convert a solid shape into a hollow one with an infinitely thin surface.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[repr(C)]
 pub struct HollowOp;
 
 impl SignedDistanceOperator<f32, Distance> for HollowOp {

@@ -9,6 +9,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Compute the blended boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[repr(C)]
 pub struct SmoothIntersectionOp<Sdf> {
     pub sdf: Sdf,
     pub k: f32,

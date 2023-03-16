@@ -8,6 +8,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Rotate a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct Rotate2dOp {
     pub angle: f32,
 }
@@ -32,6 +33,7 @@ impl<Sdf> Rotate2d<Sdf> {
 
 /// Rotate a distance field.
 #[derive(Default, Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct Rotate3dOp {
     pub rotation: Quat,
 }

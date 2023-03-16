@@ -6,6 +6,7 @@ use crate::signed_distance_field::{Distance, SignedDistanceField};
 
 /// A plane.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct Plane<Dim> {
     pub dir: Dim,
 }

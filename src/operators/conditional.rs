@@ -5,6 +5,7 @@ use crate::signed_distance_field::{attributes::distance::Distance, SignedDistanc
 use super::{Operator, SignedDistanceOperator};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Field)]
+#[repr(C)]
 pub struct ConditionalOp<Op, const CONDITION: bool> {
     conditional_op: Op,
 }

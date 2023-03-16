@@ -6,6 +6,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Compute the boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[repr(C)]
 pub struct IntersectionOp<Sdf> {
     pub sdf: Sdf,
 }

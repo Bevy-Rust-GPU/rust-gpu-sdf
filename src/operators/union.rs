@@ -6,6 +6,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Compute the boolean union of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[repr(C)]
 pub struct UnionOp<Sdf> {
     pub sdf: Sdf,
 }

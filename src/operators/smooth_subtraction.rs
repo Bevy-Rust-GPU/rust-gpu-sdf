@@ -8,6 +8,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Compute the blended boolean subtraction of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[repr(C)]
 pub struct SmoothSubtractionOp<Sdf> {
     pub sdf: Sdf,
     pub k: f32,

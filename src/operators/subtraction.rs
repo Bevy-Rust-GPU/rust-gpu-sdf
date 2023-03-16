@@ -8,6 +8,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Compute the boolean subtraction of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[repr(C)]
 pub struct SubtractionOp<Sdf> {
     pub sdf: Sdf,
 }

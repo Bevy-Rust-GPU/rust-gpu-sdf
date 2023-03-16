@@ -16,6 +16,7 @@ pub const AXIS_XYZ: usize = AXIS_XY | AXIS_Z;
 /// NOTE: Will produce a bound unless any geometry crossing
 ///       the reflecting planes is already a field w.r.t. its reflection.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct AxialReflectOp<const AXIS: usize>;
 
 impl<const AXIS: usize> SignedDistanceOperator<f32, Distance> for AxialReflectOp<AXIS> {

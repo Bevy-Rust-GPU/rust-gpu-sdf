@@ -8,6 +8,7 @@ use crate::signed_distance_field::{Distance, SignedDistanceField};
 
 /// Taxicab distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(C)]
 pub struct TaxicabMetric;
 
 impl SignedDistanceField<f32, Distance> for TaxicabMetric {

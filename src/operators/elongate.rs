@@ -9,6 +9,7 @@ use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOper
 
 /// Extrude a shape along its axes, preserving exterior geometry.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[repr(C)]
 pub struct ElongateOp<Dim> {
     pub extent: Dim,
 }

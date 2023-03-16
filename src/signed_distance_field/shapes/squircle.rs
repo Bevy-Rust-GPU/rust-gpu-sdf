@@ -8,6 +8,7 @@ use crate::signed_distance_field::{attributes::distance::Distance, SignedDistanc
 //
 // Desmos decomposition: https://www.desmos.com/calculator/i9cgthn0ls
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(C)]
 pub struct Squircle;
 
 impl SignedDistanceField<Vec2, Distance> for Squircle {

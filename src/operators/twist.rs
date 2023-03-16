@@ -9,6 +9,7 @@ use super::{Operator, SignedDistanceOperator};
 
 /// Twist a distance field around an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct TwistOp<Dim> {
     pub axis_pos: Dim,
     pub axis_rot: Dim,

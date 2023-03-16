@@ -10,6 +10,7 @@ use crate::signed_distance_field::{Distance, SignedDistanceField};
 
 /// Extrude a 2D distance field into 3D.
 #[derive(Default, Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct Extrude<Sdf> {
     pub sdf: Sdf,
     pub axis: Vec3,

@@ -1,4 +1,4 @@
-use rust_gpu_bridge::prelude::{Vec2, Vec2Swizzles, Vec3, Sign};
+use rust_gpu_bridge::prelude::{Sign, Vec2, Vec2Swizzles, Vec3};
 use type_fields::Field;
 
 use crate::{
@@ -7,6 +7,7 @@ use crate::{
 };
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(C)]
 pub struct NormalizeOp;
 
 impl SignedDistanceOperator<f32, Normal<f32>> for NormalizeOp {
@@ -39,12 +40,13 @@ impl SignedDistanceOperator<Vec3, Normal<Vec3>> for NormalizeOp {
 pub type Normalize<Sdf> = Operator<NormalizeOp, Sdf>;
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
-pub struct TetrahedronDerivative<Sdf> {
+#[repr(C)]
+pub struct TetrahedronGradient<Sdf> {
     pub sdf: Sdf,
     pub epsilon: f32,
 }
 
-impl<Sdf> SignedDistanceField<Vec2, Normal<Vec2>> for TetrahedronDerivative<Sdf>
+impl<Sdf> SignedDistanceField<Vec2, Normal<Vec2>> for TetrahedronGradient<Sdf>
 where
     Sdf: SignedDistanceField<Vec2, Distance>,
 {
@@ -58,7 +60,7 @@ where
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec3, Normal<Vec3>> for TetrahedronDerivative<Sdf>
+impl<Sdf> SignedDistanceField<Vec3, Normal<Vec3>> for TetrahedronGradient<Sdf>
 where
     Sdf: SignedDistanceField<Vec3, Distance>,
 {
@@ -72,15 +74,16 @@ where
     }
 }
 
-pub type TetrahedronNormal<Sdf> = Normalize<TetrahedronDerivative<Sdf>>;
+pub type TetrahedronNormal<Sdf> = Normalize<TetrahedronGradient<Sdf>>;
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
-pub struct CentralDiffDerivative<Sdf> {
+#[repr(C)]
+pub struct CentralDiffGradient<Sdf> {
     pub sdf: Sdf,
     pub epsilon: f32,
 }
 
-impl<Sdf> SignedDistanceField<f32, Normal<f32>> for CentralDiffDerivative<Sdf>
+impl<Sdf> SignedDistanceField<f32, Normal<f32>> for CentralDiffGradient<Sdf>
 where
     Sdf: SignedDistanceField<f32, Distance>,
 {
@@ -89,7 +92,7 @@ where
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec2, Normal<Vec2>> for CentralDiffDerivative<Sdf>
+impl<Sdf> SignedDistanceField<Vec2, Normal<Vec2>> for CentralDiffGradient<Sdf>
 where
     Sdf: SignedDistanceField<Vec2, Distance>,
 {
@@ -104,7 +107,7 @@ where
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec3, Normal<Vec3>> for CentralDiffDerivative<Sdf>
+impl<Sdf> SignedDistanceField<Vec3, Normal<Vec3>> for CentralDiffGradient<Sdf>
 where
     Sdf: SignedDistanceField<Vec3, Distance>,
 {
@@ -121,7 +124,7 @@ where
     }
 }
 
-pub type CentralDiffNormal<Sdf> = Normalize<CentralDiffDerivative<Sdf>>;
+pub type CentralDiffNormal<Sdf> = Normalize<CentralDiffGradient<Sdf>>;
 
 impl<Sdf> CentralDiffNormal<Sdf> {
     pub fn sdf(&mut self) -> &mut Sdf {
@@ -136,7 +139,7 @@ impl<Sdf> CentralDiffNormal<Sdf> {
 impl<Sdf> CentralDiffNormal<Sdf> {
     pub fn new(sdf: Sdf, epsilon: f32) -> Self {
         CentralDiffNormal {
-            target: CentralDiffDerivative { sdf, epsilon },
+            target: CentralDiffGradient { sdf, epsilon },
             op: default(),
         }
     }

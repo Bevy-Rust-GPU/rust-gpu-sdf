@@ -5,6 +5,7 @@ use crate::prelude::{Distance, SignedDistanceField};
 use super::{Raymarch, RaymarchOutput};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq)]
+#[repr(C)]
 pub struct SphereTraceNaive;
 
 impl Raymarch for SphereTraceNaive {

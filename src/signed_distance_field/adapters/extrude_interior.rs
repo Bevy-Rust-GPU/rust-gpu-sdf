@@ -9,6 +9,7 @@ use crate::{
 /// Extrude a 2D distance field into 3D, using its interior distance to determine depth.
 /// NOTE: The present implementation is a bound, not a field
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[repr(C)]
 pub struct ExtrudeInterior<Sdf> {
     sdf: Sdf,
     depth: f32,

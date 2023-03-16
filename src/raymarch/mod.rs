@@ -6,6 +6,7 @@ use rust_gpu_bridge::prelude::Vec3;
 use crate::prelude::{Distance, SignedDistanceField};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
+#[repr(C)]
 pub struct RaymarchOutput {
     pub hit: bool,
     pub dist: f32,
