@@ -10,6 +10,7 @@ use crate::prelude::{Distance, SignedDistanceField};
 pub struct RaymarchOutput {
     pub hit: bool,
     pub dist: f32,
+    pub closest: f32,
     pub steps: u32,
 }
 

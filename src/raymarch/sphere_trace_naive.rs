@@ -26,7 +26,7 @@ impl Raymarch for SphereTraceNaive {
         let mut out = RaymarchOutput::default();
         let mut t = start;
 
-        for _ in 0..MAX_STEPS {
+        for i in 0..MAX_STEPS {
             let p = eye + dir * t;
             let dist = *sdf.evaluate(p);
 
@@ -35,10 +35,17 @@ impl Raymarch for SphereTraceNaive {
             if dist < 0.0 {
                 out.hit = true;
                 out.dist = t;
+                out.closest = t;
                 break;
             }
 
             t += epsilon.max(dist.abs());
+
+            if i == 0 {
+                out.closest = t;
+            } else {
+                out.closest = out.closest.min(t);
+            }
 
             if t > end {
                 out.dist = end;

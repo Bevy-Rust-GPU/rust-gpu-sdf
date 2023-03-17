@@ -1,4 +1,4 @@
-use rust_gpu_bridge::prelude::{Vec3, Abs};
+use rust_gpu_bridge::prelude::{Abs, Vec3};
 
 use crate::prelude::{Distance, SignedDistanceField};
 
@@ -46,7 +46,7 @@ impl Raymarch for SphereTraceLipschitz {
 
         let mut t = start;
 
-        for _ in 0..MAX_STEPS {
+        for i in 0..MAX_STEPS {
             let p = eye + dir * t;
             let dist = sdf.evaluate(p);
 
@@ -55,10 +55,18 @@ impl Raymarch for SphereTraceLipschitz {
             if *dist < 0.0 {
                 out.hit = true;
                 out.dist = t;
+                out.closest = t;
                 break;
             }
 
             t += epsilon.max(dist.abs() / self.k);
+
+            if i == 0 {
+                out.closest = t;
+            } else {
+                out.closest = out.closest.min(t);
+            }
+
 
             if t > end {
                 out.dist = end;
@@ -69,4 +77,3 @@ impl Raymarch for SphereTraceLipschitz {
         out
     }
 }
-
