@@ -46,7 +46,7 @@ where
 {
     fn operator(&self, sdf: &Sdf, p: Dim) -> Distance {
         let mut d = *sdf.evaluate(p.clone());
-        d = p.clone().dot(self.axis.clone()).sign();
+        d *= p.clone().dot(self.axis.clone()).sign();
         d.into()
     }
 }
