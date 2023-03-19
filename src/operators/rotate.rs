@@ -63,7 +63,7 @@ impl<Sdf> Rotate3d<Sdf> {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
     use rust_gpu_bridge::prelude::Quat;
     use type_fields::field::Field;

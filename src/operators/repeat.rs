@@ -123,7 +123,7 @@ impl<Dim, Sdf> RepeatCount<Dim, Sdf> {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(not(feature = "spirv-std"), test))]
 pub mod tests {
     use rust_gpu_bridge::prelude::Vec3;
     use type_fields::field::Field;

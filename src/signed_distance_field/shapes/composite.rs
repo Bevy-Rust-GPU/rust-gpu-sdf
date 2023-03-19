@@ -310,7 +310,7 @@ impl Decagon {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(not(feature = "spirv-std"), test))]
 pub mod tests {
     use rust_gpu_bridge::prelude::{Vec2, Vec3};
 

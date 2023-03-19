@@ -58,7 +58,7 @@ impl<Sdf> Isosurface<Sdf> {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
     use type_fields::field::Field;
 

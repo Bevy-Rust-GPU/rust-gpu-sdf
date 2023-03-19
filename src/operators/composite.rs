@@ -28,7 +28,7 @@ impl<Sdf> Onion<Sdf> {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(not(feature = "spirv-std"), test))]
 pub mod tests {
     use rust_gpu_bridge::prelude::Quat;
     use type_fields::field::Field;

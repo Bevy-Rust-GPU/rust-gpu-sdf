@@ -69,7 +69,7 @@ impl<SdfA, SdfB> Displace<SdfA, SdfB> {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(not(feature = "spirv-std"), test))]
 pub mod tests {
     use type_fields::field::Field;
 
