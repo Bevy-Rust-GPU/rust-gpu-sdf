@@ -1,6 +1,6 @@
 use type_fields::Field;
 
-use crate::signed_distance_field::{attributes::distance::Distance, SignedDistanceField};
+use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunction};
 
 use super::{Operator, SignedDistanceOperator};
 
@@ -10,16 +10,14 @@ pub struct ConditionalOp<Op, const CONDITION: bool> {
     conditional_op: Op,
 }
 
-impl<Op, Dim, const CONDITION: bool> SignedDistanceOperator<Dim, Distance>
+impl<Op, Sdf, Dim, Out, const CONDITION: bool> SignedDistanceOperator<Sdf, Dim, Out>
     for ConditionalOp<Op, CONDITION>
 where
-    Op: SignedDistanceOperator<Dim, Distance>,
+    Sdf: DistanceFunction<Dim, Out>,
+    Op: SignedDistanceOperator<Sdf, Dim, Out>,
+    Dim: Clone,
 {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> Distance
-    where
-        Sdf: SignedDistanceField<Dim, Distance>,
-        Dim: Clone,
-    {
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
         if CONDITION {
             self.conditional_op.operator(sdf, p)
         } else {

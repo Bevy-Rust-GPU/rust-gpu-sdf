@@ -9,6 +9,7 @@ pub mod elongate;
 pub mod hollow;
 pub mod intersection;
 pub mod isosurface;
+pub mod normalize;
 pub mod reflect;
 pub mod repeat;
 pub mod rotate;
@@ -23,22 +24,18 @@ pub mod translate;
 pub mod twist;
 pub mod union;
 
-use crate::signed_distance_field::SignedDistanceField;
+use crate::signed_distance_field::DistanceFunction;
 
 /// Modifies the input / output of a [`SignedDistanceField`].
-pub trait SignedDistanceOperator<In, Out> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: In) -> Out
-    where
-        Sdf: SignedDistanceField<In, Out>,
-        In: Clone;
+pub trait SignedDistanceOperator<Sdf, In, Out> {
+    fn operator(&self, sdf: &Sdf, p: In) -> Out;
 }
 
-impl<In, Out> SignedDistanceOperator<In, Out> for () {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: In) -> Out
-    where
-        Sdf: SignedDistanceField<In, Out>,
-        In: Clone,
-    {
+impl<Sdf, In, Out> SignedDistanceOperator<Sdf, In, Out> for ()
+where
+    Sdf: DistanceFunction<In, Out>,
+{
+    fn operator(&self, sdf: &Sdf, p: In) -> Out {
         sdf.evaluate(p)
     }
 }
@@ -51,10 +48,10 @@ pub struct Operator<Op, Sdf> {
     pub op: Op,
 }
 
-impl<Op, Sdf, Dim, Out> SignedDistanceField<Dim, Out> for Operator<Op, Sdf>
+impl<Op, Sdf, Dim, Out> DistanceFunction<Dim, Out> for Operator<Op, Sdf>
 where
-    Sdf: SignedDistanceField<Dim, Out>,
-    Op: SignedDistanceOperator<Dim, Out>,
+    Sdf: DistanceFunction<Dim, Out>,
+    Op: SignedDistanceOperator<Sdf, Dim, Out>,
     Dim: Clone,
 {
     fn evaluate(&self, p: Dim) -> Out {

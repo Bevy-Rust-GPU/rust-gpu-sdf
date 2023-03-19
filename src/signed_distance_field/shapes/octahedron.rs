@@ -3,7 +3,7 @@
 use rust_gpu_bridge::prelude::Vec3;
 use type_fields::Field;
 
-use crate::signed_distance_field::{Distance, SignedDistanceField};
+use crate::signed_distance_field::{Distance, DistanceFunction};
 
 /// An octahedron.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -18,7 +18,7 @@ impl Default for Octahedron {
     }
 }
 
-impl SignedDistanceField<Vec3, Distance> for Octahedron {
+impl DistanceFunction<Vec3, Distance> for Octahedron {
     fn evaluate(&self, p: Vec3) -> Distance {
         // Axial reflection
         let p = p.abs();

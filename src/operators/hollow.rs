@@ -1,39 +1,40 @@
 //! Convert a solid shape into a hollow one with an infinitely thin surface.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
+use core::ops::Mul;
+
+use rust_gpu_bridge::prelude::{Abs, Sign, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
+use crate::{
+    prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator},
+    signed_distance_field::attributes::normal::Normal,
+};
 
 /// Convert a solid shape into a hollow one with an infinitely thin surface.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[repr(C)]
 pub struct HollowOp;
 
-impl SignedDistanceOperator<f32, Distance> for HollowOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Distance
-    where
-        Sdf: SignedDistanceField<f32, Distance>,
-    {
+impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Distance> for HollowOp
+where
+    Sdf: DistanceFunction<Dim, Distance>,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Distance {
         sdf.evaluate(p).abs().into()
     }
 }
 
-impl SignedDistanceOperator<Vec2, Distance> for HollowOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec2, Distance>,
-    {
-        sdf.evaluate(p).abs().into()
-    }
-}
-
-impl SignedDistanceOperator<Vec3, Distance> for HollowOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec3, Distance>,
-    {
-        sdf.evaluate(p).abs().into()
+impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Normal<Dim>> for HollowOp
+where
+    Sdf: DistanceFunction<Dim, Distance>,
+    Sdf: DistanceFunction<Dim, Normal<Dim>>,
+    Dim: Clone + Mul<f32, Output = Dim>,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Normal<Dim> {
+        let d: Distance = sdf.evaluate(p.clone());
+        let s = d.sign();
+        let n: Normal<Dim> = sdf.evaluate(p.clone() * s);
+        n.into()
     }
 }
 

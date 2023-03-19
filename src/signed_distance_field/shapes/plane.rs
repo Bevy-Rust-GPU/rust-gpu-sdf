@@ -1,8 +1,10 @@
 //! A plane.
-use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
+use core::ops::Neg;
+
+use rust_gpu_bridge::prelude::{Abs, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::{Distance, SignedDistanceField};
+use crate::signed_distance_field::{attributes::normal::Normal, Distance, DistanceFunction};
 
 /// A plane.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -29,24 +31,33 @@ impl Default for Plane<Vec3> {
     }
 }
 
-impl SignedDistanceField<f32, Distance> for Plane<f32> {
+impl DistanceFunction<f32, Distance> for Plane<f32> {
     fn evaluate(&self, p: f32) -> Distance {
         assert!(self.dir.abs() == 1.0, "Plane dir must be normalized");
         (p * -self.dir).into()
     }
 }
 
-impl SignedDistanceField<Vec2, Distance> for Plane<Vec2> {
+impl DistanceFunction<Vec2, Distance> for Plane<Vec2> {
     fn evaluate(&self, p: Vec2) -> Distance {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
         p.dot(-self.dir).into()
     }
 }
 
-impl SignedDistanceField<Vec3, Distance> for Plane<Vec3> {
+impl DistanceFunction<Vec3, Distance> for Plane<Vec3> {
     fn evaluate(&self, p: Vec3) -> Distance {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
         p.dot(-self.dir).into()
+    }
+}
+
+impl<Dim> DistanceFunction<Dim, Normal<Dim>> for Plane<Dim>
+where
+    Dim: Clone + Neg<Output = Dim>,
+{
+    fn evaluate(&self, p: Dim) -> Normal<Dim> {
+        (-self.dir.clone()).into()
     }
 }
 

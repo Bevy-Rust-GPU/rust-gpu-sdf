@@ -1,10 +1,10 @@
 //! Euclidean distance metric.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs, Sign};
+use rust_gpu_bridge::prelude::{Abs, Asin, Atan2, Length, Normalize, Sign, Vec2, Vec3};
 
 use crate::{
     prelude::Normal,
-    signed_distance_field::{Distance, SignedDistanceField},
+    signed_distance_field::{attributes::uv::Uv, Distance, DistanceFunction},
 };
 
 /// Euclidian distance metric.
@@ -12,39 +12,37 @@ use crate::{
 #[repr(C)]
 pub struct EuclideanMetric;
 
-impl SignedDistanceField<f32, Distance> for EuclideanMetric {
-    fn evaluate(&self, p: f32) -> Distance {
-        p.abs().into()
-    }
-}
-
-impl SignedDistanceField<Vec2, Distance> for EuclideanMetric {
-    fn evaluate(&self, p: Vec2) -> Distance {
+impl<Dim> DistanceFunction<Dim, Distance> for EuclideanMetric
+where
+    Dim: Length,
+{
+    fn evaluate(&self, p: Dim) -> Distance {
         p.length().into()
     }
 }
 
-impl SignedDistanceField<Vec3, Distance> for EuclideanMetric {
-    fn evaluate(&self, p: Vec3) -> Distance {
-        p.length().into()
-    }
-}
-
-impl SignedDistanceField<f32, Normal<f32>> for EuclideanMetric {
-    fn evaluate(&self, p: f32) -> Normal<f32> {
-        p.sign().into()
-    }
-}
-
-impl SignedDistanceField<Vec2, Normal<Vec2>> for EuclideanMetric {
-    fn evaluate(&self, p: Vec2) -> Normal<Vec2> {
+impl<Dim> DistanceFunction<Dim, Normal<Dim>> for EuclideanMetric
+where
+    Dim: Normalize,
+{
+    fn evaluate(&self, p: Dim) -> Normal<Dim> {
         p.normalize().into()
     }
 }
 
-impl SignedDistanceField<Vec3, Normal<Vec3>> for EuclideanMetric {
-    fn evaluate(&self, p: Vec3) -> Normal<Vec3> {
-        p.normalize().into()
+impl DistanceFunction<Vec2, Uv> for EuclideanMetric {
+    fn evaluate(&self, p: Vec2) -> Uv {
+        Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length()).into()
+    }
+}
+
+impl DistanceFunction<Vec3, Uv> for EuclideanMetric {
+    fn evaluate(&self, p: Vec3) -> Uv {
+        Vec2::new(
+            (p.x.atan2(p.z) / core::f32::consts::TAU) + 0.5,
+            (p.y.asin() / core::f32::consts::PI) + 0.5,
+        )
+        .into()
     }
 }
 

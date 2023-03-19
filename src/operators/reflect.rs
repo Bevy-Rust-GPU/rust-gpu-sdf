@@ -1,9 +1,11 @@
 //! Reflect a distance field about an arbitrary axis.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
+use core::ops::{Mul, Sub};
+
+use rust_gpu_bridge::prelude::{Abs, Dot, Length, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
 
 /// Reflect a distance field about an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -30,46 +32,18 @@ impl Default for ReflectOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<f32, Distance> for ReflectOp<f32> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Distance
-    where
-        Sdf: SignedDistanceField<f32, Distance>,
-    {
-        assert!(self.axis.abs() == 1.0, "ReflectOp axis must be normalized");
-
-        let q = p - 2.0 * (p * self.axis).min(0.0) * self.axis;
-
-        sdf.evaluate(q)
-    }
-}
-
-impl SignedDistanceOperator<Vec2, Distance> for ReflectOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec2, Distance>,
-    {
+impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for ReflectOp<Dim>
+where
+    Sdf: DistanceFunction<Dim, Out>,
+    Dim: Clone + Sub<Dim, Output = Dim> + Mul<f32, Output = Dim> + Length + Dot,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
         assert!(
-            self.axis.is_normalized(),
+            self.axis.clone().length() == 1.0,
             "ReflectOp axis must be normalized"
         );
 
-        let q = p - 2.0 * p.dot(self.axis).min(0.0) * self.axis;
-
-        sdf.evaluate(q)
-    }
-}
-
-impl SignedDistanceOperator<Vec3, Distance> for ReflectOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec3, Distance>,
-    {
-        assert!(
-            self.axis.is_normalized(),
-            "ReflectOp axis must be normalized"
-        );
-
-        let q = p - 2.0 * p.dot(self.axis).min(0.0) * self.axis;
+        let q = p.clone() - self.axis.clone() * p.clone().dot(self.axis.clone()).min(0.0) * 2.0;
 
         sdf.evaluate(q)
     }

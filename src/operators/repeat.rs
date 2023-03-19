@@ -1,14 +1,14 @@
 //! Operators for repeating distance fields across a domain.
 
-use core::ops::{Add, Mul, Sub};
+use core::ops::{Add, Div, Mul, Neg, Sub};
 
 use rust_gpu_bridge::{
     modulo::Mod,
-    prelude::{Vec2, Vec3},
+    prelude::{Clamp, Round, Vec2, Vec3},
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
 
 /// Repeat a distance field infinitely in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -35,8 +35,9 @@ impl Default for RepeatInfiniteOp<Vec3> {
     }
 }
 
-impl<Dim> SignedDistanceOperator<Dim, Distance> for RepeatInfiniteOp<Dim>
+impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for RepeatInfiniteOp<Dim>
 where
+    Sdf: DistanceFunction<Dim, Out>,
     Dim: Add<Dim, Output = Dim>
         + Add<f32, Output = Dim>
         + Sub<Dim, Output = Dim>
@@ -45,10 +46,7 @@ where
         + Mod
         + Clone,
 {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> Distance
-    where
-        Sdf: SignedDistanceField<Dim, Distance>,
-    {
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
         let q = (p.add(0.5).mul(self.period.clone()))
             .modulo(self.period.clone())
             .sub(self.period.clone().mul(0.5));
@@ -91,22 +89,23 @@ impl Default for RepeatCountOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<Vec2, Distance> for RepeatCountOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec2, Distance>,
-    {
-        let q = p - self.period * (p / self.period).round().clamp(-self.count, self.count);
-        sdf.evaluate(q)
-    }
-}
-
-impl SignedDistanceOperator<Vec3, Distance> for RepeatCountOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec3, Distance>,
-    {
-        let q = p - self.period * (p / self.period).round().clamp(-self.count, self.count);
+impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for RepeatCountOp<Dim>
+where
+    Sdf: DistanceFunction<Dim, Out>,
+    Dim: Clone
+        + Div<Dim, Output = Dim>
+        + Neg<Output = Dim>
+        + Mul<Dim, Output = Dim>
+        + Sub<Dim, Output = Dim>
+        + Round
+        + Clamp,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
+        let q = p.clone()
+            - self.period.clone()
+                * (p / self.period.clone())
+                    .round()
+                    .clamp(-self.count.clone(), self.count.clone());
         sdf.evaluate(q)
     }
 }

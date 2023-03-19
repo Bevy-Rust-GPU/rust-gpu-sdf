@@ -1,7 +1,7 @@
 use rust_gpu_bridge::prelude::{Vec3, Abs, Pow};
 use type_fields::Field;
 
-use crate::signed_distance_field::{attributes::distance::Distance, SignedDistanceField};
+use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunction};
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[repr(C)]
@@ -16,7 +16,7 @@ impl Default for Superellipsoid {
     }
 }
 
-impl SignedDistanceField<Vec3, Distance> for Superellipsoid {
+impl DistanceFunction<Vec3, Distance> for Superellipsoid {
     fn evaluate(&self, p: Vec3) -> Distance {
         let d = (p.x.abs().pow(self.e1) + p.y.abs().pow(self.e2)).pow(self.e2 / self.e1)
             + p.z.abs().pow(self.e1);

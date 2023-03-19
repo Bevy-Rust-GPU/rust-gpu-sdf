@@ -4,7 +4,10 @@ use core::ops::Sub;
 
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
+use crate::{
+    prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator},
+    signed_distance_field::attributes::{normal::Normal, uv::Uv},
+};
 
 /// Shift the isosurface of a distance field by a given amount.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -19,12 +22,30 @@ impl Default for IsosurfaceOp {
     }
 }
 
-impl<Dim> SignedDistanceOperator<Dim, Distance> for IsosurfaceOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Dim) -> Distance
-    where
-        Sdf: SignedDistanceField<Dim, Distance>,
-    {
+impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Distance> for IsosurfaceOp
+where
+    Sdf: DistanceFunction<Dim, Distance>,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Distance {
         sdf.evaluate(p).sub(self.delta).into()
+    }
+}
+
+impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Normal<Dim>> for IsosurfaceOp
+where
+    Sdf: DistanceFunction<Dim, Normal<Dim>>,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Normal<Dim> {
+        sdf.evaluate(p)
+    }
+}
+
+impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Uv> for IsosurfaceOp
+where
+    Sdf: DistanceFunction<Dim, Uv>,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Uv {
+        sdf.evaluate(p)
     }
 }
 

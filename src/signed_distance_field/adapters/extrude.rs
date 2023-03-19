@@ -6,7 +6,7 @@ use core::fmt::Debug;
 use rust_gpu_bridge::prelude::{Abs, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::{Distance, SignedDistanceField};
+use crate::signed_distance_field::{Distance, DistanceFunction};
 
 /// Extrude a 2D distance field into 3D.
 #[derive(Default, Copy, Clone, PartialEq, Field)]
@@ -30,9 +30,9 @@ where
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec2, Distance> for Extrude<Sdf>
+impl<Sdf> DistanceFunction<Vec2, Distance> for Extrude<Sdf>
 where
-    Sdf: SignedDistanceField<f32, Distance>,
+    Sdf: DistanceFunction<f32, Distance>,
 {
     fn evaluate(&self, p: Vec2) -> Distance {
         let d = self.sdf.evaluate(p.x);
@@ -41,9 +41,9 @@ where
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec3, Distance> for Extrude<Sdf>
+impl<Sdf> DistanceFunction<Vec3, Distance> for Extrude<Sdf>
 where
-    Sdf: SignedDistanceField<Vec2, Distance>,
+    Sdf: DistanceFunction<Vec2, Distance>,
 {
     fn evaluate(&self, p: Vec3) -> Distance {
         let d = self.sdf.evaluate(p.truncate());

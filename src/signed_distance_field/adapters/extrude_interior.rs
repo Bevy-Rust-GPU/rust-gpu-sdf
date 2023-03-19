@@ -3,7 +3,7 @@ use type_fields::Field;
 
 use crate::{
     default,
-    signed_distance_field::{attributes::distance::Distance, SignedDistanceField},
+    signed_distance_field::{attributes::distance::Distance, DistanceFunction},
 };
 
 /// Extrude a 2D distance field into 3D, using its interior distance to determine depth.
@@ -27,9 +27,9 @@ where
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec2, Distance> for ExtrudeInterior<Sdf>
+impl<Sdf> DistanceFunction<Vec2, Distance> for ExtrudeInterior<Sdf>
 where
-    Sdf: SignedDistanceField<f32, Distance>,
+    Sdf: DistanceFunction<f32, Distance>,
 {
     fn evaluate(&self, p: Vec2) -> Distance {
         let d = self.sdf.evaluate(p.x);
@@ -40,9 +40,9 @@ where
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec3, Distance> for ExtrudeInterior<Sdf>
+impl<Sdf> DistanceFunction<Vec3, Distance> for ExtrudeInterior<Sdf>
 where
-    Sdf: SignedDistanceField<Vec2, Distance>,
+    Sdf: DistanceFunction<Vec2, Distance>,
 {
     fn evaluate(&self, p: Vec3) -> Distance {
         let d = self.sdf.evaluate(p.truncate());

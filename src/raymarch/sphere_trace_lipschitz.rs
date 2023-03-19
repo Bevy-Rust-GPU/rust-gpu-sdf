@@ -1,24 +1,31 @@
 use rust_gpu_bridge::prelude::{Abs, Vec3};
 
-use crate::prelude::{Distance, SignedDistanceField};
+use crate::prelude::{Distance, DistanceFunction};
 
 use super::{Raymarch, RaymarchOutput};
 
+/// Sphere tracer that operates with respect to a precomputed Lipschitz bound.
+///
+/// Costs 1 extra divide per step compared to [`SphereTraceNaive`],
+/// but results in overall faster intersections.
+///
+/// Note: The precomputed lipschitz bound `k` must be correct in respect to the
+/// provided SDF for accurate behaviour; incorrect values will result in visual artifacting.
 #[derive(Debug, Copy, Clone, PartialEq)]
 #[repr(C)]
-pub struct SphereTraceLipschitz {
-    pub k: f32,
+pub struct SphereTraceLipschitz<const MAX_STEPS: u32> {
+    pub frac_1_k: f32,
 }
 
-impl Default for SphereTraceLipschitz {
+impl<const MAX_STEPS: u32> Default for SphereTraceLipschitz<MAX_STEPS> {
     fn default() -> Self {
         SphereTraceLipschitz {
-            k: SphereTraceLipschitz::falloff_k(1.0, 3.0) * 3.0,
+            frac_1_k: 1.0 / (SphereTraceLipschitz::<MAX_STEPS>::falloff_k(1.0, 3.0) * 3.0),
         }
     }
 }
 
-impl SphereTraceLipschitz {
+impl<const MAX_STEPS: u32> SphereTraceLipschitz<MAX_STEPS> {
     // Computes the global lipschitz bound of the falloff function
     // e: energy
     // R: radius
@@ -27,10 +34,10 @@ impl SphereTraceLipschitz {
     }
 }
 
-impl Raymarch for SphereTraceLipschitz {
+impl<const MAX_STEPS: u32> Raymarch for SphereTraceLipschitz<MAX_STEPS> {
     type Output = RaymarchOutput;
 
-    fn raymarch<Sdf, const MAX_STEPS: u32>(
+    fn raymarch<Sdf>(
         &self,
         sdf: &Sdf,
         start: f32,
@@ -40,36 +47,26 @@ impl Raymarch for SphereTraceLipschitz {
         epsilon: f32,
     ) -> Self::Output
     where
-        Sdf: SignedDistanceField<Vec3, Distance>,
+        Sdf: DistanceFunction<Vec3, Distance>,
     {
         let mut out = RaymarchOutput::default();
 
         let mut t = start;
-
         for i in 0..MAX_STEPS {
             let p = eye + dir * t;
-            let dist = sdf.evaluate(p);
+            let dist: Distance = sdf.evaluate(p);
 
-            out.steps += 1;
+            out.step(t, dist);
 
             if *dist < 0.0 {
-                out.hit = true;
-                out.dist = t;
-                out.closest = t;
+                out.hit(i);
                 break;
             }
 
-            t += epsilon.max(dist.abs() / self.k);
-
-            if i == 0 {
-                out.closest = t;
-            } else {
-                out.closest = out.closest.min(t);
-            }
-
+            t += epsilon.max(dist.abs() * self.frac_1_k);
 
             if t > end {
-                out.dist = end;
+                out.miss(i);
                 break;
             }
         }

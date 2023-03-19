@@ -1,9 +1,9 @@
 //! Reflect a distance field about an arbitrary axis.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
+use rust_gpu_bridge::prelude::{Abs, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
 
 pub const AXIS_X: usize = 1;
 pub const AXIS_Y: usize = 2;
@@ -19,24 +19,24 @@ pub const AXIS_XYZ: usize = AXIS_XY | AXIS_Z;
 #[repr(C)]
 pub struct AxialReflectOp<const AXIS: usize>;
 
-impl<const AXIS: usize> SignedDistanceOperator<f32, Distance> for AxialReflectOp<AXIS> {
-    fn operator<Sdf>(&self, sdf: &Sdf, mut p: f32) -> Distance
-    where
-        Sdf: SignedDistanceField<f32, Distance>,
-    {
+impl<const AXIS: usize, Sdf, Out> SignedDistanceOperator<Sdf, f32, Out> for AxialReflectOp<AXIS>
+where
+    Sdf: DistanceFunction<f32, Out>,
+{
+    fn operator(&self, sdf: &Sdf, mut p: f32) -> Out {
         if AXIS & AXIS_X > 0 {
             p = p.abs();
         }
-        
+
         sdf.evaluate(p)
     }
 }
 
-impl<const AXIS: usize> SignedDistanceOperator<Vec2, Distance> for AxialReflectOp<AXIS> {
-    fn operator<Sdf>(&self, sdf: &Sdf, mut p: Vec2) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec2, Distance>,
-    {
+impl<const AXIS: usize, Sdf, Out> SignedDistanceOperator<Sdf, Vec2, Out> for AxialReflectOp<AXIS>
+where
+    Sdf: DistanceFunction<Vec2, Out>,
+{
+    fn operator(&self, sdf: &Sdf, mut p: Vec2) -> Out {
         if AXIS & AXIS_X > 0 {
             p.x = p.x.abs();
         }
@@ -49,11 +49,11 @@ impl<const AXIS: usize> SignedDistanceOperator<Vec2, Distance> for AxialReflectO
     }
 }
 
-impl<const AXIS: usize> SignedDistanceOperator<Vec3, Distance> for AxialReflectOp<AXIS> {
-    fn operator<Sdf>(&self, sdf: &Sdf, mut p: Vec3) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec3, Distance>,
-    {
+impl<const AXIS: usize, Sdf, Out> SignedDistanceOperator<Sdf, Vec3, Out> for AxialReflectOp<AXIS>
+where
+    Sdf: DistanceFunction<Vec3, Out>,
+{
+    fn operator(&self, sdf: &Sdf, mut p: Vec3) -> Out {
         if AXIS & AXIS_X > 0 {
             p.x = p.x.abs();
         }

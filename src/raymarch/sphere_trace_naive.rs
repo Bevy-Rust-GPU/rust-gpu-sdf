@@ -1,17 +1,21 @@
-use rust_gpu_bridge::prelude::{Vec3, Abs};
+use rust_gpu_bridge::prelude::{Abs, Vec3};
 
-use crate::prelude::{Distance, SignedDistanceField};
+use crate::prelude::{Distance, DistanceFunction};
 
 use super::{Raymarch, RaymarchOutput};
 
+/// Basic sphere tracer.
+///
+/// Marches along a ray, sampling the provided SDF at each step to determine
+/// a minimum safe distance for the following iteration.
 #[derive(Debug, Default, Copy, Clone, PartialEq)]
 #[repr(C)]
-pub struct SphereTraceNaive;
+pub struct SphereTraceNaive<const MAX_STEPS: u32>;
 
-impl Raymarch for SphereTraceNaive {
+impl<const MAX_STEPS: u32> Raymarch for SphereTraceNaive<MAX_STEPS> {
     type Output = RaymarchOutput;
 
-    fn raymarch<Sdf, const MAX_STEPS: u32>(
+    fn raymarch<Sdf>(
         &self,
         sdf: &Sdf,
         start: f32,
@@ -21,34 +25,26 @@ impl Raymarch for SphereTraceNaive {
         epsilon: f32,
     ) -> Self::Output
     where
-        Sdf: SignedDistanceField<Vec3, Distance>,
+        Sdf: DistanceFunction<Vec3, Distance>,
     {
         let mut out = RaymarchOutput::default();
         let mut t = start;
 
-        for i in 0..MAX_STEPS {
+        for step in 0..MAX_STEPS {
             let p = eye + dir * t;
-            let dist = *sdf.evaluate(p);
+            let dist = sdf.evaluate(p);
 
-            out.steps += 1;
+            out.step(t, dist);
 
-            if dist < 0.0 {
-                out.hit = true;
-                out.dist = t;
-                out.closest = t;
+            if *dist < 0.0 {
+                out.hit(step);
                 break;
             }
 
             t += epsilon.max(dist.abs());
 
-            if i == 0 {
-                out.closest = t;
-            } else {
-                out.closest = out.closest.min(t);
-            }
-
             if t > end {
-                out.dist = end;
+                out.miss(step);
                 break;
             }
         }
@@ -56,4 +52,3 @@ impl Raymarch for SphereTraceNaive {
         out
     }
 }
-

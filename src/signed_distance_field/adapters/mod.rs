@@ -2,5 +2,7 @@
 
 pub mod extrude;
 pub mod normals;
-pub mod sweep;
+pub mod uvs;
 pub mod extrude_interior;
+pub mod sweep;
+

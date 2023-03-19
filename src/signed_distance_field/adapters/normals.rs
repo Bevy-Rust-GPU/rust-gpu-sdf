@@ -3,52 +3,41 @@ use type_fields::Field;
 
 use crate::{
     default,
-    prelude::{Distance, Normal, Operator, SignedDistanceField, SignedDistanceOperator},
+    prelude::{Distance, Normal, Normalize, Operator, DistanceFunction, SignedDistanceOperator},
+    signed_distance_field::attributes::uv::Uv,
 };
 
-#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[repr(C)]
-pub struct NormalizeOp;
-
-impl SignedDistanceOperator<f32, Normal<f32>> for NormalizeOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Normal<f32>
-    where
-        Sdf: SignedDistanceField<f32, Normal<f32>>,
-    {
-        Normal((*sdf.evaluate(p)).sign())
-    }
-}
-
-impl SignedDistanceOperator<Vec2, Normal<Vec2>> for NormalizeOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Normal<Vec2>
-    where
-        Sdf: SignedDistanceField<Vec2, Normal<Vec2>>,
-    {
-        Normal((*sdf.evaluate(p)).normalize())
-    }
-}
-
-impl SignedDistanceOperator<Vec3, Normal<Vec3>> for NormalizeOp {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Normal<Vec3>
-    where
-        Sdf: SignedDistanceField<Vec3, Normal<Vec3>>,
-    {
-        Normal((*sdf.evaluate(p)).normalize())
-    }
-}
-
-pub type Normalize<Sdf> = Operator<NormalizeOp, Sdf>;
-
-#[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[repr(C)]
 pub struct TetrahedronGradient<Sdf> {
     pub sdf: Sdf,
     pub epsilon: f32,
 }
 
-impl<Sdf> SignedDistanceField<Vec2, Normal<Vec2>> for TetrahedronGradient<Sdf>
+impl<Sdf> Default for TetrahedronGradient<Sdf>
 where
-    Sdf: SignedDistanceField<Vec2, Distance>,
+    Sdf: Default,
+{
+    fn default() -> Self {
+        TetrahedronGradient {
+            sdf: default(),
+            epsilon: f32::EPSILON,
+        }
+    }
+}
+
+impl<Sdf, Dim> DistanceFunction<Dim, Distance> for TetrahedronGradient<Sdf>
+where
+    Sdf: DistanceFunction<Dim, Distance>,
+{
+    fn evaluate(&self, p: Dim) -> Distance {
+        self.sdf.evaluate(p)
+    }
+}
+
+impl<Sdf> DistanceFunction<Vec2, Normal<Vec2>> for TetrahedronGradient<Sdf>
+where
+    Sdf: DistanceFunction<Vec2, Distance>,
 {
     fn evaluate(&self, p: Vec2) -> Normal<Vec2> {
         let k = Vec2::new(1.0, -1.0);
@@ -60,9 +49,9 @@ where
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec3, Normal<Vec3>> for TetrahedronGradient<Sdf>
+impl<Sdf> DistanceFunction<Vec3, Normal<Vec3>> for TetrahedronGradient<Sdf>
 where
-    Sdf: SignedDistanceField<Vec3, Distance>,
+    Sdf: DistanceFunction<Vec3, Distance>,
 {
     fn evaluate(&self, p: Vec3) -> Normal<Vec3> {
         let k = Vec2::new(1.0, -1.0);
@@ -76,25 +65,56 @@ where
 
 pub type TetrahedronNormal<Sdf> = Normalize<TetrahedronGradient<Sdf>>;
 
-#[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+impl<Sdf> TetrahedronNormal<Sdf> {
+    pub fn sdf(&mut self) -> &mut Sdf {
+        &mut self.target.sdf
+    }
+
+    pub fn epsilon(&mut self) -> &mut f32 {
+        &mut self.target.epsilon
+    }
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[repr(C)]
 pub struct CentralDiffGradient<Sdf> {
     pub sdf: Sdf,
     pub epsilon: f32,
 }
 
-impl<Sdf> SignedDistanceField<f32, Normal<f32>> for CentralDiffGradient<Sdf>
+impl<Sdf> Default for CentralDiffGradient<Sdf>
 where
-    Sdf: SignedDistanceField<f32, Distance>,
+    Sdf: Default,
+{
+    fn default() -> Self {
+        CentralDiffGradient {
+            sdf: default(),
+            epsilon: f32::EPSILON,
+        }
+    }
+}
+
+impl<Sdf> DistanceFunction<f32, Normal<f32>> for CentralDiffGradient<Sdf>
+where
+    Sdf: DistanceFunction<f32, Distance>,
 {
     fn evaluate(&self, p: f32) -> Normal<f32> {
         Normal(*self.sdf.evaluate(p + self.epsilon) - *self.sdf.evaluate(p - self.epsilon))
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec2, Normal<Vec2>> for CentralDiffGradient<Sdf>
+impl<Sdf, Dim> DistanceFunction<Dim, Distance> for CentralDiffGradient<Sdf>
 where
-    Sdf: SignedDistanceField<Vec2, Distance>,
+    Sdf: DistanceFunction<Dim, Distance>,
+{
+    fn evaluate(&self, p: Dim) -> Distance {
+        self.sdf.evaluate(p)
+    }
+}
+
+impl<Sdf> DistanceFunction<Vec2, Normal<Vec2>> for CentralDiffGradient<Sdf>
+where
+    Sdf: DistanceFunction<Vec2, Distance>,
 {
     fn evaluate(&self, p: Vec2) -> Normal<Vec2> {
         (Vec2::new(
@@ -107,9 +127,9 @@ where
     }
 }
 
-impl<Sdf> SignedDistanceField<Vec3, Normal<Vec3>> for CentralDiffGradient<Sdf>
+impl<Sdf> DistanceFunction<Vec3, Normal<Vec3>> for CentralDiffGradient<Sdf>
 where
-    Sdf: SignedDistanceField<Vec3, Distance>,
+    Sdf: DistanceFunction<Vec3, Distance>,
 {
     fn evaluate(&self, p: Vec3) -> Normal<Vec3> {
         (Vec3::new(
@@ -142,5 +162,39 @@ impl<Sdf> CentralDiffNormal<Sdf> {
             target: CentralDiffGradient { sdf, epsilon },
             op: default(),
         }
+    }
+}
+
+/// Override the normals of an SDF with the normals of another SDF
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct SdfNormals<SdfA, SdfB> {
+    sdf_base: SdfA,
+    sdf_normals: SdfB,
+}
+
+impl<SdfA, SdfB, In> DistanceFunction<In, Distance> for SdfNormals<SdfA, SdfB>
+where
+    SdfA: DistanceFunction<In, Distance>,
+{
+    fn evaluate(&self, p: In) -> Distance {
+        self.sdf_base.evaluate(p)
+    }
+}
+
+impl<SdfA, SdfB, In> DistanceFunction<In, Normal<In>> for SdfNormals<SdfA, SdfB>
+where
+    SdfB: DistanceFunction<In, Normal<In>>,
+{
+    fn evaluate(&self, p: In) -> Normal<In> {
+        self.sdf_normals.evaluate(p)
+    }
+}
+
+impl<SdfA, SdfB, In> DistanceFunction<In, Uv> for SdfNormals<SdfA, SdfB>
+where
+    SdfA: DistanceFunction<In, Uv>,
+{
+    fn evaluate(&self, p: In) -> Uv {
+        self.sdf_base.evaluate(p)
     }
 }

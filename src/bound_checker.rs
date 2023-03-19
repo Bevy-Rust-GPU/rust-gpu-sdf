@@ -6,7 +6,7 @@ use type_fields::field::Field;
 use crate::{
     default,
     signed_distance_field::{
-        adapters::normals::CentralDiffNormal, attributes::distance::Distance, SignedDistanceField,
+        adapters::normals::CentralDiffNormal, attributes::{distance::Distance, normal::Normal}, DistanceFunction,
     },
 };
 
@@ -42,7 +42,7 @@ impl<Dim, Sdf> BoundChecker<Dim, Sdf> {
 
 impl<Sdf> BoundChecker<Vec2, Sdf>
 where
-    Sdf: SignedDistanceField<Vec2, Distance> + Clone + 'static,
+    Sdf: DistanceFunction<Vec2, Distance> + Clone + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()
@@ -56,9 +56,10 @@ where
                 let pos = Vec2::new(x as f32, y as f32) * self.step;
 
                 // Calculate normal
-                let normal = *CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
+                let normal: Normal<Vec2> = CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
                     .with(CentralDiffNormal::epsilon, self.epsilon)
                     .evaluate(pos);
+                let normal = *normal;
 
                 // Apply 1D central differencing along normal,
                 // resulting in distance-space derivative
@@ -80,7 +81,7 @@ where
 
 impl<Sdf> BoundChecker<Vec3, Sdf>
 where
-    Sdf: SignedDistanceField<Vec3, Distance> + Clone + 'static,
+    Sdf: DistanceFunction<Vec3, Distance> + Clone + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()
@@ -95,9 +96,10 @@ where
                     let pos = Vec3::new(x as f32, y as f32, z as f32) * self.step;
 
                     // Calculate normal
-                    let normal = *CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
+                    let normal: Normal<Vec3> = CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
                         .with(CentralDiffNormal::epsilon, self.epsilon)
                         .evaluate(pos);
+                    let normal = *normal;
 
                     // Apply 1D central differencing along normal,
                     // resulting in distance-space derivative

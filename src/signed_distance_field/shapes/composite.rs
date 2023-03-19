@@ -1,6 +1,6 @@
 //! Shapes composed from other shapes.
 
-use rust_gpu_bridge::prelude::{Vec2, Sin, Cos, Tan};
+use rust_gpu_bridge::prelude::{Cos, Sin, Tan, Vec2};
 use type_fields::field::Field;
 
 use crate::{
@@ -51,6 +51,14 @@ pub type Cube = Box<D3>;
 
 /// A 3D torus.
 pub type Torus = Sweep<Circle, Circle>;
+
+impl Torus {
+    pub fn torus() -> Self {
+        <Self as Default>::default()
+            .with((Torus::core, Circle::radius), 0.75)
+            .with((Torus::shell, Circle::radius), 0.25)
+    }
+}
 
 pub type NgonMirror<Sdf> = Reflect<Vec2, Sdf>;
 
@@ -302,12 +310,17 @@ impl Decagon {
     }
 }
 
-
 #[cfg(test)]
 pub mod tests {
     use rust_gpu_bridge::prelude::{Vec2, Vec3};
 
-    use crate::{prelude::BoundChecker, signed_distance_field::shapes::composite::{Line, Capsule, Square, Cube, Torus, Triangle, Quadrilateral, Pentagon, Hexagon, Septagon, Octagon, Nonagon, Decagon}};
+    use crate::{
+        prelude::BoundChecker,
+        signed_distance_field::shapes::composite::{
+            Capsule, Cube, Decagon, Hexagon, Line, Nonagon, Octagon, Pentagon, Quadrilateral,
+            Septagon, Square, Torus, Triangle,
+        },
+    };
 
     use super::{Circle, Point, Sphere};
 

@@ -1,24 +1,47 @@
 //! Create a 3D distance field by sweeping a 2D distance field
 //! around the perimiter of another 2D distance field
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3};
+use rust_gpu_bridge::prelude::{Abs, Atan2, Vec2, Vec3, Vec3Swizzles};
 use type_fields::Field;
 
-use crate::signed_distance_field::{Distance, SignedDistanceField};
+use crate::{
+    default,
+    signed_distance_field::{
+        attributes::{normal::Normal, uv::Uv},
+        Distance, DistanceFunction,
+    },
+};
 
 /// Create a 3D distance field by sweeping a 2D distance field
 /// around the perimiter of another 2D distance field
-#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[derive(Copy, Clone, PartialEq, Field)]
 #[repr(C)]
 pub struct Sweep<Core, Shell> {
     pub core: Core,
     pub shell: Shell,
+    pub u: Vec2,
+    pub v: Vec2,
 }
 
-impl<Core, Shell> SignedDistanceField<Vec2, Distance> for Sweep<Core, Shell>
+impl<Core, Shell> Default for Sweep<Core, Shell>
 where
-    Core: SignedDistanceField<f32, Distance>,
-    Shell: SignedDistanceField<f32, Distance>,
+    Core: Default,
+    Shell: Default,
+{
+    fn default() -> Self {
+        Sweep {
+            core: default(),
+            shell: default(),
+            u: Vec2::X,
+            v: Vec2::X,
+        }
+    }
+}
+
+impl<Core, Shell> DistanceFunction<Vec2, Distance> for Sweep<Core, Shell>
+where
+    Core: DistanceFunction<f32, Distance>,
+    Shell: DistanceFunction<f32, Distance>,
 {
     fn evaluate(&self, p: Vec2) -> Distance {
         let q = self.core.evaluate(p.x);
@@ -26,14 +49,41 @@ where
     }
 }
 
-impl<Core, Shell> SignedDistanceField<Vec3, Distance> for Sweep<Core, Shell>
+impl<Core, Shell> DistanceFunction<Vec3, Distance> for Sweep<Core, Shell>
 where
-    Core: SignedDistanceField<Vec2, Distance>,
-    Shell: SignedDistanceField<Vec2, Distance>,
+    Core: DistanceFunction<Vec2, Distance>,
+    Shell: DistanceFunction<Vec2, Distance>,
 {
     fn evaluate(&self, p: Vec3) -> Distance {
         let q = Vec2::new(*self.core.evaluate(p.truncate()), p.z);
         self.shell.evaluate(q)
+    }
+}
+
+impl<Core, Shell> DistanceFunction<Vec3, Normal<Vec3>> for Sweep<Core, Shell>
+where
+    Core: DistanceFunction<Vec2, Distance>,
+    Shell: DistanceFunction<Vec2, Normal<Vec2>>,
+{
+    fn evaluate(&self, p: Vec3) -> Normal<Vec3> {
+        let q = Vec2::new(*self.core.evaluate(p.truncate()), p.z);
+        let n = self.shell.evaluate(q);
+        let w = p.xy().normalize() * n.x;
+        Vec3::new(w.x, w.y, n.y).into()
+    }
+}
+
+impl<Core, Shell> DistanceFunction<Vec3, Uv> for Sweep<Core, Shell>
+where
+    Core: DistanceFunction<Vec2, Distance> + DistanceFunction<Vec2, Uv>,
+    Shell: DistanceFunction<Vec2, Uv>,
+{
+    fn evaluate(&self, p: Vec3) -> Uv {
+        let dist_core: Distance = self.core.evaluate(p.truncate());
+        let uv_core: Uv = self.core.evaluate(p.truncate());
+        let q = Vec2::new(*dist_core, p.z);
+        let uv_shell = self.shell.evaluate(q);
+        Vec2::new(uv_core.dot(self.u), uv_shell.dot(self.v)).into()
     }
 }
 

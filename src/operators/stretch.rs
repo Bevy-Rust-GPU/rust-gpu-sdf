@@ -1,9 +1,14 @@
 //! Stretch a shape along an arbitrary axis, preserving exterior geometry as caps.
 
-use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
+use core::ops::{Mul, Sub};
+
+use rust_gpu_bridge::prelude::{Abs, Dot, Length, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, SignedDistanceField, SignedDistanceOperator};
+use crate::{
+    prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator},
+    signed_distance_field::attributes::normal::Normal,
+};
 
 /// Extrude a shape infinitely along an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -24,44 +29,17 @@ impl Default for StretchInfiniteOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<f32, Distance> for StretchInfiniteOp<f32> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Distance
-    where
-        Sdf: SignedDistanceField<f32, Distance>,
-    {
+impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for StretchInfiniteOp<Dim>
+where
+    Sdf: DistanceFunction<Dim, Out>,
+    Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + Length + Dot,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
         assert!(
-            self.dir.abs() == 1.0,
+            self.dir.clone().length() == 1.0,
             "ExtrudeInfiniteOp dir must be normalized"
         );
-        let q = p - p * self.dir * self.dir;
-        sdf.evaluate(q)
-    }
-}
-
-impl SignedDistanceOperator<Vec2, Distance> for StretchInfiniteOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec2, Distance>,
-    {
-        assert!(
-            self.dir.is_normalized(),
-            "ExtrudeInfiniteOp dir must be normalized"
-        );
-        let q = p - p.dot(self.dir) * self.dir;
-        sdf.evaluate(q)
-    }
-}
-
-impl SignedDistanceOperator<Vec3, Distance> for StretchInfiniteOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec3, Distance>,
-    {
-        assert!(
-            self.dir.is_normalized(),
-            "ExtrudeInfiniteOp dir must be normalized"
-        );
-        let q = p - p.dot(self.dir) * self.dir;
+        let q = p.clone() - self.dir.clone() * p.dot(self.dir.clone());
         sdf.evaluate(q)
     }
 }
@@ -110,44 +88,14 @@ impl Default for StretchDistOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<f32, Distance> for StretchDistOp<f32> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Distance
-    where
-        Sdf: SignedDistanceField<f32, Distance>,
-    {
-        assert!(
-            self.dir.abs() == 1.0,
-            "ExtrudeDistOp dir must be normalized"
-        );
-        let q = p - ((p * self.dir).clamp(-self.dist, self.dist) * self.dir);
-        sdf.evaluate(q)
-    }
-}
-
-impl SignedDistanceOperator<Vec2, Distance> for StretchDistOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec2, Distance>,
-    {
-        assert!(
-            self.dir.is_normalized(),
-            "ExtrudeDistOp dir must be normalized"
-        );
-        let q = p - (p.dot(self.dir).clamp(-self.dist, self.dist) * self.dir);
-        sdf.evaluate(q)
-    }
-}
-
-impl SignedDistanceOperator<Vec3, Distance> for StretchDistOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
-    where
-        Sdf: SignedDistanceField<Vec3, Distance>,
-    {
-        assert!(
-            self.dir.is_normalized(),
-            "ExtrudeDistOp dir must be normalized"
-        );
-        let q = p - (p.dot(self.dir).clamp(-self.dist, self.dist) * self.dir);
+impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for StretchDistOp<Dim>
+where
+    Sdf: DistanceFunction<Dim, Out>,
+    Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + Dot,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
+        let q =
+            p.clone() - (self.dir.clone() * p.dot(self.dir.clone()).clamp(-self.dist, self.dist));
         sdf.evaluate(q)
     }
 }

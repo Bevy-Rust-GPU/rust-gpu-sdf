@@ -1,10 +1,15 @@
 //! Given an infinitely-thin surface,
 //! divide space into interior and exterior based on axis.
 
-use rust_gpu_bridge::prelude::{Sign, Vec2, Vec3};
+use core::ops::Mul;
+
+use rust_gpu_bridge::prelude::{Dot, Sign, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::signed_distance_field::attributes::distance::Distance;
+use crate::signed_distance_field::{
+    attributes::{distance::Distance, normal::Normal},
+    DistanceFunction,
+};
 
 use super::{Operator, SignedDistanceOperator};
 
@@ -34,36 +39,25 @@ impl Default for SidedOp<Vec3> {
     }
 }
 
-impl SignedDistanceOperator<f32, Distance> for SidedOp<f32> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: f32) -> Distance
-    where
-        Sdf: crate::signed_distance_field::SignedDistanceField<f32, Distance>,
-    {
-        let mut d = *sdf.evaluate(p);
-        d *= (p * self.axis).sign();
+impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Distance> for SidedOp<Dim>
+where
+    Sdf: DistanceFunction<Dim, Distance>,
+    Dim: Clone + Mul<Dim, Output = Dim> + Sign + Dot,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Distance {
+        let mut d = *sdf.evaluate(p.clone());
+        d = p.clone().dot(self.axis.clone()).sign();
         d.into()
     }
 }
 
-impl SignedDistanceOperator<Vec2, Distance> for SidedOp<Vec2> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec2) -> Distance
-    where
-        Sdf: crate::signed_distance_field::SignedDistanceField<Vec2, Distance>,
-    {
-        let mut d = *sdf.evaluate(p);
-        d *= p.dot(self.axis).sign();
-        d.into()
-    }
-}
-
-impl SignedDistanceOperator<Vec3, Distance> for SidedOp<Vec3> {
-    fn operator<Sdf>(&self, sdf: &Sdf, p: Vec3) -> Distance
-    where
-        Sdf: crate::signed_distance_field::SignedDistanceField<Vec3, Distance>,
-    {
-        let mut d = *sdf.evaluate(p);
-        d *= p.dot(self.axis).sign();
-        d.into()
+impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Normal<Dim>> for SidedOp<Dim>
+where
+    Sdf: DistanceFunction<Dim, Normal<Dim>>,
+    Dim: Clone + Dot + Mul<f32, Output = Dim>,
+{
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Normal<Dim> {
+        ((*sdf.evaluate(p.clone())).clone() * p.dot(self.axis.clone()).sign()).into()
     }
 }
 
