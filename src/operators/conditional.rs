@@ -1,6 +1,6 @@
 use type_fields::Field;
 
-use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunction};
+use crate::signed_distance_field::{DistanceFunction};
 
 use super::{Operator, SignedDistanceOperator};
 

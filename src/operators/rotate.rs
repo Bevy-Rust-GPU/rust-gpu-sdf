@@ -4,7 +4,7 @@ use core::fmt::Debug;
 use rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{Operator, DistanceFunction, SignedDistanceOperator};
 
 /// Rotate a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]

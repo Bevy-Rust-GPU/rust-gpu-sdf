@@ -2,7 +2,7 @@
 
 use core::ops::Mul;
 
-use rust_gpu_bridge::prelude::{Abs, Sign, Vec2, Vec3};
+use rust_gpu_bridge::prelude::{Abs, Sign};
 use type_fields::Field;
 
 use crate::{

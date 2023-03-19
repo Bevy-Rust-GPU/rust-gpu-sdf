@@ -2,10 +2,10 @@
 
 use core::ops::{Mul, Sub};
 
-use rust_gpu_bridge::prelude::{Abs, Dot, Length, Vec2, Vec3};
+use rust_gpu_bridge::prelude::{Dot, Length, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{Operator, DistanceFunction, SignedDistanceOperator};
 
 /// Reflect a distance field about an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]

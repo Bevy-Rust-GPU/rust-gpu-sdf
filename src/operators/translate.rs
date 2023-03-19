@@ -4,7 +4,7 @@ use core::ops::Sub;
 
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{Operator, DistanceFunction, SignedDistanceOperator};
 
 /// Apply a positional translation to a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]

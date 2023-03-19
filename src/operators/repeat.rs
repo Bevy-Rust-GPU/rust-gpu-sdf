@@ -8,7 +8,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{Operator, DistanceFunction, SignedDistanceOperator};
 
 /// Repeat a distance field infinitely in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]

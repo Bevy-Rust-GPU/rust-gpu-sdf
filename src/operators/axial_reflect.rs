@@ -3,7 +3,7 @@
 use rust_gpu_bridge::prelude::{Abs, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{Operator, DistanceFunction, SignedDistanceOperator};
 
 pub const AXIS_X: usize = 1;
 pub const AXIS_Y: usize = 2;

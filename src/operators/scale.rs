@@ -4,7 +4,7 @@ use core::ops::{Div, Mul};
 
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{Operator, DistanceFunction, SignedDistanceOperator};
 
 /// Uniformly scale a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]

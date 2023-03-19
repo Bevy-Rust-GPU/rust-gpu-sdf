@@ -56,7 +56,7 @@ impl<Dim> DistanceFunction<Dim, Normal<Dim>> for Plane<Dim>
 where
     Dim: Clone + Neg<Output = Dim>,
 {
-    fn evaluate(&self, p: Dim) -> Normal<Dim> {
+    fn evaluate(&self, _p: Dim) -> Normal<Dim> {
         (-self.dir.clone()).into()
     }
 }

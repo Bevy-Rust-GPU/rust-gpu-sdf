@@ -5,7 +5,7 @@ pub mod attributes;
 pub mod metrics;
 pub mod shapes;
 
-use self::attributes::{distance::Distance, normal::Normal};
+use self::attributes::{distance::Distance};
 
 /// Describes a shape in terms of distance to the nearest point on its surface.
 pub trait DistanceFunction<In, Out> {
