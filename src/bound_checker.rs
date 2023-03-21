@@ -1,12 +1,17 @@
 use core::{marker::PhantomData, ops::RangeInclusive};
 
-use rust_gpu_bridge::prelude::{Abs, Vec2, Vec3};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec3},
+    Abs,
+};
 use type_fields::field::Field;
 
 use crate::{
     default,
     signed_distance_field::{
-        adapters::normals::CentralDiffNormal, attributes::{distance::Distance, normal::Normal}, DistanceFunction,
+        adapters::normals::CentralDiffNormal,
+        attributes::{distance::Distance, normal::Normal},
+        DistanceFunction,
     },
 };
 
@@ -56,9 +61,10 @@ where
                 let pos = Vec2::new(x as f32, y as f32) * self.step;
 
                 // Calculate normal
-                let normal: Normal<Vec2> = CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
-                    .with(CentralDiffNormal::epsilon, self.epsilon)
-                    .evaluate(pos);
+                let normal: Normal<Vec2> =
+                    CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
+                        .with(CentralDiffNormal::epsilon, self.epsilon)
+                        .evaluate(pos);
                 let normal = *normal;
 
                 // Apply 1D central differencing along normal,
@@ -96,9 +102,10 @@ where
                     let pos = Vec3::new(x as f32, y as f32, z as f32) * self.step;
 
                     // Calculate normal
-                    let normal: Normal<Vec3> = CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
-                        .with(CentralDiffNormal::epsilon, self.epsilon)
-                        .evaluate(pos);
+                    let normal: Normal<Vec3> =
+                        CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
+                            .with(CentralDiffNormal::epsilon, self.epsilon)
+                            .evaluate(pos);
                     let normal = *normal;
 
                     // Apply 1D central differencing along normal,

@@ -1,9 +1,12 @@
 //! Reflect a distance field about an arbitrary axis.
 
-use rust_gpu_bridge::prelude::{Abs, Vec2, Vec3};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec3},
+    Abs,
+};
 use type_fields::Field;
 
-use crate::prelude::{Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{DistanceFunction, Operator, SignedDistanceOperator};
 
 pub const AXIS_X: usize = 1;
 pub const AXIS_Y: usize = 2;

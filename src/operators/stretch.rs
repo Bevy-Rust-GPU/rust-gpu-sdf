@@ -2,12 +2,13 @@
 
 use core::ops::{Mul, Sub};
 
-use rust_gpu_bridge::prelude::{Dot, Length, Vec2, Vec3};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec3},
+    Dot, Length,
+};
 use type_fields::Field;
 
-use crate::{
-    prelude::{Operator, DistanceFunction, SignedDistanceOperator},
-};
+use crate::prelude::{DistanceFunction, Operator, SignedDistanceOperator};
 
 /// Extrude a shape infinitely along an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]

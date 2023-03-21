@@ -1,9 +1,9 @@
-use rust_gpu_bridge::prelude::{Vec2, Vec2Swizzles, Vec3};
+use rust_gpu_bridge::glam::{Vec2, Vec2Swizzles, Vec3};
 use type_fields::Field;
 
 use crate::{
     default,
-    prelude::{Distance, Normal, Normalize, DistanceFunction},
+    prelude::{Distance, DistanceFunction, Normal, Normalize},
     signed_distance_field::attributes::uv::Uv,
 };
 

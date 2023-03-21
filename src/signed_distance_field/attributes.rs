@@ -50,7 +50,7 @@ pub mod position {
     #[cfg(not(feature = "spirv-std"))]
     use core::fmt::{Debug, Display};
 
-    use rust_gpu_bridge::prelude::Vec3;
+    use rust_gpu_bridge::glam::Vec3;
 
     #[derive(Default, Copy, Clone, PartialEq)]
     #[repr(C)]
@@ -143,7 +143,7 @@ pub mod uv {
     #[cfg(not(feature = "spirv-std"))]
     use core::fmt::{Debug, Display};
 
-    use rust_gpu_bridge::prelude::Vec2;
+    use rust_gpu_bridge::glam::Vec2;
 
     #[derive(Default, Copy, Clone, PartialEq)]
     #[repr(C)]
@@ -236,7 +236,7 @@ pub mod color {
     #[cfg(not(feature = "spirv-std"))]
     use core::fmt::{Debug, Display};
 
-    use rust_gpu_bridge::prelude::Vec4;
+    use rust_gpu_bridge::glam::Vec4;
 
     #[derive(Default, Copy, Clone, PartialEq)]
     #[repr(C)]

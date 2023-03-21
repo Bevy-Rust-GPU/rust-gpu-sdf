@@ -1,10 +1,10 @@
 //! Rotate a distance field.
 use core::fmt::Debug;
 
-use rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
+use rust_gpu_bridge::glam::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{DistanceFunction, Operator, SignedDistanceOperator};
 
 /// Rotate a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]

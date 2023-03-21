@@ -1,6 +1,6 @@
 //! Operators composed from other operators.
 
-use rust_gpu_bridge::prelude::Quat;
+use rust_gpu_bridge::glam::Quat;
 
 use super::{
     hollow::Hollow, isosurface::Isosurface, rotate::Rotate3d, scale::Scale, translate::Translate,

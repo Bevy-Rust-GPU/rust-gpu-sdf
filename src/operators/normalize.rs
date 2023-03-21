@@ -25,7 +25,7 @@ where
 impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Normal<Dim>> for NormalizeOp
 where
     Sdf: DistanceFunction<Dim, Normal<Dim>>,
-    Dim: Clone + rust_gpu_bridge::prelude::Normalize,
+    Dim: Clone + rust_gpu_bridge::Normalize,
 {
     fn operator(&self, sdf: &Sdf, p: Dim) -> Normal<Dim> {
         Normal((*sdf.evaluate(p)).clone().normalize())

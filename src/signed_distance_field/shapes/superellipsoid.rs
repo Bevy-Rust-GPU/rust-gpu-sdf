@@ -1,4 +1,4 @@
-use rust_gpu_bridge::prelude::{Vec3, Abs, Pow};
+use rust_gpu_bridge::{glam::Vec3, Abs, Pow};
 use type_fields::Field;
 
 use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunction};
@@ -39,4 +39,3 @@ pub mod test {
         assert!(BoundChecker::<Vec3, Superellipsoid>::default().is_field())
     }
 }
-

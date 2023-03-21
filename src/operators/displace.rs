@@ -9,7 +9,7 @@ use crate::{
     signed_distance_field::attributes::{normal::Normal, uv::Uv},
 };
 
-use rust_gpu_bridge::prelude::Normalize;
+use rust_gpu_bridge::Normalize;
 
 /// Displace the output of a distance field using the output of another distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]

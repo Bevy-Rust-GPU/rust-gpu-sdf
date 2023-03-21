@@ -1,9 +1,9 @@
 //! Twist a distance field around an arbitrary axis.
 
-use rust_gpu_bridge::prelude::{Quat, Vec2, Vec3};
+use rust_gpu_bridge::glam::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{DistanceFunction};
+use crate::prelude::DistanceFunction;
 
 use super::{Operator, SignedDistanceOperator};
 

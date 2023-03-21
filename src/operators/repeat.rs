@@ -3,12 +3,12 @@
 use core::ops::{Add, Div, Mul, Neg, Sub};
 
 use rust_gpu_bridge::{
-    modulo::Mod,
-    prelude::{Clamp, Round, Vec2, Vec3},
+    glam::{Vec2, Vec3},
+    Clamp, Mod, Round,
 };
 use type_fields::Field;
 
-use crate::prelude::{Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{DistanceFunction, Operator, SignedDistanceOperator};
 
 /// Repeat a distance field infinitely in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]

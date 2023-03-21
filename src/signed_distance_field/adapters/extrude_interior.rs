@@ -1,4 +1,7 @@
-use rust_gpu_bridge::prelude::{Vec2, Vec3, Abs};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec3},
+    Abs,
+};
 use type_fields::Field;
 
 use crate::{

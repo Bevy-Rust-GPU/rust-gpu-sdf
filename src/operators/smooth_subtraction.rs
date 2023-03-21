@@ -1,7 +1,7 @@
 //! Compute the blended boolean subtraction of two distance fields.
 use core::ops::{Add, Mul};
 
-use rust_gpu_bridge::mix::Mix;
+use rust_gpu_bridge::Mix;
 use type_fields::Field;
 
 use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};

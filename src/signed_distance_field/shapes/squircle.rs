@@ -1,4 +1,7 @@
-use rust_gpu_bridge::prelude::{Abs, Acos, Pow, Sign, Sqrt, Sin, Cos, Vec2, Vec2Swizzles};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec2Swizzles},
+    Abs, Acos, Cos, Pow, Sign, Sin, Sqrt,
+};
 
 use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunction};
 

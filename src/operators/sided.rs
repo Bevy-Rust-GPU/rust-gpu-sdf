@@ -3,7 +3,10 @@
 
 use core::ops::Mul;
 
-use rust_gpu_bridge::prelude::{Dot, Sign, Vec2, Vec3};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec3},
+    Dot, Sign,
+};
 use type_fields::Field;
 
 use crate::signed_distance_field::{

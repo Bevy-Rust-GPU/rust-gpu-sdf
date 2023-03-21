@@ -1,6 +1,9 @@
 //! Chebyshev distance metric.
 
-use rust_gpu_bridge::prelude::{Abs, Mix, Sign, Step, Vec2, Vec3};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec3},
+    Abs, Mix, Sign, Step,
+};
 
 use crate::signed_distance_field::{attributes::normal::Normal, Distance, DistanceFunction};
 

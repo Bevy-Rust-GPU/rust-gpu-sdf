@@ -1,4 +1,4 @@
-use rust_gpu_bridge::prelude::{Abs, Vec3};
+use rust_gpu_bridge::{glam::Vec3, Abs};
 
 use crate::prelude::{Distance, DistanceFunction};
 

@@ -1,7 +1,7 @@
 pub mod sphere_trace_lipschitz;
 pub mod sphere_trace_naive;
 
-use rust_gpu_bridge::prelude::Vec3;
+use rust_gpu_bridge::glam::Vec3;
 
 use crate::{
     default,

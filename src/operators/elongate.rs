@@ -2,11 +2,14 @@
 
 use core::ops::Add;
 
-use rust_gpu_bridge::prelude::{Abs, Sign, Vec2, Vec3, Vec3Swizzles};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec3, Vec3Swizzles},
+    Abs, Sign,
+};
 use type_fields::Field;
 
 use crate::{
-    prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator},
+    prelude::{Distance, DistanceFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::{normal::Normal, uv::Uv},
 };
 

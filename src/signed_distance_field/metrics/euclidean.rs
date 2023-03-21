@@ -1,6 +1,9 @@
 //! Euclidean distance metric.
 
-use rust_gpu_bridge::prelude::{Asin, Atan2, Length, Normalize, Vec2, Vec3};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec3},
+    Asin, Atan2, Length, Normalize,
+};
 
 use crate::{
     prelude::Normal,

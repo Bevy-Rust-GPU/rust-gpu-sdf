@@ -1,4 +1,4 @@
-use rust_gpu_bridge::prelude::{Vec2, Vec3, Vec3Swizzles};
+use rust_gpu_bridge::glam::{Vec2, Vec3, Vec3Swizzles};
 use type_fields::Field;
 
 use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunction};
