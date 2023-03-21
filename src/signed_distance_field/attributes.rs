@@ -39,7 +39,7 @@ pub mod distance {
     #[cfg(not(feature = "spirv-std"))]
     impl Display for Distance {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            self.0.fmt(f)
+            Display::fmt(&self.0, f)
         }
     }
 }
@@ -59,7 +59,7 @@ pub mod position {
     #[cfg(not(feature = "spirv-std"))]
     impl Debug for Position {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            self.0.fmt(f)
+            Display::fmt(&self.0, f)
         }
     }
 
@@ -92,7 +92,7 @@ pub mod position {
     #[cfg(not(feature = "spirv-std"))]
     impl Display for Position {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            self.0.fmt(f)
+            Display::fmt(&self.0, f)
         }
     }
 }
@@ -152,7 +152,7 @@ pub mod uv {
     #[cfg(not(feature = "spirv-std"))]
     impl Debug for Uv {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            self.0.fmt(f)
+            Display::fmt(&self.0, f)
         }
     }
 
@@ -185,7 +185,7 @@ pub mod uv {
     #[cfg(not(feature = "spirv-std"))]
     impl Display for Uv {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            self.0.fmt(f)
+            Display::fmt(&self.0, f)
         }
     }
 }
@@ -245,7 +245,7 @@ pub mod color {
     #[cfg(not(feature = "spirv-std"))]
     impl Debug for Color {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            self.0.fmt(f)
+            Display::fmt(&self.0, f)
         }
     }
 
@@ -278,7 +278,7 @@ pub mod color {
     #[cfg(not(feature = "spirv-std"))]
     impl Display for Color {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            self.0.fmt(f)
+            Display::fmt(&self.0, f)
         }
     }
 }
