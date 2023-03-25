@@ -14,6 +14,7 @@ spirv-std = ["rust-gpu-bridge/spirv-std"]
 
 rust-gpu-bridge = { path = "../rust-gpu-bridge" }
 type-fields = { path = "../type-fields" }
+type-fields-macros = { path = "../type-fields-macros" }
 
 [dependencies]
 rust-gpu-bridge = "0.4.0"
