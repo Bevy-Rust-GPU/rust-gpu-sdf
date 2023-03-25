@@ -34,7 +34,7 @@ impl<Dim, Sdf> Translate<Dim, Sdf> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::prelude::Vec3;
+    use rust_gpu_bridge::glam::Vec3;
     use type_fields::field::Field;
 
     use crate::signed_distance_field::shapes::composite::Sphere;

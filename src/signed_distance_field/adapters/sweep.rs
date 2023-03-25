@@ -89,7 +89,7 @@ where
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod tests {
-    use rust_gpu_bridge::prelude::Vec3;
+    use rust_gpu_bridge::glam::Vec3;
 
     use crate::{prelude::BoundChecker, signed_distance_field::shapes::composite::Circle};
 

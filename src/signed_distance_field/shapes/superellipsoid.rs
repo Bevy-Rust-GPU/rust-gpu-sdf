@@ -27,7 +27,7 @@ impl DistanceFunction<Vec3, Distance> for Superellipsoid {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::prelude::Vec3;
+    use rust_gpu_bridge::glam::Vec3;
 
     use crate::prelude::BoundChecker;
 

@@ -65,7 +65,7 @@ impl<Sdf> Rotate3d<Sdf> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::prelude::Quat;
+    use rust_gpu_bridge::glam::Quat;
     use type_fields::field::Field;
 
     use crate::signed_distance_field::shapes::composite::{Cube, Square};
