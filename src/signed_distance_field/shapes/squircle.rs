@@ -15,7 +15,7 @@ use crate::prelude::{Distance, FieldFunction};
 pub struct Squircle;
 
 impl FieldFunction<Vec2, Distance> for Squircle {
-    fn evaluate(&self, attr: Distance, mut p: Vec2) -> f32 {
+    fn evaluate(&self, _attr: Distance, mut p: Vec2) -> f32 {
         // Axial reflection
         p = p.abs();
 

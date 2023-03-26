@@ -39,7 +39,7 @@ impl<Sdf> FieldFunction<Vec2, Normal<Vec2>> for TetrahedronGradient<Sdf>
 where
     Sdf: FieldFunction<Vec2, Distance>,
 {
-    fn evaluate(&self, attr: Normal<Vec2>, p: Vec2) -> Vec2 {
+    fn evaluate(&self, _attr: Normal<Vec2>, p: Vec2) -> Vec2 {
         let k = Vec2::new(1.0, -1.0);
         k.xy() * self.sdf.evaluate(Distance, p + k.xy() * self.epsilon)
             + k.yy() * self.sdf.evaluate(Distance, p + k.yy() * self.epsilon)
@@ -52,7 +52,7 @@ impl<Sdf> FieldFunction<Vec3, Normal<Vec3>> for TetrahedronGradient<Sdf>
 where
     Sdf: FieldFunction<Vec3, Distance>,
 {
-    fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
+    fn evaluate(&self, _attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         let k = Vec2::new(1.0, -1.0);
         k.xyy() * self.sdf.evaluate(Distance, p + k.xyy() * self.epsilon)
             + k.yyx() * self.sdf.evaluate(Distance, p + k.yyx() * self.epsilon)
@@ -96,7 +96,7 @@ impl<Sdf> FieldFunction<f32, Normal<f32>> for CentralDiffGradient<Sdf>
 where
     Sdf: FieldFunction<f32, Distance>,
 {
-    fn evaluate(&self, attr: Normal<f32>, p: f32) -> f32 {
+    fn evaluate(&self, _attr: Normal<f32>, p: f32) -> f32 {
         self.sdf.evaluate(Distance, p + self.epsilon)
             - self.sdf.evaluate(Distance, p - self.epsilon)
     }
@@ -115,7 +115,7 @@ impl<Sdf> FieldFunction<Vec2, Normal<Vec2>> for CentralDiffGradient<Sdf>
 where
     Sdf: FieldFunction<Vec2, Distance>,
 {
-    fn evaluate(&self, attr: Normal<Vec2>, p: Vec2) -> Vec2 {
+    fn evaluate(&self, _attr: Normal<Vec2>, p: Vec2) -> Vec2 {
         (Vec2::new(
             self.sdf
                 .evaluate(Distance, Vec2::new(p.x + self.epsilon, p.y))
@@ -136,7 +136,7 @@ impl<Sdf> FieldFunction<Vec3, Normal<Vec3>> for CentralDiffGradient<Sdf>
 where
     Sdf: FieldFunction<Vec3, Distance>,
 {
-    fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
+    fn evaluate(&self, _attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         (Vec3::new(
             self.sdf
                 .evaluate(Distance, Vec3::new(p.x + self.epsilon, p.y, p.z))

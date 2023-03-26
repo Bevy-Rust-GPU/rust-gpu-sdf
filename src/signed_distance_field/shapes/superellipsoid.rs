@@ -17,7 +17,7 @@ impl Default for Superellipsoid {
 }
 
 impl FieldFunction<Vec3, Distance> for Superellipsoid {
-    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
+    fn evaluate(&self, _attr: Distance, p: Vec3) -> f32 {
         (p.x.abs().pow(self.e1) + p.y.abs().pow(self.e2)).pow(self.e2 / self.e1)
             + p.z.abs().pow(self.e1)
             - 1.0

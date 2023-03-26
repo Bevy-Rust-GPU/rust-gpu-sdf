@@ -13,31 +13,31 @@ use crate::prelude::{Distance, FieldFunction, Normal};
 pub struct ChebyshevMetric;
 
 impl FieldFunction<f32, Distance> for ChebyshevMetric {
-    fn evaluate(&self, attr: Distance, p: f32) -> f32 {
+    fn evaluate(&self, _attr: Distance, p: f32) -> f32 {
         p.abs()
     }
 }
 
 impl FieldFunction<Vec2, Distance> for ChebyshevMetric {
-    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
+    fn evaluate(&self, _attr: Distance, p: Vec2) -> f32 {
         p.x.abs().max(p.y.abs())
     }
 }
 
 impl FieldFunction<Vec3, Distance> for ChebyshevMetric {
-    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
+    fn evaluate(&self, _attr: Distance, p: Vec3) -> f32 {
         p.x.abs().max(p.y.abs()).max(p.z.abs())
     }
 }
 
 impl FieldFunction<f32, Normal<f32>> for ChebyshevMetric {
-    fn evaluate(&self, attr: Normal<f32>, p: f32) -> f32 {
+    fn evaluate(&self, _attr: Normal<f32>, p: f32) -> f32 {
         p.sign()
     }
 }
 
 impl FieldFunction<Vec2, Normal<Vec2>> for ChebyshevMetric {
-    fn evaluate(&self, attr: Normal<Vec2>, p: Vec2) -> Vec2 {
+    fn evaluate(&self, _attr: Normal<Vec2>, p: Vec2) -> Vec2 {
         let a = p.abs();
         let s = p.sign();
 
@@ -46,7 +46,7 @@ impl FieldFunction<Vec2, Normal<Vec2>> for ChebyshevMetric {
 }
 
 impl FieldFunction<Vec3, Normal<Vec3>> for ChebyshevMetric {
-    fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
+    fn evaluate(&self, _attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         let a = p.abs();
         let s = p.sign();
 

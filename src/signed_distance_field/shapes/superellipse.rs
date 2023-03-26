@@ -16,7 +16,7 @@ impl Default for Superellipse {
 }
 
 impl FieldFunction<Vec2, Distance> for Superellipse {
-    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
+    fn evaluate(&self, _attr: Distance, p: Vec2) -> f32 {
         p.x.abs().pow(self.n) + p.y.abs().pow(self.n) - 1.0
     }
 }

@@ -35,7 +35,7 @@ impl<Sdf> FieldFunction<Vec3, Uv> for TriplanarUvs<Sdf>
 where
     Sdf: FieldFunction<Vec3, Normal<Vec3>>,
 {
-    fn evaluate(&self, attr: Uv, p: Vec3) -> Vec2 {
+    fn evaluate(&self, _attr: Uv, p: Vec3) -> Vec2 {
         let front = p.xy();
         let side = p.zy();
         let top = p.xz();

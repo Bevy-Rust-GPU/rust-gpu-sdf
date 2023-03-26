@@ -59,7 +59,7 @@ where
     Core: FieldFunction<Vec2, Distance>,
     Shell: FieldFunction<Vec2, Normal<Vec2>>,
 {
-    fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
+    fn evaluate(&self, _attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         let q = Vec2::new(self.core.evaluate(Distance, p.truncate()), p.z);
         let n = self.shell.evaluate(Normal::<Vec2>::default(), q);
         let w = p.xy().normalize() * n.x;

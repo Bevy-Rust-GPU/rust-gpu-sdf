@@ -15,19 +15,19 @@ use crate::prelude::{Distance, FieldFunction, Normal};
 pub struct TaxicabMetric;
 
 impl FieldFunction<f32, Distance> for TaxicabMetric {
-    fn evaluate(&self, attr: Distance, p: f32) -> f32 {
+    fn evaluate(&self, _attr: Distance, p: f32) -> f32 {
         p.abs()
     }
 }
 
 impl FieldFunction<Vec2, Distance> for TaxicabMetric {
-    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
+    fn evaluate(&self, _attr: Distance, p: Vec2) -> f32 {
         p.x.abs().add(p.y.abs())
     }
 }
 
 impl FieldFunction<Vec3, Distance> for TaxicabMetric {
-    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
+    fn evaluate(&self, _attr: Distance, p: Vec3) -> f32 {
         p.x.abs().add(p.y.abs()).add(p.z.abs())
     }
 }
@@ -36,7 +36,7 @@ impl<Dim> FieldFunction<Dim, Normal<Dim>> for TaxicabMetric
 where
     Dim: Sign,
 {
-    fn evaluate(&self, attr: Normal<Dim>, p: Dim) -> Dim {
+    fn evaluate(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
         p.sign()
     }
 }

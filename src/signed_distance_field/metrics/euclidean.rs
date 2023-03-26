@@ -16,7 +16,7 @@ impl<Dim> FieldFunction<Dim, Distance> for EuclideanMetric
 where
     Dim: Length,
 {
-    fn evaluate(&self, attr: Distance, p: Dim) -> f32 {
+    fn evaluate(&self, _attr: Distance, p: Dim) -> f32 {
         p.length()
     }
 }
@@ -25,19 +25,19 @@ impl<Dim> FieldFunction<Dim, Normal<Dim>> for EuclideanMetric
 where
     Dim: Normalize,
 {
-    fn evaluate(&self, attr: Normal<Dim>, p: Dim) -> Dim {
+    fn evaluate(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
         p.normalize()
     }
 }
 
 impl FieldFunction<Vec2, Uv> for EuclideanMetric {
-    fn evaluate(&self, attr: Uv, p: Vec2) -> Vec2 {
+    fn evaluate(&self, _attr: Uv, p: Vec2) -> Vec2 {
         Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length())
     }
 }
 
 impl FieldFunction<Vec3, Uv> for EuclideanMetric {
-    fn evaluate(&self, attr: Uv, p: Vec3) -> Vec2 {
+    fn evaluate(&self, _attr: Uv, p: Vec3) -> Vec2 {
         Vec2::new(
             (p.x.atan2(p.z) / core::f32::consts::TAU) + 0.5,
             (p.y.asin() / core::f32::consts::PI) + 0.5,

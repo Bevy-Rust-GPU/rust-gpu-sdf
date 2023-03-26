@@ -74,7 +74,7 @@ impl<Sdf> SignedDistanceOperator<Sdf, f32, Normal<f32>> for ElongateOp<f32>
 where
     Sdf: FieldFunction<f32, Normal<f32>>,
 {
-    fn operator(&self, attr: Normal<f32>, _sdf: &Sdf, p: f32) -> f32 {
+    fn operator(&self, _attr: Normal<f32>, _sdf: &Sdf, p: f32) -> f32 {
         p.sign()
     }
 }
@@ -83,7 +83,7 @@ impl<Sdf> SignedDistanceOperator<Sdf, Vec2, Normal<Vec2>> for ElongateOp<Vec2>
 where
     Sdf: FieldFunction<Vec2, Normal<Vec2>>,
 {
-    fn operator(&self, attr: Normal<Vec2>, _sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, _attr: Normal<Vec2>, _sdf: &Sdf, p: Vec2) -> Vec2 {
         let w = p.abs() - self.extent;
         let s = p.sign();
 
@@ -110,7 +110,7 @@ impl<Sdf> SignedDistanceOperator<Sdf, Vec3, Normal<Vec3>> for ElongateOp<Vec3>
 where
     Sdf: FieldFunction<Vec3, Normal<Vec3>>,
 {
-    fn operator(&self, attr: Normal<Vec3>, _sdf: &Sdf, p: Vec3) -> Vec3 {
+    fn operator(&self, _attr: Normal<Vec3>, _sdf: &Sdf, p: Vec3) -> Vec3 {
         let w = p.abs() - self.extent;
         let s = p.sign();
 
@@ -145,7 +145,7 @@ impl<Sdf> SignedDistanceOperator<Sdf, Vec2, Uv> for ElongateOp<Vec2>
 where
     Sdf: FieldFunction<Vec2, Uv>,
 {
-    fn operator(&self, attr: Uv, _sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, _attr: Uv, _sdf: &Sdf, p: Vec2) -> Vec2 {
         (p + self.extent) * (0.5 / self.extent)
     }
 }
@@ -154,7 +154,7 @@ impl<Sdf> SignedDistanceOperator<Sdf, Vec3, Uv> for ElongateOp<Vec3>
 where
     Sdf: FieldFunction<Vec3, Uv>,
 {
-    fn operator(&self, attr: Uv, _sdf: &Sdf, p: Vec3) -> Vec2 {
+    fn operator(&self, _attr: Uv, _sdf: &Sdf, p: Vec3) -> Vec2 {
         let w = p.abs();
 
         let m = if w.x > w.y {
