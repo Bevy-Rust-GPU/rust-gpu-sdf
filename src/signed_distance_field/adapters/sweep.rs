@@ -13,8 +13,6 @@ use crate::prelude::{default, Distance, FieldFunction, Normal, Uv};
 pub struct Sweep<Core, Shell> {
     pub core: Core,
     pub shell: Shell,
-    pub u: Vec2,
-    pub v: Vec2,
 }
 
 impl<Core, Shell> Default for Sweep<Core, Shell>
@@ -26,8 +24,6 @@ where
         Sweep {
             core: default(),
             shell: default(),
-            u: Vec2::X,
-            v: Vec2::X,
         }
     }
 }
@@ -77,7 +73,11 @@ where
         let uv_core = self.core.evaluate(attr, p.truncate());
         let q = Vec2::new(dist_core, p.z);
         let uv_shell = self.shell.evaluate(attr, q);
-        Vec2::new(uv_core.dot(self.u), uv_shell.dot(self.v)).into()
+        Vec2::new(
+            uv_core.x,
+            uv_shell.x + uv_shell.y,
+        )
+        .into()
     }
 }
 
