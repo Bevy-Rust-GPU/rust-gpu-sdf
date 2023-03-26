@@ -1,19 +1,19 @@
 pub use crate::{
+    attribute::{color::*, distance::*, normal::*, position::*, tangent::*, uv::*, *},
     bound_checker::*,
-    operators::{
-        composite::*, displace::*, elongate::*, hollow::*, intersection::*, isosurface::*,
-        normalize::*, reflect::*, repeat::*, rotate::*, scale::*, smooth_intersection::*,
-        smooth_subtraction::*, smooth_union::*, stretch::*, subtraction::*, translate::*, twist::*,
-        union::*, *,
-    },
-    raymarch::{sphere_trace_lipschitz::*, sphere_trace_naive::*, *},
-    signed_distance_field::{
-        adapters::{colors::*, extrude::*, normals::*, sweep::*, tangents::*, uvs::*, *},
-        attributes::{color::*, distance::*, normal::*, position::*, tangent::*, uv::*, *},
-        field_function::*,
-        metrics::{chebyshev::*, euclidean::*, taxicab::*, *},
-        shapes::{composite::*, octahedron::*, plane::*, *},
+    field_function::{
+        metric::{chebyshev::*, euclidean::*, taxicab::*, *},
+        shape::{composite::*, octahedron::*, plane::*, *},
         *,
     },
+    field_operator::{
+        axial_reflect::*, colorize::*, composite::*, displace::*, elongate::*, extrude::*,
+        extrude_interior::*, gradient_central_diff::*, gradient_tetrahedron::*, gradient_uv::*,
+        hollow::*, intersection::*, isosurface::*, normalize::*, reflect::*, repeat::*, rotate::*,
+        scale::*, sdf_color::*, sdf_normal::*, sdf_tangent::*, sdf_uv::*, sided::*,
+        smooth_intersection::*, smooth_subtraction::*, smooth_union::*, stretch::*, subtraction::*,
+        sweep::*, translate::*, triplanar_uv::*, twist::*, union::*, *,
+    },
+    raycast::{sphere_trace_lipschitz::*, sphere_trace_naive::*, *},
     *,
 };

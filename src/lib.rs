@@ -1,10 +1,11 @@
 #![no_std]
 
 pub mod bound_checker;
-pub mod operators;
-pub mod raymarch;
-pub mod signed_distance_field;
+pub mod field_operator;
+pub mod raycast;
 pub use type_fields;
+pub mod attribute;
+pub mod field_function;
 
 pub mod prelude;
 

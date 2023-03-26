@@ -6,7 +6,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::field::Field;
 
-use crate::prelude::{default, CentralDiffNormal, Distance, FieldFunction, Normal};
+use crate::prelude::{default, Distance, FieldFunction, Normal, NormalCentralDiff};
 
 /// Asserts that the provided distance function is a field rather than a bound
 #[derive(Debug, Clone, PartialEq)]
@@ -40,7 +40,7 @@ impl<Dim, Sdf> BoundChecker<Dim, Sdf> {
 
 impl<Sdf> BoundChecker<Vec2, Sdf>
 where
-    Sdf: FieldFunction<Vec2, Distance> + Clone + 'static,
+    Sdf: FieldFunction<Vec2, Distance> + Default + Clone + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()
@@ -54,8 +54,9 @@ where
                 let pos = Vec2::new(x as f32, y as f32) * self.step;
 
                 // Calculate normal
-                let normal = CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
-                    .with(CentralDiffNormal::epsilon, self.epsilon)
+                let normal = NormalCentralDiff::default()
+                    .with(NormalCentralDiff::sdf, self.sdf.clone())
+                    .with(NormalCentralDiff::epsilon, self.epsilon)
                     .evaluate(Normal::<Vec2>::default(), pos);
 
                 // Apply 1D central differencing along normal,
@@ -78,7 +79,7 @@ where
 
 impl<Sdf> BoundChecker<Vec3, Sdf>
 where
-    Sdf: FieldFunction<Vec3, Distance> + Clone + 'static,
+    Sdf: FieldFunction<Vec3, Distance> + Default + Clone + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()
@@ -93,8 +94,9 @@ where
                     let pos = Vec3::new(x as f32, y as f32, z as f32) * self.step;
 
                     // Calculate normal
-                    let normal = CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
-                        .with(CentralDiffNormal::epsilon, self.epsilon)
+                    let normal = NormalCentralDiff::<Sdf>::default()
+                        .with(NormalCentralDiff::sdf, self.sdf.clone())
+                        .with(NormalCentralDiff::epsilon, self.epsilon)
                         .evaluate(Normal::<Vec3>::default(), pos);
 
                     // Apply 1D central differencing along normal,
