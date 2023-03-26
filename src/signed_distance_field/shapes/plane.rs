@@ -7,7 +7,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Normal, Distance, FieldFunction};
+use crate::prelude::{Distance, FieldFunction, Normal};
 
 /// A plane.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]

@@ -7,4 +7,3 @@ pub struct Distance;
 impl Attribute for Distance {
     type Type = f32;
 }
-

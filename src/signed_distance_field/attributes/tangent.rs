@@ -9,4 +9,3 @@ pub struct Tangent<Dim>(PhantomData<Dim>);
 impl<Dim> Attribute for Tangent<Dim> {
     type Type = Dim;
 }
-

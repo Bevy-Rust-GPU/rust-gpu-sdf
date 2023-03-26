@@ -5,7 +5,7 @@ use core::ops::{Add, Mul};
 use rust_gpu_bridge::Mix;
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, FieldFunction, SignedDistanceOperator};
+use crate::prelude::{Distance, FieldFunction, Operator, SignedDistanceOperator};
 
 /// Compute the blended boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]

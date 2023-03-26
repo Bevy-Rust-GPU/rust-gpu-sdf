@@ -4,9 +4,9 @@ pub trait Attribute {
     type Type;
 }
 
-pub mod distance;
-pub mod position;
-pub mod normal;
-pub mod uv;
-pub mod tangent;
 pub mod color;
+pub mod distance;
+pub mod normal;
+pub mod position;
+pub mod tangent;
+pub mod uv;

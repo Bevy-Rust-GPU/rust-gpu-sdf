@@ -9,4 +9,3 @@ pub struct Color;
 impl Attribute for Color {
     type Type = Vec4;
 }
-

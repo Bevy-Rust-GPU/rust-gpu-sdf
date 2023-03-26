@@ -8,7 +8,7 @@ pub use crate::{
     },
     raymarch::{sphere_trace_lipschitz::*, sphere_trace_naive::*, *},
     signed_distance_field::{
-        adapters::{extrude::*, normals::*, sweep::*, tangents::*, colors::*, uvs::*, *},
+        adapters::{colors::*, extrude::*, normals::*, sweep::*, tangents::*, uvs::*, *},
         attributes::{color::*, distance::*, normal::*, position::*, tangent::*, uv::*, *},
         field_function::*,
         metrics::{chebyshev::*, euclidean::*, taxicab::*, *},

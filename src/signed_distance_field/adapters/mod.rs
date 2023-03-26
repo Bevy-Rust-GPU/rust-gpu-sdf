@@ -5,5 +5,5 @@ pub mod extrude;
 pub mod extrude_interior;
 pub mod normals;
 pub mod sweep;
-pub mod uvs;
 pub mod tangents;
+pub mod uvs;

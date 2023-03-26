@@ -9,4 +9,3 @@ pub struct Position;
 impl Attribute for Position {
     type Type = Vec3;
 }
-

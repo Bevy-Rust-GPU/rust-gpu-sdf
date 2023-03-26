@@ -9,4 +9,3 @@ pub struct Uv;
 impl Attribute for Uv {
     type Type = Vec2;
 }
-
