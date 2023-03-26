@@ -1,11 +1,11 @@
 //! Shapes composed from other shapes.
 
-use rust_gpu_bridge::{glam::Vec2, Cos, Sin, Tan};
+use rust_gpu_bridge::{glam::{Vec2, Vec3}, Cos, Sin, Tan, Sqrt};
 use type_fields::field::Field;
 
 use crate::prelude::{
     AxialReflect, Elongate, EuclideanMetric, Isosurface, Reflect, Sided, StretchDist, Sweep,
-    Translate, AXIS_X, AXIS_XY, D2, D3,
+    Translate, AXIS_X, AXIS_XY, D2, D3, raytrace::RayIntersection,
 };
 
 /// An infinitely small point.
@@ -30,6 +30,35 @@ pub type Circle = Ball;
 
 /// A 3D sphere.
 pub type Sphere = Ball;
+
+impl RayIntersection for Sphere {
+    fn intersect(&self, eye: Vec3, dir: Vec3) -> Option<f32> {
+        let b = eye.dot(dir);
+        let r = self.op.delta;
+        let c = eye.dot(eye) - r * r;
+
+        // Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0)
+        if c > 0.0 && b > 0.0 {
+            return None;
+        }
+        let discr = b * b - c;
+
+        // A negative discriminant corresponds to ray missing sphere
+        if discr < 0.0 {
+            return None;
+        }
+
+        // Ray now found to intersect sphere, compute smallest t value of intersection
+        let mut t = -b - discr.sqrt();
+
+        // If t is negative, ray started inside sphere so clamp t to zero
+        if t < 0.0 {
+            t = 0.0;
+        }
+
+        Some(t)
+    }
+}
 
 /// A capsule.
 pub type Capsule<Dim> = Isosurface<Line<Dim>>;

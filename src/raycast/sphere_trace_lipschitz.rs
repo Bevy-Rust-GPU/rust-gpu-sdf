@@ -34,10 +34,13 @@ impl<const MAX_STEPS: u32> SphereTraceLipschitz<MAX_STEPS> {
     }
 }
 
-impl<const MAX_STEPS: u32> Raycast for SphereTraceLipschitz<MAX_STEPS> {
+impl<const MAX_STEPS: u32, Sdf> Raycast<Sdf> for SphereTraceLipschitz<MAX_STEPS>
+where
+    Sdf: FieldFunction<Vec3, Distance>,
+{
     type Output = RaycastOutput;
 
-    fn raymarch<Sdf>(
+    fn raymarch(
         &self,
         sdf: &Sdf,
         start: f32,
@@ -45,10 +48,7 @@ impl<const MAX_STEPS: u32> Raycast for SphereTraceLipschitz<MAX_STEPS> {
         eye: Vec3,
         dir: Vec3,
         epsilon: f32,
-    ) -> Self::Output
-    where
-        Sdf: FieldFunction<Vec3, Distance>,
-    {
+    ) -> Self::Output {
         let mut out = RaycastOutput::default();
 
         let mut t = start;

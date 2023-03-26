@@ -1,12 +1,56 @@
 pub mod sphere_trace_lipschitz;
 pub mod sphere_trace_naive;
+pub mod raytrace {
+    //! Analytical raytracer.
+
+    use rust_gpu_bridge::glam::Vec3;
+
+    use super::{Raycast, RaycastOutput};
+
+    /// Compute the intersection between self and the given ray
+    pub trait RayIntersection {
+        fn intersect(&self, eye: Vec3, dir: Vec3) -> Option<f32>;
+    }
+
+    /// Analytical raytracer.
+    ///
+    /// Evaluates the [`RayIntersection`] of the provided type.
+    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    #[repr(C)]
+    pub struct Raytrace;
+
+    impl<Sdf> Raycast<Sdf> for Raytrace
+    where
+        Sdf: RayIntersection,
+    {
+        type Output = RaycastOutput;
+
+        fn raymarch(
+            &self,
+            sdf: &Sdf,
+            start: f32,
+            _: f32,
+            eye: Vec3,
+            dir: Vec3,
+            _: f32,
+        ) -> Self::Output {
+            let mut out = RaycastOutput::default();
+            out.steps = 1;
+
+            if let Some(t) = sdf.intersect(eye + dir * start, dir) {
+                out.hit = true;
+                out.closest_t = t;
+                out.closest_dist = 0.0;
+            }
+
+            out
+        }
+    }
+}
 
 use rust_gpu_bridge::glam::Vec3;
 
-use crate::{
-    default,
-    prelude::{Distance, FieldFunction},
-};
+use crate::default;
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
 #[repr(C)]
@@ -55,12 +99,12 @@ impl RaycastOutput {
 }
 
 /// Raycasting implementations for visualizing 3D signed distance fields.
-pub trait Raycast {
+pub trait Raycast<Sdf> {
     type Output;
 
     /// March from `eye` along the ray defined by `dir`,
     /// sampling `sdf` at discrete intervals and returning the result.
-    fn raymarch<Sdf>(
+    fn raymarch(
         &self,
         sdf: &Sdf,
         start: f32,
@@ -68,7 +112,5 @@ pub trait Raycast {
         eye: Vec3,
         dir: Vec3,
         epsilon: f32,
-    ) -> Self::Output
-    where
-        Sdf: FieldFunction<Vec3, Distance>;
+    ) -> Self::Output;
 }
