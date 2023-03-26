@@ -1,5 +1,3 @@
-
-
 use crate::signed_distance_field::{
     attributes::{distance::Distance, normal::Normal},
     DistanceFunction,
@@ -17,8 +15,8 @@ impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Distance> for NormalizeOp
 where
     Sdf: DistanceFunction<Dim, Distance>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Distance {
-        sdf.evaluate(p)
+    fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
+        sdf.evaluate(attr, p)
     }
 }
 
@@ -27,8 +25,8 @@ where
     Sdf: DistanceFunction<Dim, Normal<Dim>>,
     Dim: Clone + rust_gpu_bridge::Normalize,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Normal<Dim> {
-        Normal((*sdf.evaluate(p)).clone().normalize())
+    fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
+        sdf.evaluate(attr, p).clone().normalize()
     }
 }
 

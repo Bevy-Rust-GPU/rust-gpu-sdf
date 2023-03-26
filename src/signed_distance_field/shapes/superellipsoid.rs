@@ -17,11 +17,10 @@ impl Default for Superellipsoid {
 }
 
 impl DistanceFunction<Vec3, Distance> for Superellipsoid {
-    fn evaluate(&self, p: Vec3) -> Distance {
-        let d = (p.x.abs().pow(self.e1) + p.y.abs().pow(self.e2)).pow(self.e2 / self.e1)
-            + p.z.abs().pow(self.e1);
-        let d = d - 1.0;
-        Distance(d)
+    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
+        (p.x.abs().pow(self.e1) + p.y.abs().pow(self.e2)).pow(self.e2 / self.e1)
+            + p.z.abs().pow(self.e1)
+            - 1.0
     }
 }
 

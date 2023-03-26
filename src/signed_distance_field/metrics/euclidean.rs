@@ -19,8 +19,8 @@ impl<Dim> DistanceFunction<Dim, Distance> for EuclideanMetric
 where
     Dim: Length,
 {
-    fn evaluate(&self, p: Dim) -> Distance {
-        p.length().into()
+    fn evaluate(&self, attr: Distance, p: Dim) -> f32 {
+        p.length()
     }
 }
 
@@ -28,24 +28,23 @@ impl<Dim> DistanceFunction<Dim, Normal<Dim>> for EuclideanMetric
 where
     Dim: Normalize,
 {
-    fn evaluate(&self, p: Dim) -> Normal<Dim> {
-        p.normalize().into()
+    fn evaluate(&self, attr: Normal<Dim>, p: Dim) -> Dim {
+        p.normalize()
     }
 }
 
 impl DistanceFunction<Vec2, Uv> for EuclideanMetric {
-    fn evaluate(&self, p: Vec2) -> Uv {
-        Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length()).into()
+    fn evaluate(&self, attr: Uv, p: Vec2) -> Vec2 {
+        Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length())
     }
 }
 
 impl DistanceFunction<Vec3, Uv> for EuclideanMetric {
-    fn evaluate(&self, p: Vec3) -> Uv {
+    fn evaluate(&self, attr: Uv, p: Vec3) -> Vec2 {
         Vec2::new(
             (p.x.atan2(p.z) / core::f32::consts::TAU) + 0.5,
             (p.y.asin() / core::f32::consts::PI) + 0.5,
         )
-        .into()
     }
 }
 

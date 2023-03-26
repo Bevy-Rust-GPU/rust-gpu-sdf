@@ -35,23 +35,23 @@ impl Default for Plane<Vec3> {
 }
 
 impl DistanceFunction<f32, Distance> for Plane<f32> {
-    fn evaluate(&self, p: f32) -> Distance {
+    fn evaluate(&self, attr: Distance, p: f32) -> f32 {
         assert!(self.dir.abs() == 1.0, "Plane dir must be normalized");
-        (p * -self.dir).into()
+        p * -self.dir
     }
 }
 
 impl DistanceFunction<Vec2, Distance> for Plane<Vec2> {
-    fn evaluate(&self, p: Vec2) -> Distance {
+    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
-        p.dot(-self.dir).into()
+        p.dot(-self.dir)
     }
 }
 
 impl DistanceFunction<Vec3, Distance> for Plane<Vec3> {
-    fn evaluate(&self, p: Vec3) -> Distance {
+    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
-        p.dot(-self.dir).into()
+        p.dot(-self.dir)
     }
 }
 
@@ -59,8 +59,8 @@ impl<Dim> DistanceFunction<Dim, Normal<Dim>> for Plane<Dim>
 where
     Dim: Clone + Neg<Output = Dim>,
 {
-    fn evaluate(&self, _p: Dim) -> Normal<Dim> {
-        (-self.dir.clone()).into()
+    fn evaluate(&self, attr: Normal<Dim>, _p: Dim) -> Dim {
+        -self.dir.clone()
     }
 }
 

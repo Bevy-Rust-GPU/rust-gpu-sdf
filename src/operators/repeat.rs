@@ -8,7 +8,10 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{DistanceFunction, Operator, SignedDistanceOperator};
+use crate::{
+    prelude::{DistanceFunction, Operator, SignedDistanceOperator},
+    signed_distance_field::attributes::Attribute,
+};
 
 /// Repeat a distance field infinitely in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -35,9 +38,10 @@ impl Default for RepeatInfiniteOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for RepeatInfiniteOp<Dim>
+impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for RepeatInfiniteOp<Dim>
 where
-    Sdf: DistanceFunction<Dim, Out>,
+    Attr: Attribute,
+    Sdf: DistanceFunction<Dim, Attr>,
     Dim: Add<Dim, Output = Dim>
         + Add<f32, Output = Dim>
         + Sub<Dim, Output = Dim>
@@ -46,11 +50,11 @@ where
         + Mod
         + Clone,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
+    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
         let q = (p.add(0.5).mul(self.period.clone()))
             .modulo(self.period.clone())
             .sub(self.period.clone().mul(0.5));
-        sdf.evaluate(q)
+        sdf.evaluate(attr, q)
     }
 }
 
@@ -89,9 +93,10 @@ impl Default for RepeatCountOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for RepeatCountOp<Dim>
+impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for RepeatCountOp<Dim>
 where
-    Sdf: DistanceFunction<Dim, Out>,
+    Attr: Attribute,
+    Sdf: DistanceFunction<Dim, Attr>,
     Dim: Clone
         + Div<Dim, Output = Dim>
         + Neg<Output = Dim>
@@ -100,13 +105,13 @@ where
         + Round
         + Clamp,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
+    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
         let q = p.clone()
             - self.period.clone()
                 * (p / self.period.clone())
                     .round()
                     .clamp(-self.count.clone(), self.count.clone());
-        sdf.evaluate(q)
+        sdf.evaluate(attr, q)
     }
 }
 

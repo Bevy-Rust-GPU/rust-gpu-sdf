@@ -8,7 +8,10 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{DistanceFunction, Operator, SignedDistanceOperator};
+use crate::{
+    prelude::{DistanceFunction, Operator, SignedDistanceOperator},
+    signed_distance_field::attributes::Attribute,
+};
 
 /// Reflect a distance field about an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -35,12 +38,13 @@ impl Default for ReflectOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for ReflectOp<Dim>
+impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for ReflectOp<Dim>
 where
-    Sdf: DistanceFunction<Dim, Out>,
+    Attr: Attribute,
+    Sdf: DistanceFunction<Dim, Attr>,
     Dim: Clone + Sub<Dim, Output = Dim> + Mul<f32, Output = Dim> + Length + Dot,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
+    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
         assert!(
             self.axis.clone().length() == 1.0,
             "ReflectOp axis must be normalized"
@@ -48,7 +52,7 @@ where
 
         let q = p.clone() - self.axis.clone() * p.clone().dot(self.axis.clone()).min(0.0) * 2.0;
 
-        sdf.evaluate(q)
+        sdf.evaluate(attr, q)
     }
 }
 

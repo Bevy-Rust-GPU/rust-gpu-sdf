@@ -43,9 +43,9 @@ where
     Core: DistanceFunction<f32, Distance>,
     Shell: DistanceFunction<f32, Distance>,
 {
-    fn evaluate(&self, p: Vec2) -> Distance {
-        let q = self.core.evaluate(p.x);
-        self.shell.evaluate(*q)
+    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
+        let q = self.core.evaluate(attr, p.x);
+        self.shell.evaluate(attr, q)
     }
 }
 
@@ -54,9 +54,9 @@ where
     Core: DistanceFunction<Vec2, Distance>,
     Shell: DistanceFunction<Vec2, Distance>,
 {
-    fn evaluate(&self, p: Vec3) -> Distance {
-        let q = Vec2::new(*self.core.evaluate(p.truncate()), p.z);
-        self.shell.evaluate(q)
+    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
+        let q = Vec2::new(self.core.evaluate(attr, p.truncate()), p.z);
+        self.shell.evaluate(attr, q)
     }
 }
 
@@ -65,9 +65,9 @@ where
     Core: DistanceFunction<Vec2, Distance>,
     Shell: DistanceFunction<Vec2, Normal<Vec2>>,
 {
-    fn evaluate(&self, p: Vec3) -> Normal<Vec3> {
-        let q = Vec2::new(*self.core.evaluate(p.truncate()), p.z);
-        let n = self.shell.evaluate(q);
+    fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
+        let q = Vec2::new(self.core.evaluate(Distance, p.truncate()), p.z);
+        let n = self.shell.evaluate(Normal::<Vec2>::default(), q);
         let w = p.xy().normalize() * n.x;
         Vec3::new(w.x, w.y, n.y).into()
     }
@@ -78,11 +78,11 @@ where
     Core: DistanceFunction<Vec2, Distance> + DistanceFunction<Vec2, Uv>,
     Shell: DistanceFunction<Vec2, Uv>,
 {
-    fn evaluate(&self, p: Vec3) -> Uv {
-        let dist_core: Distance = self.core.evaluate(p.truncate());
-        let uv_core: Uv = self.core.evaluate(p.truncate());
-        let q = Vec2::new(*dist_core, p.z);
-        let uv_shell = self.shell.evaluate(q);
+    fn evaluate(&self, attr: Uv, p: Vec3) -> Vec2 {
+        let dist_core = self.core.evaluate(Distance, p.truncate());
+        let uv_core = self.core.evaluate(attr, p.truncate());
+        let q = Vec2::new(dist_core, p.z);
+        let uv_shell = self.shell.evaluate(attr, q);
         Vec2::new(uv_core.dot(self.u), uv_shell.dot(self.v)).into()
     }
 }

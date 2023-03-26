@@ -35,9 +35,9 @@ impl Default for RaymarchOutput {
 impl RaymarchOutput {
     /// Notify the output that a step was taken at time `t`
     /// with a resulting distance of `dist`
-    pub fn step(&mut self, t: f32, dist: Distance) {
-        if *dist < self.closest_dist {
-            self.closest_dist = *dist;
+    pub fn step(&mut self, t: f32, dist: f32) {
+        if dist < self.closest_dist {
+            self.closest_dist = dist;
             self.closest_t = t;
         }
     }

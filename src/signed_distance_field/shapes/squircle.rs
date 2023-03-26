@@ -15,7 +15,7 @@ use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunct
 pub struct Squircle;
 
 impl DistanceFunction<Vec2, Distance> for Squircle {
-    fn evaluate(&self, mut p: Vec2) -> Distance {
+    fn evaluate(&self, attr: Distance, mut p: Vec2) -> f32 {
         // Axial reflection
         p = p.abs();
 
@@ -57,7 +57,7 @@ impl DistanceFunction<Vec2, Distance> for Squircle {
         let s = (a * a * 0.5 + b - 1.5).sign();
 
         // Final curve w / sign
-        (w.length() * s).into()
+        w.length() * s
     }
 }
 

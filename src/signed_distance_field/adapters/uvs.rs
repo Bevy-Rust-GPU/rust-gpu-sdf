@@ -1,5 +1,5 @@
 use rust_gpu_bridge::{
-    glam::{Vec3, Vec3Swizzles},
+    glam::{Vec2, Vec3, Vec3Swizzles},
     Pow,
 };
 use type_fields::Field;
@@ -20,8 +20,8 @@ impl<Sdf, Dim> DistanceFunction<Dim, Distance> for TriplanarUvs<Sdf>
 where
     Sdf: DistanceFunction<Dim, Distance>,
 {
-    fn evaluate(&self, p: Dim) -> Distance {
-        self.sdf.evaluate(p)
+    fn evaluate(&self, attr: Distance, p: Dim) -> f32 {
+        self.sdf.evaluate(attr, p)
     }
 }
 
@@ -29,8 +29,8 @@ impl<Sdf, Dim> DistanceFunction<Dim, Normal<Dim>> for TriplanarUvs<Sdf>
 where
     Sdf: DistanceFunction<Dim, Normal<Dim>>,
 {
-    fn evaluate(&self, p: Dim) -> Normal<Dim> {
-        self.sdf.evaluate(p)
+    fn evaluate(&self, attr: Normal<Dim>, p: Dim) -> Dim {
+        self.sdf.evaluate(attr, p)
     }
 }
 
@@ -38,19 +38,19 @@ impl<Sdf> DistanceFunction<Vec3, Uv> for TriplanarUvs<Sdf>
 where
     Sdf: DistanceFunction<Vec3, Normal<Vec3>>,
 {
-    fn evaluate(&self, p: Vec3) -> Uv {
+    fn evaluate(&self, attr: Uv, p: Vec3) -> Vec2 {
         let front = p.xy();
         let side = p.zy();
         let top = p.xz();
 
         let weights = self
             .sdf
-            .evaluate(p)
+            .evaluate(Normal::<Vec3>::default(), p)
             .abs()
             .pow(Vec3::splat(self.k))
             .normalize();
 
-        (front * weights.z + side * weights.x + top * weights.y).into()
+        front * weights.z + side * weights.x + top * weights.y
     }
 }
 
@@ -65,8 +65,8 @@ impl<SdfA, SdfB, In> DistanceFunction<In, Distance> for SdfUvs<SdfA, SdfB>
 where
     SdfA: DistanceFunction<In, Distance>,
 {
-    fn evaluate(&self, p: In) -> Distance {
-        self.sdf_base.evaluate(p)
+    fn evaluate(&self, attr: Distance, p: In) -> f32 {
+        self.sdf_base.evaluate(attr, p)
     }
 }
 
@@ -74,8 +74,8 @@ impl<SdfA, SdfB, In> DistanceFunction<In, Normal<In>> for SdfUvs<SdfA, SdfB>
 where
     SdfA: DistanceFunction<In, Normal<In>>,
 {
-    fn evaluate(&self, p: In) -> Normal<In> {
-        self.sdf_base.evaluate(p)
+    fn evaluate(&self, attr: Normal<In>, p: In) -> In {
+        self.sdf_base.evaluate(attr, p)
     }
 }
 
@@ -83,7 +83,7 @@ impl<SdfA, SdfB, In> DistanceFunction<In, Uv> for SdfUvs<SdfA, SdfB>
 where
     SdfB: DistanceFunction<In, Uv>,
 {
-    fn evaluate(&self, p: In) -> Uv {
-        self.sdf_uv.evaluate(p)
+    fn evaluate(&self, attr: Uv, p: In) -> Vec2 {
+        self.sdf_uv.evaluate(attr, p)
     }
 }

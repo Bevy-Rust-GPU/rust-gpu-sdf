@@ -8,7 +8,10 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{DistanceFunction, Operator, SignedDistanceOperator};
+use crate::{
+    prelude::{DistanceFunction, Operator, SignedDistanceOperator},
+    signed_distance_field::attributes::Attribute,
+};
 
 /// Extrude a shape infinitely along an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -29,18 +32,19 @@ impl Default for StretchInfiniteOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for StretchInfiniteOp<Dim>
+impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for StretchInfiniteOp<Dim>
 where
-    Sdf: DistanceFunction<Dim, Out>,
+    Attr: Attribute,
+    Sdf: DistanceFunction<Dim, Attr>,
     Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + Length + Dot,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
+    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
         assert!(
             self.dir.clone().length() == 1.0,
             "ExtrudeInfiniteOp dir must be normalized"
         );
         let q = p.clone() - self.dir.clone() * p.dot(self.dir.clone());
-        sdf.evaluate(q)
+        sdf.evaluate(attr, q)
     }
 }
 
@@ -88,15 +92,16 @@ impl Default for StretchDistOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Out> SignedDistanceOperator<Sdf, Dim, Out> for StretchDistOp<Dim>
+impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for StretchDistOp<Dim>
 where
-    Sdf: DistanceFunction<Dim, Out>,
+    Attr: Attribute,
+    Sdf: DistanceFunction<Dim, Attr>,
     Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + Dot,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Out {
+    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
         let q =
             p.clone() - (self.dir.clone() * p.dot(self.dir.clone()).clamp(-self.dist, self.dist));
-        sdf.evaluate(q)
+        sdf.evaluate(attr, q)
     }
 }
 

@@ -37,10 +37,10 @@ impl<Sdf> DistanceFunction<Vec2, Distance> for Extrude<Sdf>
 where
     Sdf: DistanceFunction<f32, Distance>,
 {
-    fn evaluate(&self, p: Vec2) -> Distance {
-        let d = self.sdf.evaluate(p.x);
-        let w = Vec2::new(*d, p.y.abs() - self.depth);
-        Distance(w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length())
+    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
+        let d = self.sdf.evaluate(attr, p.x);
+        let w = Vec2::new(d, p.y.abs() - self.depth);
+        w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()
     }
 }
 
@@ -48,10 +48,10 @@ impl<Sdf> DistanceFunction<Vec3, Distance> for Extrude<Sdf>
 where
     Sdf: DistanceFunction<Vec2, Distance>,
 {
-    fn evaluate(&self, p: Vec3) -> Distance {
-        let d = self.sdf.evaluate(p.truncate());
-        let w = Vec2::new(*d, p.z.abs() - self.depth);
-        Distance(w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length())
+    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
+        let d = self.sdf.evaluate(attr, p.truncate());
+        let w = Vec2::new(d, p.z.abs() - self.depth);
+        w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()
     }
 }
 

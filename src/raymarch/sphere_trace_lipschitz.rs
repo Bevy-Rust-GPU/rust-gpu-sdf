@@ -54,11 +54,11 @@ impl<const MAX_STEPS: u32> Raymarch for SphereTraceLipschitz<MAX_STEPS> {
         let mut t = start;
         for i in 0..MAX_STEPS {
             let p = eye + dir * t;
-            let dist: Distance = sdf.evaluate(p);
+            let dist = sdf.evaluate(Distance, p);
 
             out.step(t, dist);
 
-            if *dist < 0.0 {
+            if dist < 0.0 {
                 out.hit(i);
                 break;
             }

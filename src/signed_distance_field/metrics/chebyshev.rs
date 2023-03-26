@@ -13,42 +13,40 @@ use crate::signed_distance_field::{attributes::normal::Normal, Distance, Distanc
 pub struct ChebyshevMetric;
 
 impl DistanceFunction<f32, Distance> for ChebyshevMetric {
-    fn evaluate(&self, p: f32) -> Distance {
-        p.abs().into()
+    fn evaluate(&self, attr: Distance, p: f32) -> f32 {
+        p.abs()
     }
 }
 
 impl DistanceFunction<Vec2, Distance> for ChebyshevMetric {
-    fn evaluate(&self, p: Vec2) -> Distance {
-        p.x.abs().max(p.y.abs()).into()
+    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
+        p.x.abs().max(p.y.abs())
     }
 }
 
 impl DistanceFunction<Vec3, Distance> for ChebyshevMetric {
-    fn evaluate(&self, p: Vec3) -> Distance {
-        p.x.abs().max(p.y.abs()).max(p.z.abs()).into()
+    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
+        p.x.abs().max(p.y.abs()).max(p.z.abs())
     }
 }
 
 impl DistanceFunction<f32, Normal<f32>> for ChebyshevMetric {
-    fn evaluate(&self, p: f32) -> Normal<f32> {
-        p.sign().into()
+    fn evaluate(&self, attr: Normal<f32>, p: f32) -> f32 {
+        p.sign()
     }
 }
 
 impl DistanceFunction<Vec2, Normal<Vec2>> for ChebyshevMetric {
-    fn evaluate(&self, p: Vec2) -> Normal<Vec2> {
+    fn evaluate(&self, attr: Normal<Vec2>, p: Vec2) -> Vec2 {
         let a = p.abs();
         let s = p.sign();
 
-        (Vec2::X * s.x)
-            .mix(Vec2::Y * s.y, Vec2::splat(a.x.step(a.y)))
-            .into()
+        (Vec2::X * s.x).mix(Vec2::Y * s.y, Vec2::splat(a.x.step(a.y)))
     }
 }
 
 impl DistanceFunction<Vec3, Normal<Vec3>> for ChebyshevMetric {
-    fn evaluate(&self, p: Vec3) -> Normal<Vec3> {
+    fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         let a = p.abs();
         let s = p.sign();
 

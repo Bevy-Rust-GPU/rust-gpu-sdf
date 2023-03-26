@@ -47,10 +47,8 @@ where
     Sdf: DistanceFunction<Dim, Distance>,
     Dim: Clone + Mul<Dim, Output = Dim> + Sign + Dot,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Distance {
-        let mut d = *sdf.evaluate(p.clone());
-        d *= p.clone().dot(self.axis.clone()).sign();
-        d.into()
+    fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
+        sdf.evaluate(attr, p.clone()) * p.clone().dot(self.axis.clone()).sign()
     }
 }
 
@@ -59,8 +57,8 @@ where
     Sdf: DistanceFunction<Dim, Normal<Dim>>,
     Dim: Clone + Dot + Mul<f32, Output = Dim>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Normal<Dim> {
-        ((*sdf.evaluate(p.clone())).clone() * p.dot(self.axis.clone()).sign()).into()
+    fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
+        (sdf.evaluate(attr, p.clone())).clone() * p.dot(self.axis.clone()).sign()
     }
 }
 

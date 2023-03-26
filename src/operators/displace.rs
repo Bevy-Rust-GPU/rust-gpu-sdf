@@ -5,11 +5,11 @@ use core::ops::Add;
 use type_fields::Field;
 
 use crate::{
-    prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator},
+    prelude::{Distance, DistanceFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::{normal::Normal, uv::Uv},
 };
 
-use rust_gpu_bridge::Normalize;
+use rust_gpu_bridge::{glam::Vec2, Normalize};
 
 /// Displace the output of a distance field using the output of another distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -24,10 +24,9 @@ where
     SdfB: DistanceFunction<Dim, Distance>,
     Dim: Clone,
 {
-    fn operator(&self, sdf: &SdfA, p: Dim) -> Distance {
-        (*sdf.evaluate(p.clone()))
-            .add(*self.displace.evaluate(p))
-            .into()
+    fn operator(&self, attr: Distance, sdf: &SdfA, p: Dim) -> f32 {
+        sdf.evaluate(attr, p.clone())
+            .add(self.displace.evaluate(attr, p))
     }
 }
 
@@ -37,12 +36,11 @@ where
     SdfB: DistanceFunction<Dim, Normal<Dim>>,
     Dim: Clone + Add<Dim, Output = Dim> + Normalize,
 {
-    fn operator(&self, sdf: &SdfA, p: Dim) -> Normal<Dim> {
-        (*sdf.evaluate(p.clone()))
+    fn operator(&self, attr: Normal<Dim>, sdf: &SdfA, p: Dim) -> Dim {
+        sdf.evaluate(attr, p.clone())
             .clone()
-            .add((*self.displace.evaluate(p)).clone())
+            .add(self.displace.evaluate(attr, p).clone())
             .normalize()
-            .into()
     }
 }
 
@@ -52,12 +50,11 @@ where
     SdfB: DistanceFunction<Dim, Uv>,
     Dim: Clone + Add<Dim, Output = Dim> + Normalize,
 {
-    fn operator(&self, sdf: &SdfA, p: Dim) -> Uv {
-        (*sdf.evaluate(p.clone()))
+    fn operator(&self, attr: Uv, sdf: &SdfA, p: Dim) -> Vec2 {
+        sdf.evaluate(attr, p.clone())
             .clone()
-            .add((*self.displace.evaluate(p)).clone())
+            .add(self.displace.evaluate(attr, p).clone())
             .normalize()
-            .into()
     }
 }
 

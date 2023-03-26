@@ -19,7 +19,7 @@ impl Default for Octahedron {
 }
 
 impl DistanceFunction<Vec3, Distance> for Octahedron {
-    fn evaluate(&self, p: Vec3) -> Distance {
+    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
         // Axial reflection
         let p = p.abs();
 

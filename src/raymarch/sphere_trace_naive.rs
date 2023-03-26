@@ -32,11 +32,11 @@ impl<const MAX_STEPS: u32> Raymarch for SphereTraceNaive<MAX_STEPS> {
 
         for step in 0..MAX_STEPS {
             let p = eye + dir * t;
-            let dist = sdf.evaluate(p);
+            let dist = sdf.evaluate(Distance, p);
 
             out.step(t, dist);
 
-            if *dist < 0.0 {
+            if dist < 0.0 {
                 out.hit(step);
                 break;
             }

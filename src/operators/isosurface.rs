@@ -2,10 +2,11 @@
 
 use core::ops::Sub;
 
+use rust_gpu_bridge::glam::Vec2;
 use type_fields::Field;
 
 use crate::{
-    prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator},
+    prelude::{Distance, DistanceFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::{normal::Normal, uv::Uv},
 };
 
@@ -26,8 +27,8 @@ impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Distance> for IsosurfaceOp
 where
     Sdf: DistanceFunction<Dim, Distance>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Distance {
-        sdf.evaluate(p).sub(self.delta).into()
+    fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
+        sdf.evaluate(attr, p).sub(self.delta)
     }
 }
 
@@ -35,8 +36,8 @@ impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Normal<Dim>> for IsosurfaceOp
 where
     Sdf: DistanceFunction<Dim, Normal<Dim>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Normal<Dim> {
-        sdf.evaluate(p)
+    fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
+        sdf.evaluate(attr, p)
     }
 }
 
@@ -44,8 +45,8 @@ impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Uv> for IsosurfaceOp
 where
     Sdf: DistanceFunction<Dim, Uv>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Uv {
-        sdf.evaluate(p)
+    fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> Vec2 {
+        sdf.evaluate(attr, p)
     }
 }
 

@@ -2,10 +2,11 @@
 
 use core::ops::Neg;
 
+use rust_gpu_bridge::glam::Vec2;
 use type_fields::Field;
 
 use crate::{
-    prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator},
+    prelude::{Distance, DistanceFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::{normal::Normal, uv::Uv},
 };
 
@@ -22,11 +23,10 @@ where
     SdfB: DistanceFunction<Dim, Distance>,
     Dim: Clone,
 {
-    fn operator(&self, sdf: &SdfA, p: Dim) -> Distance {
-        sdf.evaluate(p.clone())
+    fn operator(&self, attr: Distance, sdf: &SdfA, p: Dim) -> f32 {
+        sdf.evaluate(attr, p.clone())
             .neg()
-            .max(*self.sdf.evaluate(p))
-            .into()
+            .max(self.sdf.evaluate(attr, p))
     }
 }
 
@@ -38,17 +38,15 @@ where
     SdfB: DistanceFunction<Dim, Normal<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, sdf: &SdfA, p: Dim) -> Normal<Dim> {
-        let dist_a: Distance = sdf.evaluate(p.clone());
-        let dist_b: Distance = self.sdf.evaluate(p.clone());
+    fn operator(&self, attr: Normal<Dim>, sdf: &SdfA, p: Dim) -> Dim {
+        let dist_a = sdf.evaluate(Distance, p.clone());
+        let dist_b = self.sdf.evaluate(Distance, p.clone());
 
-        let n: Normal<Dim> = if -*dist_a > *dist_b {
-            sdf.evaluate(p)
+        if -dist_a > dist_b {
+            sdf.evaluate(attr, p)
         } else {
-            self.sdf.evaluate(p)
-        };
-
-        n.into()
+            self.sdf.evaluate(attr, p)
+        }
     }
 }
 
@@ -60,17 +58,15 @@ where
     SdfB: DistanceFunction<Dim, Uv>,
     Dim: Clone,
 {
-    fn operator(&self, sdf: &SdfA, p: Dim) -> Uv {
-        let dist_a: Distance = sdf.evaluate(p.clone());
-        let dist_b: Distance = self.sdf.evaluate(p.clone());
+    fn operator(&self, attr: Uv, sdf: &SdfA, p: Dim) -> Vec2 {
+        let dist_a = sdf.evaluate(Distance, p.clone());
+        let dist_b = self.sdf.evaluate(Distance, p.clone());
 
-        let uv: Uv = if *dist_a < *dist_b {
-            sdf.evaluate(p)
+        if dist_a < dist_b {
+            sdf.evaluate(attr, p)
         } else {
-            self.sdf.evaluate(p)
-        };
-
-        uv.into()
+            self.sdf.evaluate(attr, p)
+        }
     }
 }
 

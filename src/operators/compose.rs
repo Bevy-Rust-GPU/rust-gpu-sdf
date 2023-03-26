@@ -18,10 +18,10 @@ where
     SdfA: DistanceFunction<f32, Distance>,
     SdfB: DistanceFunction<f32, Distance>,
 {
-    fn operator(&self, sdf: &Sdf, mut p: Vec2) -> Distance {
-        p.x += *self.sdf_a.evaluate(p.x);
-        p.y += *self.sdf_b.evaluate(p.y);
-        sdf.evaluate(p)
+    fn operator(&self, attr: Distance, sdf: &Sdf, mut p: Vec2) -> f32 {
+        p.x += self.sdf_a.evaluate(attr, p.x);
+        p.y += self.sdf_b.evaluate(attr, p.y);
+        sdf.evaluate(attr, p)
     }
 }
 
@@ -31,10 +31,10 @@ where
     SdfA: DistanceFunction<Vec2, Distance>,
     SdfB: DistanceFunction<f32, Distance>,
 {
-    fn operator(&self, sdf: &Sdf, mut p: Vec3) -> Distance {
-        p.x += *self.sdf_a.evaluate(p.xy());
-        p.y += *self.sdf_b.evaluate(p.z);
-        sdf.evaluate(p)
+    fn operator(&self, attr: Distance, sdf: &Sdf, mut p: Vec3) -> f32 {
+        p.x += self.sdf_a.evaluate(attr, p.xy());
+        p.y += self.sdf_b.evaluate(attr, p.z);
+        sdf.evaluate(attr, p)
     }
 }
 

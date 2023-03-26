@@ -4,7 +4,10 @@ use core::fmt::Debug;
 use rust_gpu_bridge::glam::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{DistanceFunction, Operator, SignedDistanceOperator};
+use crate::{
+    prelude::{DistanceFunction, Operator, SignedDistanceOperator},
+    signed_distance_field::attributes::Attribute,
+};
 
 /// Rotate a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
@@ -13,12 +16,13 @@ pub struct Rotate2dOp {
     pub angle: f32,
 }
 
-impl<Sdf, Out> SignedDistanceOperator<Sdf, Vec2, Out> for Rotate2dOp
+impl<Sdf, Attr> SignedDistanceOperator<Sdf, Vec2, Attr> for Rotate2dOp
 where
-    Sdf: DistanceFunction<Vec2, Out>,
+    Attr: Attribute,
+    Sdf: DistanceFunction<Vec2, Attr>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> Out {
-        sdf.evaluate(Vec2::from_angle(-self.angle).rotate(p))
+    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
+        sdf.evaluate(attr, Vec2::from_angle(-self.angle).rotate(p))
     }
 }
 
@@ -45,12 +49,13 @@ impl Debug for Rotate3dOp {
     }
 }
 
-impl<Sdf, Out> SignedDistanceOperator<Sdf, Vec3, Out> for Rotate3dOp
+impl<Sdf, Attr> SignedDistanceOperator<Sdf, Vec3, Attr> for Rotate3dOp
 where
-    Sdf: DistanceFunction<Vec3, Out>,
+    Attr: Attribute,
+    Sdf: DistanceFunction<Vec3, Attr>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec3) -> Out {
-        sdf.evaluate(self.rotation.inverse() * p)
+    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec3) -> Attr::Type {
+        sdf.evaluate(attr, self.rotation.inverse() * p)
     }
 }
 

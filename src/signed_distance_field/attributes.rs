@@ -1,284 +1,95 @@
 //! Attributes that can be computed by a distance field
 
+pub trait Attribute {
+    type Type;
+}
+
 pub mod distance {
-    use core::ops::{Deref, DerefMut};
+    use super::Attribute;
 
-    #[cfg(not(feature = "spirv-std"))]
-    use core::fmt::Display;
-
-    #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
+    #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     #[repr(C)]
-    pub struct Distance(pub f32);
+    pub struct Distance;
 
-    impl Deref for Distance {
-        type Target = f32;
-
-        fn deref(&self) -> &Self::Target {
-            &self.0
-        }
-    }
-
-    impl DerefMut for Distance {
-        fn deref_mut(&mut self) -> &mut Self::Target {
-            &mut self.0
-        }
-    }
-
-    impl From<f32> for Distance {
-        fn from(value: f32) -> Self {
-            Distance(value)
-        }
-    }
-
-    impl From<Distance> for f32 {
-        fn from(value: Distance) -> Self {
-            value.0
-        }
-    }
-
-    #[cfg(not(feature = "spirv-std"))]
-    impl Display for Distance {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            Display::fmt(&self.0, f)
-        }
+    impl Attribute for Distance {
+        type Type = f32;
     }
 }
 
 pub mod position {
-    use core::ops::{Deref, DerefMut};
-
-    #[cfg(not(feature = "spirv-std"))]
-    use core::fmt::{Debug, Display};
-
     use rust_gpu_bridge::glam::Vec3;
 
-    #[derive(Default, Copy, Clone, PartialEq)]
+    use super::Attribute;
+
+    #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     #[repr(C)]
-    pub struct Position(pub Vec3);
+    pub struct Position;
 
-    #[cfg(not(feature = "spirv-std"))]
-    impl Debug for Position {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            Display::fmt(&self.0, f)
-        }
-    }
-
-    impl Deref for Position {
-        type Target = Vec3;
-
-        fn deref(&self) -> &Self::Target {
-            &self.0
-        }
-    }
-
-    impl DerefMut for Position {
-        fn deref_mut(&mut self) -> &mut Self::Target {
-            &mut self.0
-        }
-    }
-
-    impl From<Vec3> for Position {
-        fn from(value: Vec3) -> Self {
-            Position(value)
-        }
-    }
-
-    impl From<Position> for Vec3 {
-        fn from(value: Position) -> Self {
-            value.0
-        }
-    }
-
-    #[cfg(not(feature = "spirv-std"))]
-    impl Display for Position {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            Display::fmt(&self.0, f)
-        }
+    impl Attribute for Position {
+        type Type = Vec3;
     }
 }
 
 pub mod normal {
-    use core::{
-        fmt::Display,
-        ops::{Deref, DerefMut},
-    };
+    use core::marker::PhantomData;
 
-    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    use super::Attribute;
+
+    #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
     #[repr(C)]
-    pub struct Normal<Dim>(pub Dim);
+    pub struct Normal<Dim>(PhantomData<Dim>);
 
-    impl<Dim> Deref for Normal<Dim> {
-        type Target = Dim;
-
-        fn deref(&self) -> &Self::Target {
-            &self.0
+    impl<Dim> Clone for Normal<Dim> {
+        fn clone(&self) -> Self {
+            Normal(self.0.clone())
         }
     }
 
-    impl<Dim> DerefMut for Normal<Dim> {
-        fn deref_mut(&mut self) -> &mut Self::Target {
-            &mut self.0
-        }
-    }
+    impl<Dim> Copy for Normal<Dim> {}
 
-    impl<Dim> From<Dim> for Normal<Dim> {
-        fn from(value: Dim) -> Self {
-            Normal(value)
-        }
-    }
-
-    impl<Dim> Display for Normal<Dim>
-    where
-        Dim: Display,
-    {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            self.0.fmt(f)
-        }
+    impl<Dim> Attribute for Normal<Dim> {
+        type Type = Dim;
     }
 }
 
 pub mod uv {
-    use core::ops::{Deref, DerefMut};
-
-    #[cfg(not(feature = "spirv-std"))]
-    use core::fmt::{Debug, Display};
-
     use rust_gpu_bridge::glam::Vec2;
 
-    #[derive(Default, Copy, Clone, PartialEq)]
+    use super::Attribute;
+
+    #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     #[repr(C)]
-    pub struct Uv(pub Vec2);
+    pub struct Uv;
 
-    #[cfg(not(feature = "spirv-std"))]
-    impl Debug for Uv {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            Display::fmt(&self.0, f)
-        }
-    }
-
-    impl Deref for Uv {
-        type Target = Vec2;
-
-        fn deref(&self) -> &Self::Target {
-            &self.0
-        }
-    }
-
-    impl DerefMut for Uv {
-        fn deref_mut(&mut self) -> &mut Self::Target {
-            &mut self.0
-        }
-    }
-
-    impl From<Vec2> for Uv {
-        fn from(value: Vec2) -> Self {
-            Uv(value)
-        }
-    }
-
-    impl From<Uv> for Vec2 {
-        fn from(value: Uv) -> Self {
-            value.0
-        }
-    }
-
-    #[cfg(not(feature = "spirv-std"))]
-    impl Display for Uv {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            Display::fmt(&self.0, f)
-        }
+    impl Attribute for Uv {
+        type Type = Vec2;
     }
 }
 
 pub mod tangent {
-    use core::{
-        fmt::Display,
-        ops::{Deref, DerefMut},
-    };
+    use core::marker::PhantomData;
 
-    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    use super::Attribute;
+
+    #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     #[repr(C)]
-    pub struct Tangent<Dim>(pub Dim);
+    pub struct Tangent<Dim>(PhantomData<Dim>);
 
-    impl<Dim> Deref for Tangent<Dim> {
-        type Target = Dim;
-
-        fn deref(&self) -> &Self::Target {
-            &self.0
-        }
-    }
-
-    impl<Dim> DerefMut for Tangent<Dim> {
-        fn deref_mut(&mut self) -> &mut Self::Target {
-            &mut self.0
-        }
-    }
-
-    impl<Dim> From<Dim> for Tangent<Dim> {
-        fn from(value: Dim) -> Self {
-            Tangent(value)
-        }
-    }
-
-    impl<Dim> Display for Tangent<Dim>
-    where
-        Dim: Display,
-    {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            self.0.fmt(f)
-        }
+    impl<Dim> Attribute for Tangent<Dim> {
+        type Type = Dim;
     }
 }
 
 pub mod color {
-    use core::ops::{Deref, DerefMut};
-
-    #[cfg(not(feature = "spirv-std"))]
-    use core::fmt::{Debug, Display};
-
     use rust_gpu_bridge::glam::Vec4;
 
-    #[derive(Default, Copy, Clone, PartialEq)]
+    use super::Attribute;
+
+    #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     #[repr(C)]
-    pub struct Color(pub Vec4);
+    pub struct Color;
 
-    #[cfg(not(feature = "spirv-std"))]
-    impl Debug for Color {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            Display::fmt(&self.0, f)
-        }
-    }
-
-    impl Deref for Color {
-        type Target = Vec4;
-
-        fn deref(&self) -> &Self::Target {
-            &self.0
-        }
-    }
-
-    impl DerefMut for Color {
-        fn deref_mut(&mut self) -> &mut Self::Target {
-            &mut self.0
-        }
-    }
-
-    impl From<Vec4> for Color {
-        fn from(value: Vec4) -> Self {
-            Color(value)
-        }
-    }
-
-    impl From<Color> for Vec4 {
-        fn from(value: Color) -> Self {
-            value.0
-        }
-    }
-
-    #[cfg(not(feature = "spirv-std"))]
-    impl Display for Color {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            Display::fmt(&self.0, f)
-        }
+    impl Attribute for Color {
+        type Type = Vec4;
     }
 }

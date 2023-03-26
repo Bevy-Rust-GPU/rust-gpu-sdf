@@ -5,7 +5,7 @@ use core::ops::Sub;
 use rust_gpu_bridge::Mix;
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{Distance, DistanceFunction, Operator, SignedDistanceOperator};
 
 /// Compute the blended boolean union of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -21,9 +21,9 @@ where
     SdfB: DistanceFunction<Dim, Distance>,
     Dim: Clone,
 {
-    fn operator(&self, sdf: &SdfA, p: Dim) -> Distance {
-        let d1 = *sdf.evaluate(p.clone());
-        let d2 = *self.sdf.evaluate(p);
+    fn operator(&self, attr: Distance, sdf: &SdfA, p: Dim) -> f32 {
+        let d1 = sdf.evaluate(attr, p.clone());
+        let d2 = self.sdf.evaluate(attr, p);
         let h = (0.5 + 0.5 * (d2 - d1) / self.k).clamp(0.0, 1.0);
         d2.mix(d1, h).sub(self.k * h * (1.0 - h)).into()
     }

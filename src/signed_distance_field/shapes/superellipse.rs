@@ -16,10 +16,8 @@ impl Default for Superellipse {
 }
 
 impl DistanceFunction<Vec2, Distance> for Superellipse {
-    fn evaluate(&self, p: Vec2) -> Distance {
-        let d = p.x.abs().pow(self.n) + p.y.abs().pow(self.n);
-        let d = d - 1.0;
-        Distance(d)
+    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
+        p.x.abs().pow(self.n) + p.y.abs().pow(self.n) - 1.0
     }
 }
 

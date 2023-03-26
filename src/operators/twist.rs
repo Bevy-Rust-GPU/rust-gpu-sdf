@@ -3,7 +3,7 @@
 use rust_gpu_bridge::glam::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::DistanceFunction;
+use crate::{prelude::DistanceFunction, signed_distance_field::attributes::Attribute};
 
 use super::{Operator, SignedDistanceOperator};
 
@@ -36,23 +36,25 @@ impl Default for TwistOp<Vec3> {
     }
 }
 
-impl<Sdf, Out> SignedDistanceOperator<Sdf, Vec2, Out> for TwistOp<Vec2>
+impl<Sdf, Attr> SignedDistanceOperator<Sdf, Vec2, Attr> for TwistOp<Vec2>
 where
-    Sdf: DistanceFunction<Vec2, Out>,
+    Attr: Attribute,
+    Sdf: DistanceFunction<Vec2, Attr>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> Out {
+    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
         let q = Vec2::from_angle(self.k * self.axis_pos.dot(p)).rotate(p);
-        sdf.evaluate(q)
+        sdf.evaluate(attr, q)
     }
 }
 
-impl<Sdf, Out> SignedDistanceOperator<Sdf, Vec3, Out> for TwistOp<Vec3>
+impl<Sdf, Attr> SignedDistanceOperator<Sdf, Vec3, Attr> for TwistOp<Vec3>
 where
-    Sdf: DistanceFunction<Vec3, Out>,
+    Attr: Attribute,
+    Sdf: DistanceFunction<Vec3, Attr>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec3) -> Out {
+    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec3) -> Attr::Type {
         let q = Quat::from_axis_angle(self.axis_rot, self.k * self.axis_pos.dot(p)) * p;
-        sdf.evaluate(q)
+        sdf.evaluate(attr, q)
     }
 }
 

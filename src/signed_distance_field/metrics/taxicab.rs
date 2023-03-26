@@ -15,20 +15,20 @@ use crate::signed_distance_field::{attributes::normal::Normal, Distance, Distanc
 pub struct TaxicabMetric;
 
 impl DistanceFunction<f32, Distance> for TaxicabMetric {
-    fn evaluate(&self, p: f32) -> Distance {
-        p.abs().into()
+    fn evaluate(&self, attr: Distance, p: f32) -> f32 {
+        p.abs()
     }
 }
 
 impl DistanceFunction<Vec2, Distance> for TaxicabMetric {
-    fn evaluate(&self, p: Vec2) -> Distance {
-        p.x.abs().add(p.y.abs()).into()
+    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
+        p.x.abs().add(p.y.abs())
     }
 }
 
 impl DistanceFunction<Vec3, Distance> for TaxicabMetric {
-    fn evaluate(&self, p: Vec3) -> Distance {
-        p.x.abs().add(p.y.abs()).add(p.z.abs()).into()
+    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
+        p.x.abs().add(p.y.abs()).add(p.z.abs())
     }
 }
 
@@ -36,8 +36,8 @@ impl<Dim> DistanceFunction<Dim, Normal<Dim>> for TaxicabMetric
 where
     Dim: Sign,
 {
-    fn evaluate(&self, p: Dim) -> Normal<Dim> {
-        p.sign().into()
+    fn evaluate(&self, attr: Normal<Dim>, p: Dim) -> Dim {
+        p.sign()
     }
 }
 

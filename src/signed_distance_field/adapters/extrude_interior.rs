@@ -34,12 +34,12 @@ impl<Sdf> DistanceFunction<Vec2, Distance> for ExtrudeInterior<Sdf>
 where
     Sdf: DistanceFunction<f32, Distance>,
 {
-    fn evaluate(&self, p: Vec2) -> Distance {
-        let d = self.sdf.evaluate(p.x);
-        let w = Vec2::new(*d, p.y.abs() + d.min(0.0) * self.depth);
+    fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
+        let d = self.sdf.evaluate(attr, p.x);
+        let w = Vec2::new(d, p.y.abs() + d.min(0.0) * self.depth);
         let exterior = w.max(Vec2::ZERO).length();
         let interior = w.x.max(w.y).min(0.0);
-        Distance(interior + exterior)
+        interior + exterior
     }
 }
 
@@ -47,12 +47,12 @@ impl<Sdf> DistanceFunction<Vec3, Distance> for ExtrudeInterior<Sdf>
 where
     Sdf: DistanceFunction<Vec2, Distance>,
 {
-    fn evaluate(&self, p: Vec3) -> Distance {
-        let d = self.sdf.evaluate(p.truncate());
-        let w = Vec2::new(*d, p.z.abs() + d.min(0.0) * self.depth);
+    fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
+        let d = self.sdf.evaluate(attr, p.truncate());
+        let w = Vec2::new(d, p.z.abs() + d.min(0.0) * self.depth);
         let exterior = w.max(Vec2::ZERO).length();
         let interior = w.x.max(w.y).min(0.0);
-        Distance(interior + exterior)
+        interior + exterior
     }
 }
 

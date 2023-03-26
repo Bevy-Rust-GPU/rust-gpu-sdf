@@ -61,16 +61,14 @@ where
                 let pos = Vec2::new(x as f32, y as f32) * self.step;
 
                 // Calculate normal
-                let normal: Normal<Vec2> =
-                    CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
-                        .with(CentralDiffNormal::epsilon, self.epsilon)
-                        .evaluate(pos);
-                let normal = *normal;
+                let normal = CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
+                    .with(CentralDiffNormal::epsilon, self.epsilon)
+                    .evaluate(Normal::<Vec2>::default(), pos);
 
                 // Apply 1D central differencing along normal,
                 // resulting in distance-space derivative
-                let a = *self.sdf.evaluate(pos - normal * self.epsilon);
-                let b = *self.sdf.evaluate(pos + normal * self.epsilon);
+                let a = self.sdf.evaluate(Distance, pos - normal * self.epsilon);
+                let b = self.sdf.evaluate(Distance, pos + normal * self.epsilon);
                 let deriv = b - a;
 
                 // Assert that derivative is 1 (w.r.t. floating-point error)
@@ -102,16 +100,14 @@ where
                     let pos = Vec3::new(x as f32, y as f32, z as f32) * self.step;
 
                     // Calculate normal
-                    let normal: Normal<Vec3> =
-                        CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
-                            .with(CentralDiffNormal::epsilon, self.epsilon)
-                            .evaluate(pos);
-                    let normal = *normal;
+                    let normal = CentralDiffNormal::<Sdf>::new(self.sdf.clone(), self.step)
+                        .with(CentralDiffNormal::epsilon, self.epsilon)
+                        .evaluate(Normal::<Vec3>::default(), pos);
 
                     // Apply 1D central differencing along normal,
                     // resulting in distance-space derivative
-                    let a = *self.sdf.evaluate(pos - normal * self.epsilon);
-                    let b = *self.sdf.evaluate(pos + normal * self.epsilon);
+                    let a = self.sdf.evaluate(Distance, pos - normal * self.epsilon);
+                    let b = self.sdf.evaluate(Distance, pos + normal * self.epsilon);
                     let deriv = b - a;
 
                     // Assert that derivative is 1 (w.r.t. floating-point error)

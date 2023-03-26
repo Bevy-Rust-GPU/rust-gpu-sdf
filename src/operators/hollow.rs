@@ -6,7 +6,7 @@ use rust_gpu_bridge::{Abs, Sign};
 use type_fields::Field;
 
 use crate::{
-    prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator},
+    prelude::{Distance, DistanceFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::normal::Normal,
 };
 
@@ -19,8 +19,8 @@ impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Distance> for HollowOp
 where
     Sdf: DistanceFunction<Dim, Distance>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Distance {
-        sdf.evaluate(p).abs().into()
+    fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
+        sdf.evaluate(attr, p).abs()
     }
 }
 
@@ -30,11 +30,10 @@ where
     Sdf: DistanceFunction<Dim, Normal<Dim>>,
     Dim: Clone + Mul<f32, Output = Dim>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Normal<Dim> {
-        let d: Distance = sdf.evaluate(p.clone());
+    fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
+        let d = sdf.evaluate(Distance, p.clone());
         let s = d.sign();
-        let n: Normal<Dim> = sdf.evaluate(p.clone() * s);
-        n.into()
+        sdf.evaluate(attr, p.clone() * s)
     }
 }
 
