@@ -1,7 +1,10 @@
 use rust_gpu_bridge::glam::{Vec3, Vec4};
 use type_fields::Field;
 
-use crate::prelude::{Color, Distance, FieldFunction, Normal, Uv};
+use crate::{
+    impl_passthrough_op_1,
+    prelude::{Color, Distance, Normal, Tangent, Uv},
+};
 
 use super::{FieldOperator, Operator};
 
@@ -17,48 +20,16 @@ impl Default for ColorizeOp {
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for ColorizeOp
-where
-    Sdf: FieldFunction<Dim, Distance>,
-{
-    fn operator(
-        &self,
-        attr: Distance,
-        sdf: &Sdf,
-        p: Dim,
-    ) -> <Distance as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Normal<Dim>> for ColorizeOp
-where
-    Sdf: FieldFunction<Dim, Normal<Dim>>,
-{
-    fn operator(
-        &self,
-        attr: Normal<Dim>,
-        sdf: &Sdf,
-        p: Dim,
-    ) -> <Normal<Dim> as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
-impl<Sdf> FieldOperator<Sdf, Vec3, Uv> for ColorizeOp
-where
-    Sdf: FieldFunction<Vec3, Uv>,
-{
-    fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec3) -> <Uv as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
 impl<Sdf> FieldOperator<Sdf, Vec3, Color> for ColorizeOp {
     fn operator(&self, _: Color, _: &Sdf, _: Vec3) -> <Color as crate::prelude::Attribute>::Type {
         self.color
     }
 }
+
+impl_passthrough_op_1!(ColorizeOp, <Dim>, Distance);
+impl_passthrough_op_1!(ColorizeOp, <Dim>, Normal<Dim>);
+impl_passthrough_op_1!(ColorizeOp, <Dim>, Tangent<Dim>);
+impl_passthrough_op_1!(ColorizeOp, <Dim>, Uv);
 
 pub type Colorize<Sdf> = Operator<ColorizeOp, Sdf>;
 

@@ -1,49 +1,18 @@
-use crate::prelude::{Distance, FieldFunction, Normal, Uv};
+use crate::{
+    impl_passthrough_op_2,
+    prelude::{Color, Distance, Normal, Tangent, Uv},
+};
 
-use super::FieldOperator;
+use super::{FieldOperator, Operator};
 
 /// Override the normals of an SDF with the normals of another SDF
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct SdfNormals;
+pub struct SdfNormalOp;
 
-impl<SdfA, SdfB, Pos> FieldOperator<(SdfA, SdfB), Pos, Distance> for SdfNormals
-where
-    SdfA: FieldFunction<Pos, Distance>,
-{
-    fn operator(
-        &self,
-        attr: Distance,
-        (sdf, _): &(SdfA, SdfB),
-        p: Pos,
-    ) -> <Distance as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
+impl_passthrough_op_2!(SdfNormalOp, <Dim>, Distance, 0);
+impl_passthrough_op_2!(SdfNormalOp, <Dim>, Normal<Dim>, 1);
+impl_passthrough_op_2!(SdfNormalOp, <Dim>, Tangent<Dim>, 0);
+impl_passthrough_op_2!(SdfNormalOp, <Dim>, Uv, 0);
+impl_passthrough_op_2!(SdfNormalOp, <Dim>, Color, 0);
 
-impl<SdfA, SdfB, Pos> FieldOperator<(SdfA, SdfB), Pos, Normal<Pos>> for SdfNormals
-where
-    SdfB: FieldFunction<Pos, Normal<Pos>>,
-{
-    fn operator(
-        &self,
-        attr: Normal<Pos>,
-        (_, sdf): &(SdfA, SdfB),
-        p: Pos,
-    ) -> <Normal<Pos> as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
-impl<SdfA, SdfB, Pos> FieldOperator<(SdfA, SdfB), Pos, Uv> for SdfNormals
-where
-    SdfA: FieldFunction<Pos, Uv>,
-{
-    fn operator(
-        &self,
-        attr: Uv,
-        (sdf, _): &(SdfA, SdfB),
-        p: Pos,
-    ) -> <Uv as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
+pub type SdfNormal<SdfA, SdfB> = Operator<SdfNormalOp, (SdfA, SdfB)>;

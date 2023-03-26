@@ -1,11 +1,14 @@
 //! Shapes composed from other shapes.
 
-use rust_gpu_bridge::{glam::{Vec2, Vec3}, Cos, Sin, Tan, Sqrt};
+use rust_gpu_bridge::{
+    glam::{Vec2, Vec3},
+    Cos, Sin, Sqrt, Tan,
+};
 use type_fields::field::Field;
 
 use crate::prelude::{
-    AxialReflect, Elongate, EuclideanMetric, Isosurface, Reflect, Sided, StretchDist, Sweep,
-    Translate, AXIS_X, AXIS_XY, D2, D3, raytrace::RayIntersection,
+    raytrace::RayIntersection, AxialReflect, Elongate, EuclideanMetric, Isosurface, Reflect, Sided,
+    StretchDist, Sweep, Translate, AXIS_X, AXIS_XY, D2, D3,
 };
 
 /// An infinitely small point.

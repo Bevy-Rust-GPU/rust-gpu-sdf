@@ -10,8 +10,8 @@ pub mod elongate;
 pub mod extrude;
 pub mod extrude_interior;
 pub mod gradient_central_diff;
-pub mod gradient_uv;
 pub mod gradient_tetrahedron;
+pub mod gradient_uv;
 pub mod hollow;
 pub mod intersection;
 pub mod isosurface;
@@ -89,4 +89,38 @@ pub mod test {
             .with(Operator::target, Point::default())
             .with(Operator::op, IsosurfaceOp::default());
     }
+}
+
+#[macro_export]
+macro_rules! impl_passthrough_op_1 {
+    ($ty:ty, <$pos: ident>, $attr:ty) => {
+        crate::impl_passthrough_op!($ty, <$pos, Sdf>, Sdf, $attr);
+    };
+}
+
+#[macro_export]
+macro_rules! impl_passthrough_op_2 {
+    ($ty:ty, <$pos: ident>, $attr:ty $(, $field:tt)?) => {
+        crate::impl_passthrough_op!($ty, <$pos, SdfA, SdfB>, (SdfA, SdfB), $attr $(, $field)?);
+    };
+}
+
+#[macro_export]
+macro_rules! impl_passthrough_op {
+    ($ty:ty, <$pos: ident, $($sdf_gen:ident),+>, $sdf_ty:ty, $attr:ty $(, $field:tt)?) => {
+        impl<$($sdf_gen),+, $pos> FieldOperator<$sdf_ty, $pos, $attr> for $ty
+        where
+            $attr: crate::prelude::Attribute,
+            $($sdf_gen: crate::prelude::FieldFunction<$pos, $attr>),+
+        {
+            fn operator(
+                &self,
+                attr: $attr,
+                sdf: &$sdf_ty,
+                p: $pos,
+            ) -> <$attr as crate::prelude::Attribute>::Type {
+                sdf$(.$field)?.evaluate(attr, p)
+            }
+        }
+    };
 }

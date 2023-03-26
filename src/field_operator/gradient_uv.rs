@@ -1,7 +1,10 @@
 use rust_gpu_bridge::glam::{Vec2, Vec2Swizzles, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Color, Distance, FieldFunction, Normal, Normalize, Tangent, Uv};
+use crate::{
+    impl_passthrough_op_1,
+    prelude::{Color, Distance, FieldFunction, Normal, Normalize, Tangent, Uv},
+};
 
 use super::{FieldOperator, Operator};
 
@@ -18,48 +21,6 @@ impl Default for UvGradientOp {
             axis: Vec2::X,
             epsilon: f32::EPSILON,
         }
-    }
-}
-
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for UvGradientOp
-where
-    Sdf: FieldFunction<Dim, Distance>,
-{
-    fn operator(
-        &self,
-        attr: Distance,
-        sdf: &Sdf,
-        p: Dim,
-    ) -> <Distance as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Normal<Dim>> for UvGradientOp
-where
-    Sdf: FieldFunction<Dim, Normal<Dim>>,
-{
-    fn operator(
-        &self,
-        attr: Normal<Dim>,
-        sdf: &Sdf,
-        p: Dim,
-    ) -> <Normal<Dim> as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
-impl<Sdf> FieldOperator<Sdf, Vec3, Uv> for UvGradientOp
-where
-    Sdf: FieldFunction<Vec3, Uv>,
-{
-    fn operator(
-        &self,
-        attr: Uv,
-        sdf: &Sdf,
-        p: Vec3,
-    ) -> <Uv as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
     }
 }
 
@@ -81,19 +42,10 @@ where
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec3, Color> for UvGradientOp
-where
-    Sdf: FieldFunction<Vec3, Color>,
-{
-    fn operator(
-        &self,
-        attr: Color,
-        sdf: &Sdf,
-        p: Vec3,
-    ) -> <Color as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
+impl_passthrough_op_1!(UvGradientOp, <Dim>, Distance);
+impl_passthrough_op_1!(UvGradientOp, <Dim>, Normal<Dim>);
+impl_passthrough_op_1!(UvGradientOp, <Dim>, Uv);
+impl_passthrough_op_1!(UvGradientOp, <Dim>, Color);
 
 pub type UvGradient<Sdf> = Operator<UvGradientOp, Sdf>;
 

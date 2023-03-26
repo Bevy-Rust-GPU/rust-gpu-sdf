@@ -2,10 +2,12 @@
 
 use core::ops::Sub;
 
-use rust_gpu_bridge::glam::Vec2;
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction, FieldOperator, Normal, Operator, Uv};
+use crate::{
+    impl_passthrough_op_1,
+    prelude::{Color, Distance, FieldFunction, FieldOperator, Normal, Operator, Tangent, Uv},
+};
 
 /// Shift the isosurface of a distance field by a given amount.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -29,23 +31,10 @@ where
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Normal<Dim>> for IsosurfaceOp
-where
-    Sdf: FieldFunction<Dim, Normal<Dim>>,
-{
-    fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
-        sdf.evaluate(attr, p)
-    }
-}
-
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Uv> for IsosurfaceOp
-where
-    Sdf: FieldFunction<Dim, Uv>,
-{
-    fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> Vec2 {
-        sdf.evaluate(attr, p)
-    }
-}
+impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Normal<Dim>);
+impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Tangent<Dim>);
+impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Uv);
+impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Color);
 
 /// Add an arbitrary radius to a distance field.
 pub type Isosurface<Sdf> = Operator<IsosurfaceOp, Sdf>;

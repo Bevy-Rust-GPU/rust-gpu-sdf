@@ -2,7 +2,10 @@
 
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction, Normal, Uv};
+use crate::{
+    impl_passthrough_op_2,
+    prelude::{Color, Distance, Normal, Tangent, Uv},
+};
 
 use super::{FieldOperator, Operator};
 
@@ -10,46 +13,10 @@ use super::{FieldOperator, Operator};
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 pub struct SdfUvOp;
 
-impl<SdfA, SdfB, Pos> FieldOperator<(SdfA, SdfB), Pos, Distance> for SdfUvOp
-where
-    SdfA: FieldFunction<Pos, Distance>,
-{
-    fn operator(
-        &self,
-        attr: Distance,
-        (sdf, _): &(SdfA, SdfB),
-        p: Pos,
-    ) -> <Distance as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
-impl<SdfA, SdfB, In> FieldOperator<(SdfA, SdfB), In, Normal<In>> for SdfUvOp
-where
-    SdfA: FieldFunction<In, Normal<In>>,
-{
-    fn operator(
-        &self,
-        attr: Normal<In>,
-        (sdf, _): &(SdfA, SdfB),
-        p: In,
-    ) -> <Normal<In> as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
-impl<SdfA, SdfB, In> FieldOperator<(SdfA, SdfB), In, Uv> for SdfUvOp
-where
-    SdfB: FieldFunction<In, Uv>,
-{
-    fn operator(
-        &self,
-        attr: Uv,
-        (_, sdf): &(SdfA, SdfB),
-        p: In,
-    ) -> <Uv as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
+impl_passthrough_op_2!(SdfUvOp, <Dim>, Distance, 0);
+impl_passthrough_op_2!(SdfUvOp, <Dim>, Normal<Dim>, 0);
+impl_passthrough_op_2!(SdfUvOp, <Dim>, Tangent<Dim>, 0);
+impl_passthrough_op_2!(SdfUvOp, <Dim>, Uv, 1);
+impl_passthrough_op_2!(SdfUvOp, <Dim>, Color, 0);
 
 pub type SdfUv<SdfA, SdfB> = Operator<SdfUvOp, (SdfA, SdfB)>;

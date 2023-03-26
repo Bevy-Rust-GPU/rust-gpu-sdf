@@ -4,7 +4,10 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction, Normal, Uv};
+use crate::{
+    impl_passthrough_op_1,
+    prelude::{Color, Distance, FieldFunction, Normal, Tangent, Uv},
+};
 
 use super::{FieldOperator, Operator};
 
@@ -12,34 +15,6 @@ use super::{FieldOperator, Operator};
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
 pub struct TriplanarUvOp {
     pub k: f32,
-}
-
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for TriplanarUvOp
-where
-    Sdf: FieldFunction<Dim, Distance>,
-{
-    fn operator(
-        &self,
-        attr: Distance,
-        sdf: &Sdf,
-        p: Dim,
-    ) -> <Distance as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Normal<Dim>> for TriplanarUvOp
-where
-    Sdf: FieldFunction<Dim, Normal<Dim>>,
-{
-    fn operator(
-        &self,
-        attr: Normal<Dim>,
-        sdf: &Sdf,
-        p: Dim,
-    ) -> <Normal<Dim> as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
-    }
 }
 
 impl<Sdf> FieldOperator<Sdf, Vec3, Uv> for TriplanarUvOp
@@ -60,6 +35,11 @@ where
         front * weights.z + side * weights.x + top * weights.y
     }
 }
+
+impl_passthrough_op_1!(TriplanarUvOp, <Dim>, Distance);
+impl_passthrough_op_1!(TriplanarUvOp, <Dim>, Normal<Dim>);
+impl_passthrough_op_1!(TriplanarUvOp, <Dim>, Tangent<Dim>);
+impl_passthrough_op_1!(TriplanarUvOp, <Dim>, Color);
 
 pub type TriplanarUv<Sdf> = Operator<TriplanarUvOp, Sdf>;
 

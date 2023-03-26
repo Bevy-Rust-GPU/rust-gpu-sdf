@@ -7,7 +7,6 @@ pub trait Attribute {
 pub mod color;
 pub mod distance;
 pub mod normal;
-pub mod position;
 pub mod tangent;
 pub mod uv;
 
