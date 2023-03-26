@@ -1,6 +1,6 @@
 use type_fields::Field;
 
-use crate::signed_distance_field::{attributes::Attribute, DistanceFunction};
+use crate::prelude::{Attribute, FieldFunction};
 
 use super::{Operator, SignedDistanceOperator};
 
@@ -14,7 +14,7 @@ impl<Op, Sdf, Dim, Attr, const CONDITION: bool> SignedDistanceOperator<Sdf, Dim,
     for ConditionalOp<Op, CONDITION>
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Dim, Attr>,
+    Sdf: FieldFunction<Dim, Attr>,
     Op: SignedDistanceOperator<Sdf, Dim, Attr>,
     Dim: Clone,
 {

@@ -5,7 +5,7 @@ use rust_gpu_bridge::glam::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
 use crate::{
-    prelude::{DistanceFunction, Operator, SignedDistanceOperator},
+    prelude::{FieldFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::Attribute,
 };
 
@@ -19,7 +19,7 @@ pub struct Rotate2dOp {
 impl<Sdf, Attr> SignedDistanceOperator<Sdf, Vec2, Attr> for Rotate2dOp
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Vec2, Attr>,
+    Sdf: FieldFunction<Vec2, Attr>,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
         sdf.evaluate(attr, Vec2::from_angle(-self.angle).rotate(p))
@@ -52,7 +52,7 @@ impl Debug for Rotate3dOp {
 impl<Sdf, Attr> SignedDistanceOperator<Sdf, Vec3, Attr> for Rotate3dOp
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Vec3, Attr>,
+    Sdf: FieldFunction<Vec3, Attr>,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec3) -> Attr::Type {
         sdf.evaluate(attr, self.rotation.inverse() * p)

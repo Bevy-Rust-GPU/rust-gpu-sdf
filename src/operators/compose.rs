@@ -1,7 +1,7 @@
 use rust_gpu_bridge::glam::{Vec2, Vec3, Vec3Swizzles};
 use type_fields::Field;
 
-use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunction};
+use crate::prelude::{Distance, FieldFunction};
 
 use super::{Operator, SignedDistanceOperator};
 
@@ -14,9 +14,9 @@ pub struct ComposeOp<SdfA, SdfB> {
 
 impl<Sdf, SdfA, SdfB> SignedDistanceOperator<Sdf, Vec2, Distance> for ComposeOp<SdfA, SdfB>
 where
-    Sdf: DistanceFunction<Vec2, Distance>,
-    SdfA: DistanceFunction<f32, Distance>,
-    SdfB: DistanceFunction<f32, Distance>,
+    Sdf: FieldFunction<Vec2, Distance>,
+    SdfA: FieldFunction<f32, Distance>,
+    SdfB: FieldFunction<f32, Distance>,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, mut p: Vec2) -> f32 {
         p.x += self.sdf_a.evaluate(attr, p.x);
@@ -27,9 +27,9 @@ where
 
 impl<Sdf, SdfA, SdfB> SignedDistanceOperator<Sdf, Vec3, Distance> for ComposeOp<SdfA, SdfB>
 where
-    Sdf: DistanceFunction<Vec3, Distance>,
-    SdfA: DistanceFunction<Vec2, Distance>,
-    SdfB: DistanceFunction<f32, Distance>,
+    Sdf: FieldFunction<Vec3, Distance>,
+    SdfA: FieldFunction<Vec2, Distance>,
+    SdfB: FieldFunction<f32, Distance>,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, mut p: Vec3) -> f32 {
         p.x += self.sdf_a.evaluate(attr, p.xy());

@@ -9,7 +9,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::signed_distance_field::{Distance, DistanceFunction};
+use crate::prelude::{Distance, FieldFunction};
 
 /// Extrude a 2D distance field into 3D.
 #[derive(Default, Copy, Clone, PartialEq, Field)]
@@ -33,9 +33,9 @@ where
     }
 }
 
-impl<Sdf> DistanceFunction<Vec2, Distance> for Extrude<Sdf>
+impl<Sdf> FieldFunction<Vec2, Distance> for Extrude<Sdf>
 where
-    Sdf: DistanceFunction<f32, Distance>,
+    Sdf: FieldFunction<f32, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
         let d = self.sdf.evaluate(attr, p.x);
@@ -44,9 +44,9 @@ where
     }
 }
 
-impl<Sdf> DistanceFunction<Vec3, Distance> for Extrude<Sdf>
+impl<Sdf> FieldFunction<Vec3, Distance> for Extrude<Sdf>
 where
-    Sdf: DistanceFunction<Vec2, Distance>,
+    Sdf: FieldFunction<Vec2, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
         let d = self.sdf.evaluate(attr, p.truncate());

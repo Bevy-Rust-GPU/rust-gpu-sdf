@@ -5,38 +5,38 @@ use rust_gpu_bridge::{
     Abs, Mix, Sign, Step,
 };
 
-use crate::signed_distance_field::{attributes::normal::Normal, Distance, DistanceFunction};
+use crate::prelude::{Distance, FieldFunction, Normal};
 
 /// Chebyshev distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(C)]
 pub struct ChebyshevMetric;
 
-impl DistanceFunction<f32, Distance> for ChebyshevMetric {
+impl FieldFunction<f32, Distance> for ChebyshevMetric {
     fn evaluate(&self, attr: Distance, p: f32) -> f32 {
         p.abs()
     }
 }
 
-impl DistanceFunction<Vec2, Distance> for ChebyshevMetric {
+impl FieldFunction<Vec2, Distance> for ChebyshevMetric {
     fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
         p.x.abs().max(p.y.abs())
     }
 }
 
-impl DistanceFunction<Vec3, Distance> for ChebyshevMetric {
+impl FieldFunction<Vec3, Distance> for ChebyshevMetric {
     fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
         p.x.abs().max(p.y.abs()).max(p.z.abs())
     }
 }
 
-impl DistanceFunction<f32, Normal<f32>> for ChebyshevMetric {
+impl FieldFunction<f32, Normal<f32>> for ChebyshevMetric {
     fn evaluate(&self, attr: Normal<f32>, p: f32) -> f32 {
         p.sign()
     }
 }
 
-impl DistanceFunction<Vec2, Normal<Vec2>> for ChebyshevMetric {
+impl FieldFunction<Vec2, Normal<Vec2>> for ChebyshevMetric {
     fn evaluate(&self, attr: Normal<Vec2>, p: Vec2) -> Vec2 {
         let a = p.abs();
         let s = p.sign();
@@ -45,7 +45,7 @@ impl DistanceFunction<Vec2, Normal<Vec2>> for ChebyshevMetric {
     }
 }
 
-impl DistanceFunction<Vec3, Normal<Vec3>> for ChebyshevMetric {
+impl FieldFunction<Vec3, Normal<Vec3>> for ChebyshevMetric {
     fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         let a = p.abs();
         let s = p.sign();

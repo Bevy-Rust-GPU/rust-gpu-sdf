@@ -9,7 +9,7 @@ use rust_gpu_bridge::{
 use type_fields::Field;
 
 use crate::{
-    prelude::{DistanceFunction, Operator, SignedDistanceOperator},
+    prelude::{FieldFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::Attribute,
 };
 
@@ -35,7 +35,7 @@ impl Default for StretchInfiniteOp<Vec3> {
 impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for StretchInfiniteOp<Dim>
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Dim, Attr>,
+    Sdf: FieldFunction<Dim, Attr>,
     Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + Length + Dot,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
@@ -95,7 +95,7 @@ impl Default for StretchDistOp<Vec3> {
 impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for StretchDistOp<Dim>
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Dim, Attr>,
+    Sdf: FieldFunction<Dim, Attr>,
     Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + Dot,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {

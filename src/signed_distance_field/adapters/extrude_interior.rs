@@ -4,10 +4,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::{
-    default,
-    signed_distance_field::{attributes::distance::Distance, DistanceFunction},
-};
+use crate::prelude::{default, Distance, FieldFunction};
 
 /// Extrude a 2D distance field into 3D, using its interior distance to determine depth.
 /// NOTE: The present implementation is a bound, not a field
@@ -30,9 +27,9 @@ where
     }
 }
 
-impl<Sdf> DistanceFunction<Vec2, Distance> for ExtrudeInterior<Sdf>
+impl<Sdf> FieldFunction<Vec2, Distance> for ExtrudeInterior<Sdf>
 where
-    Sdf: DistanceFunction<f32, Distance>,
+    Sdf: FieldFunction<f32, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
         let d = self.sdf.evaluate(attr, p.x);
@@ -43,9 +40,9 @@ where
     }
 }
 
-impl<Sdf> DistanceFunction<Vec3, Distance> for ExtrudeInterior<Sdf>
+impl<Sdf> FieldFunction<Vec3, Distance> for ExtrudeInterior<Sdf>
 where
-    Sdf: DistanceFunction<Vec2, Distance>,
+    Sdf: FieldFunction<Vec2, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
         let d = self.sdf.evaluate(attr, p.truncate());

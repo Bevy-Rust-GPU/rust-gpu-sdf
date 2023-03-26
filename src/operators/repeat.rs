@@ -9,7 +9,7 @@ use rust_gpu_bridge::{
 use type_fields::Field;
 
 use crate::{
-    prelude::{DistanceFunction, Operator, SignedDistanceOperator},
+    prelude::{FieldFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::Attribute,
 };
 
@@ -41,7 +41,7 @@ impl Default for RepeatInfiniteOp<Vec3> {
 impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for RepeatInfiniteOp<Dim>
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Dim, Attr>,
+    Sdf: FieldFunction<Dim, Attr>,
     Dim: Add<Dim, Output = Dim>
         + Add<f32, Output = Dim>
         + Sub<Dim, Output = Dim>
@@ -96,7 +96,7 @@ impl Default for RepeatCountOp<Vec3> {
 impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for RepeatCountOp<Dim>
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Dim, Attr>,
+    Sdf: FieldFunction<Dim, Attr>,
     Dim: Clone
         + Div<Dim, Output = Dim>
         + Neg<Output = Dim>

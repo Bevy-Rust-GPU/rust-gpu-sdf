@@ -9,10 +9,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::signed_distance_field::{
-    attributes::{distance::Distance, normal::Normal},
-    DistanceFunction,
-};
+use crate::prelude::{Distance, FieldFunction, Normal};
 
 use super::{Operator, SignedDistanceOperator};
 
@@ -44,7 +41,7 @@ impl Default for SidedOp<Vec3> {
 
 impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Distance> for SidedOp<Dim>
 where
-    Sdf: DistanceFunction<Dim, Distance>,
+    Sdf: FieldFunction<Dim, Distance>,
     Dim: Clone + Mul<Dim, Output = Dim> + Sign + Dot,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
@@ -54,7 +51,7 @@ where
 
 impl<Sdf, Dim> SignedDistanceOperator<Sdf, Dim, Normal<Dim>> for SidedOp<Dim>
 where
-    Sdf: DistanceFunction<Dim, Normal<Dim>>,
+    Sdf: FieldFunction<Dim, Normal<Dim>>,
     Dim: Clone + Dot + Mul<f32, Output = Dim>,
 {
     fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {

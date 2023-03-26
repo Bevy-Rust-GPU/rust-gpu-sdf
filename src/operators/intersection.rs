@@ -4,7 +4,7 @@ use rust_gpu_bridge::glam::Vec2;
 use type_fields::Field;
 
 use crate::{
-    prelude::{Distance, DistanceFunction, Operator, SignedDistanceOperator},
+    prelude::{Distance, FieldFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::{normal::Normal, uv::Uv},
 };
 
@@ -17,8 +17,8 @@ pub struct IntersectionOp<Sdf> {
 
 impl<SdfA, SdfB, Dim> SignedDistanceOperator<SdfA, Dim, Distance> for IntersectionOp<SdfB>
 where
-    SdfA: DistanceFunction<Dim, Distance>,
-    SdfB: DistanceFunction<Dim, Distance>,
+    SdfA: FieldFunction<Dim, Distance>,
+    SdfB: FieldFunction<Dim, Distance>,
     Dim: Clone,
 {
     fn operator(&self, attr: Distance, sdf: &SdfA, p: Dim) -> f32 {
@@ -29,10 +29,10 @@ where
 
 impl<SdfA, SdfB, Dim> SignedDistanceOperator<SdfA, Dim, Normal<Dim>> for IntersectionOp<SdfB>
 where
-    SdfA: DistanceFunction<Dim, Distance>,
-    SdfA: DistanceFunction<Dim, Normal<Dim>>,
-    SdfB: DistanceFunction<Dim, Distance>,
-    SdfB: DistanceFunction<Dim, Normal<Dim>>,
+    SdfA: FieldFunction<Dim, Distance>,
+    SdfA: FieldFunction<Dim, Normal<Dim>>,
+    SdfB: FieldFunction<Dim, Distance>,
+    SdfB: FieldFunction<Dim, Normal<Dim>>,
     Dim: Clone,
 {
     fn operator(&self, attr: Normal<Dim>, sdf: &SdfA, p: Dim) -> Dim {
@@ -51,10 +51,10 @@ where
 
 impl<SdfA, SdfB, Dim> SignedDistanceOperator<SdfA, Dim, Uv> for IntersectionOp<SdfB>
 where
-    SdfA: DistanceFunction<Dim, Distance>,
-    SdfA: DistanceFunction<Dim, Uv>,
-    SdfB: DistanceFunction<Dim, Distance>,
-    SdfB: DistanceFunction<Dim, Uv>,
+    SdfA: FieldFunction<Dim, Distance>,
+    SdfA: FieldFunction<Dim, Uv>,
+    SdfB: FieldFunction<Dim, Distance>,
+    SdfB: FieldFunction<Dim, Uv>,
     Dim: Clone,
 {
     fn operator(&self, attr: Uv, sdf: &SdfA, p: Dim) -> Vec2 {

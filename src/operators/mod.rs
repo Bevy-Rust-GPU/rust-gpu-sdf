@@ -24,17 +24,20 @@ pub mod translate;
 pub mod twist;
 pub mod union;
 
-use crate::signed_distance_field::{DistanceFunction, attributes::Attribute};
+use crate::prelude::{Attribute, FieldFunction};
 
 /// Modifies the input / output of a [`SignedDistanceField`].
-pub trait SignedDistanceOperator<Sdf, In, Attr> where Attr: Attribute {
+pub trait SignedDistanceOperator<Sdf, In, Attr>
+where
+    Attr: Attribute,
+{
     fn operator(&self, attr: Attr, sdf: &Sdf, p: In) -> Attr::Type;
 }
 
 impl<Sdf, In, Attr> SignedDistanceOperator<Sdf, In, Attr> for ()
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<In, Attr>,
+    Sdf: FieldFunction<In, Attr>,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: In) -> Attr::Type {
         sdf.evaluate(attr, p)
@@ -49,10 +52,10 @@ pub struct Operator<Op, Sdf> {
     pub op: Op,
 }
 
-impl<Op, Sdf, Dim, Attr> DistanceFunction<Dim, Attr> for Operator<Op, Sdf>
+impl<Op, Sdf, Dim, Attr> FieldFunction<Dim, Attr> for Operator<Op, Sdf>
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Dim, Attr>,
+    Sdf: FieldFunction<Dim, Attr>,
     Op: SignedDistanceOperator<Sdf, Dim, Attr>,
     Dim: Clone,
 {

@@ -7,7 +7,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::signed_distance_field::{attributes::normal::Normal, Distance, DistanceFunction};
+use crate::prelude::{Normal, Distance, FieldFunction};
 
 /// A plane.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -34,28 +34,28 @@ impl Default for Plane<Vec3> {
     }
 }
 
-impl DistanceFunction<f32, Distance> for Plane<f32> {
+impl FieldFunction<f32, Distance> for Plane<f32> {
     fn evaluate(&self, attr: Distance, p: f32) -> f32 {
         assert!(self.dir.abs() == 1.0, "Plane dir must be normalized");
         p * -self.dir
     }
 }
 
-impl DistanceFunction<Vec2, Distance> for Plane<Vec2> {
+impl FieldFunction<Vec2, Distance> for Plane<Vec2> {
     fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
         p.dot(-self.dir)
     }
 }
 
-impl DistanceFunction<Vec3, Distance> for Plane<Vec3> {
+impl FieldFunction<Vec3, Distance> for Plane<Vec3> {
     fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
         p.dot(-self.dir)
     }
 }
 
-impl<Dim> DistanceFunction<Dim, Normal<Dim>> for Plane<Dim>
+impl<Dim> FieldFunction<Dim, Normal<Dim>> for Plane<Dim>
 where
     Dim: Clone + Neg<Output = Dim>,
 {

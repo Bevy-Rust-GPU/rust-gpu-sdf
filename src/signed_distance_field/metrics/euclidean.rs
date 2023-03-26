@@ -5,17 +5,14 @@ use rust_gpu_bridge::{
     Asin, Atan2, Length, Normalize,
 };
 
-use crate::{
-    prelude::Normal,
-    signed_distance_field::{attributes::uv::Uv, Distance, DistanceFunction},
-};
+use crate::prelude::{Distance, FieldFunction, Normal, Uv};
 
 /// Euclidian distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(C)]
 pub struct EuclideanMetric;
 
-impl<Dim> DistanceFunction<Dim, Distance> for EuclideanMetric
+impl<Dim> FieldFunction<Dim, Distance> for EuclideanMetric
 where
     Dim: Length,
 {
@@ -24,7 +21,7 @@ where
     }
 }
 
-impl<Dim> DistanceFunction<Dim, Normal<Dim>> for EuclideanMetric
+impl<Dim> FieldFunction<Dim, Normal<Dim>> for EuclideanMetric
 where
     Dim: Normalize,
 {
@@ -33,13 +30,13 @@ where
     }
 }
 
-impl DistanceFunction<Vec2, Uv> for EuclideanMetric {
+impl FieldFunction<Vec2, Uv> for EuclideanMetric {
     fn evaluate(&self, attr: Uv, p: Vec2) -> Vec2 {
         Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length())
     }
 }
 
-impl DistanceFunction<Vec3, Uv> for EuclideanMetric {
+impl FieldFunction<Vec3, Uv> for EuclideanMetric {
     fn evaluate(&self, attr: Uv, p: Vec3) -> Vec2 {
         Vec2::new(
             (p.x.atan2(p.z) / core::f32::consts::TAU) + 0.5,

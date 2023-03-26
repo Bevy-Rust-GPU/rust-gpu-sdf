@@ -1,7 +1,7 @@
 use rust_gpu_bridge::{glam::Vec2, Abs, Pow};
 use type_fields::Field;
 
-use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunction};
+use crate::prelude::{Distance, FieldFunction};
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[repr(C)]
@@ -15,7 +15,7 @@ impl Default for Superellipse {
     }
 }
 
-impl DistanceFunction<Vec2, Distance> for Superellipse {
+impl FieldFunction<Vec2, Distance> for Superellipse {
     fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
         p.x.abs().pow(self.n) + p.y.abs().pow(self.n) - 1.0
     }

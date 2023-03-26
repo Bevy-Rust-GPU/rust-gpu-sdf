@@ -3,7 +3,7 @@ use type_fields::Field;
 
 use crate::{
     default,
-    prelude::{Distance, DistanceFunction, Normal, Normalize},
+    prelude::{Distance, FieldFunction, Normal, Normalize},
     signed_distance_field::attributes::uv::Uv,
 };
 
@@ -26,18 +26,18 @@ where
     }
 }
 
-impl<Sdf, Dim> DistanceFunction<Dim, Distance> for TetrahedronGradient<Sdf>
+impl<Sdf, Dim> FieldFunction<Dim, Distance> for TetrahedronGradient<Sdf>
 where
-    Sdf: DistanceFunction<Dim, Distance>,
+    Sdf: FieldFunction<Dim, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: Dim) -> f32 {
         self.sdf.evaluate(attr, p)
     }
 }
 
-impl<Sdf> DistanceFunction<Vec2, Normal<Vec2>> for TetrahedronGradient<Sdf>
+impl<Sdf> FieldFunction<Vec2, Normal<Vec2>> for TetrahedronGradient<Sdf>
 where
-    Sdf: DistanceFunction<Vec2, Distance>,
+    Sdf: FieldFunction<Vec2, Distance>,
 {
     fn evaluate(&self, attr: Normal<Vec2>, p: Vec2) -> Vec2 {
         let k = Vec2::new(1.0, -1.0);
@@ -48,9 +48,9 @@ where
     }
 }
 
-impl<Sdf> DistanceFunction<Vec3, Normal<Vec3>> for TetrahedronGradient<Sdf>
+impl<Sdf> FieldFunction<Vec3, Normal<Vec3>> for TetrahedronGradient<Sdf>
 where
-    Sdf: DistanceFunction<Vec3, Distance>,
+    Sdf: FieldFunction<Vec3, Distance>,
 {
     fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         let k = Vec2::new(1.0, -1.0);
@@ -92,9 +92,9 @@ where
     }
 }
 
-impl<Sdf> DistanceFunction<f32, Normal<f32>> for CentralDiffGradient<Sdf>
+impl<Sdf> FieldFunction<f32, Normal<f32>> for CentralDiffGradient<Sdf>
 where
-    Sdf: DistanceFunction<f32, Distance>,
+    Sdf: FieldFunction<f32, Distance>,
 {
     fn evaluate(&self, attr: Normal<f32>, p: f32) -> f32 {
         self.sdf.evaluate(Distance, p + self.epsilon)
@@ -102,18 +102,18 @@ where
     }
 }
 
-impl<Sdf, Dim> DistanceFunction<Dim, Distance> for CentralDiffGradient<Sdf>
+impl<Sdf, Dim> FieldFunction<Dim, Distance> for CentralDiffGradient<Sdf>
 where
-    Sdf: DistanceFunction<Dim, Distance>,
+    Sdf: FieldFunction<Dim, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: Dim) -> f32 {
         self.sdf.evaluate(attr, p)
     }
 }
 
-impl<Sdf> DistanceFunction<Vec2, Normal<Vec2>> for CentralDiffGradient<Sdf>
+impl<Sdf> FieldFunction<Vec2, Normal<Vec2>> for CentralDiffGradient<Sdf>
 where
-    Sdf: DistanceFunction<Vec2, Distance>,
+    Sdf: FieldFunction<Vec2, Distance>,
 {
     fn evaluate(&self, attr: Normal<Vec2>, p: Vec2) -> Vec2 {
         (Vec2::new(
@@ -132,9 +132,9 @@ where
     }
 }
 
-impl<Sdf> DistanceFunction<Vec3, Normal<Vec3>> for CentralDiffGradient<Sdf>
+impl<Sdf> FieldFunction<Vec3, Normal<Vec3>> for CentralDiffGradient<Sdf>
 where
-    Sdf: DistanceFunction<Vec3, Distance>,
+    Sdf: FieldFunction<Vec3, Distance>,
 {
     fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         (Vec3::new(
@@ -186,27 +186,27 @@ pub struct SdfNormals<SdfA, SdfB> {
     sdf_normals: SdfB,
 }
 
-impl<SdfA, SdfB, In> DistanceFunction<In, Distance> for SdfNormals<SdfA, SdfB>
+impl<SdfA, SdfB, In> FieldFunction<In, Distance> for SdfNormals<SdfA, SdfB>
 where
-    SdfA: DistanceFunction<In, Distance>,
+    SdfA: FieldFunction<In, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: In) -> f32 {
         self.sdf_base.evaluate(attr, p)
     }
 }
 
-impl<SdfA, SdfB, In> DistanceFunction<In, Normal<In>> for SdfNormals<SdfA, SdfB>
+impl<SdfA, SdfB, In> FieldFunction<In, Normal<In>> for SdfNormals<SdfA, SdfB>
 where
-    SdfB: DistanceFunction<In, Normal<In>>,
+    SdfB: FieldFunction<In, Normal<In>>,
 {
     fn evaluate(&self, attr: Normal<In>, p: In) -> In {
         self.sdf_normals.evaluate(attr, p)
     }
 }
 
-impl<SdfA, SdfB, In> DistanceFunction<In, Uv> for SdfNormals<SdfA, SdfB>
+impl<SdfA, SdfB, In> FieldFunction<In, Uv> for SdfNormals<SdfA, SdfB>
 where
-    SdfA: DistanceFunction<In, Uv>,
+    SdfA: FieldFunction<In, Uv>,
 {
     fn evaluate(&self, attr: Uv, p: In) -> Vec2 {
         self.sdf_base.evaluate(attr, p)

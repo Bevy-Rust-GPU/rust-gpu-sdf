@@ -4,13 +4,7 @@
 use rust_gpu_bridge::glam::{Vec2, Vec3, Vec3Swizzles};
 use type_fields::Field;
 
-use crate::{
-    default,
-    signed_distance_field::{
-        attributes::{normal::Normal, uv::Uv},
-        Distance, DistanceFunction,
-    },
-};
+use crate::prelude::{default, Distance, FieldFunction, Normal, Uv};
 
 /// Create a 3D distance field by sweeping a 2D distance field
 /// around the perimiter of another 2D distance field
@@ -38,10 +32,10 @@ where
     }
 }
 
-impl<Core, Shell> DistanceFunction<Vec2, Distance> for Sweep<Core, Shell>
+impl<Core, Shell> FieldFunction<Vec2, Distance> for Sweep<Core, Shell>
 where
-    Core: DistanceFunction<f32, Distance>,
-    Shell: DistanceFunction<f32, Distance>,
+    Core: FieldFunction<f32, Distance>,
+    Shell: FieldFunction<f32, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
         let q = self.core.evaluate(attr, p.x);
@@ -49,10 +43,10 @@ where
     }
 }
 
-impl<Core, Shell> DistanceFunction<Vec3, Distance> for Sweep<Core, Shell>
+impl<Core, Shell> FieldFunction<Vec3, Distance> for Sweep<Core, Shell>
 where
-    Core: DistanceFunction<Vec2, Distance>,
-    Shell: DistanceFunction<Vec2, Distance>,
+    Core: FieldFunction<Vec2, Distance>,
+    Shell: FieldFunction<Vec2, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
         let q = Vec2::new(self.core.evaluate(attr, p.truncate()), p.z);
@@ -60,10 +54,10 @@ where
     }
 }
 
-impl<Core, Shell> DistanceFunction<Vec3, Normal<Vec3>> for Sweep<Core, Shell>
+impl<Core, Shell> FieldFunction<Vec3, Normal<Vec3>> for Sweep<Core, Shell>
 where
-    Core: DistanceFunction<Vec2, Distance>,
-    Shell: DistanceFunction<Vec2, Normal<Vec2>>,
+    Core: FieldFunction<Vec2, Distance>,
+    Shell: FieldFunction<Vec2, Normal<Vec2>>,
 {
     fn evaluate(&self, attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         let q = Vec2::new(self.core.evaluate(Distance, p.truncate()), p.z);
@@ -73,10 +67,10 @@ where
     }
 }
 
-impl<Core, Shell> DistanceFunction<Vec3, Uv> for Sweep<Core, Shell>
+impl<Core, Shell> FieldFunction<Vec3, Uv> for Sweep<Core, Shell>
 where
-    Core: DistanceFunction<Vec2, Distance> + DistanceFunction<Vec2, Uv>,
-    Shell: DistanceFunction<Vec2, Uv>,
+    Core: FieldFunction<Vec2, Distance> + FieldFunction<Vec2, Uv>,
+    Shell: FieldFunction<Vec2, Uv>,
 {
     fn evaluate(&self, attr: Uv, p: Vec3) -> Vec2 {
         let dist_core = self.core.evaluate(Distance, p.truncate());

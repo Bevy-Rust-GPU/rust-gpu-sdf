@@ -3,7 +3,7 @@ use rust_gpu_bridge::{
     Abs, Acos, Cos, Pow, Sign, Sin, Sqrt,
 };
 
-use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunction};
+use crate::prelude::{Distance, FieldFunction};
 
 // Inigo Quilez' quadratic circle
 // Appears to be a superellipse / lame curve with n = 1.0 / 0.75
@@ -14,7 +14,7 @@ use crate::signed_distance_field::{attributes::distance::Distance, DistanceFunct
 #[repr(C)]
 pub struct Squircle;
 
-impl DistanceFunction<Vec2, Distance> for Squircle {
+impl FieldFunction<Vec2, Distance> for Squircle {
     fn evaluate(&self, attr: Distance, mut p: Vec2) -> f32 {
         // Axial reflection
         p = p.abs();

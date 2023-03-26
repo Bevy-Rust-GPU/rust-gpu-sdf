@@ -9,7 +9,7 @@ use rust_gpu_bridge::{
 use type_fields::Field;
 
 use crate::{
-    prelude::{Distance, DistanceFunction, Operator, SignedDistanceOperator},
+    prelude::{Distance, FieldFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::{normal::Normal, uv::Uv},
 };
 
@@ -40,7 +40,7 @@ impl Default for ElongateOp<Vec3> {
 
 impl<Sdf> SignedDistanceOperator<Sdf, f32, Distance> for ElongateOp<f32>
 where
-    Sdf: DistanceFunction<f32, Distance>,
+    Sdf: FieldFunction<f32, Distance>,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: f32) -> f32 {
         let q = p.abs() - self.extent;
@@ -50,7 +50,7 @@ where
 
 impl<Sdf> SignedDistanceOperator<Sdf, Vec2, Distance> for ElongateOp<Vec2>
 where
-    Sdf: DistanceFunction<Vec2, Distance>,
+    Sdf: FieldFunction<Vec2, Distance>,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Vec2) -> f32 {
         let q = p.abs() - self.extent;
@@ -61,7 +61,7 @@ where
 
 impl<Sdf> SignedDistanceOperator<Sdf, Vec3, Distance> for ElongateOp<Vec3>
 where
-    Sdf: DistanceFunction<Vec3, Distance>,
+    Sdf: FieldFunction<Vec3, Distance>,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Vec3) -> f32 {
         let q = p.abs() - self.extent;
@@ -72,7 +72,7 @@ where
 
 impl<Sdf> SignedDistanceOperator<Sdf, f32, Normal<f32>> for ElongateOp<f32>
 where
-    Sdf: DistanceFunction<f32, Normal<f32>>,
+    Sdf: FieldFunction<f32, Normal<f32>>,
 {
     fn operator(&self, attr: Normal<f32>, _sdf: &Sdf, p: f32) -> f32 {
         p.sign()
@@ -81,7 +81,7 @@ where
 
 impl<Sdf> SignedDistanceOperator<Sdf, Vec2, Normal<Vec2>> for ElongateOp<Vec2>
 where
-    Sdf: DistanceFunction<Vec2, Normal<Vec2>>,
+    Sdf: FieldFunction<Vec2, Normal<Vec2>>,
 {
     fn operator(&self, attr: Normal<Vec2>, _sdf: &Sdf, p: Vec2) -> Vec2 {
         let w = p.abs() - self.extent;
@@ -108,7 +108,7 @@ where
 
 impl<Sdf> SignedDistanceOperator<Sdf, Vec3, Normal<Vec3>> for ElongateOp<Vec3>
 where
-    Sdf: DistanceFunction<Vec3, Normal<Vec3>>,
+    Sdf: FieldFunction<Vec3, Normal<Vec3>>,
 {
     fn operator(&self, attr: Normal<Vec3>, _sdf: &Sdf, p: Vec3) -> Vec3 {
         let w = p.abs() - self.extent;
@@ -143,7 +143,7 @@ where
 
 impl<Sdf> SignedDistanceOperator<Sdf, Vec2, Uv> for ElongateOp<Vec2>
 where
-    Sdf: DistanceFunction<Vec2, Uv>,
+    Sdf: FieldFunction<Vec2, Uv>,
 {
     fn operator(&self, attr: Uv, _sdf: &Sdf, p: Vec2) -> Vec2 {
         (p + self.extent) * (0.5 / self.extent)
@@ -152,7 +152,7 @@ where
 
 impl<Sdf> SignedDistanceOperator<Sdf, Vec3, Uv> for ElongateOp<Vec3>
 where
-    Sdf: DistanceFunction<Vec3, Uv>,
+    Sdf: FieldFunction<Vec3, Uv>,
 {
     fn operator(&self, attr: Uv, _sdf: &Sdf, p: Vec3) -> Vec2 {
         let w = p.abs();
@@ -165,7 +165,7 @@ where
             }
         } else {
             if w.y > w.z {
-                (p.zy() + self.extent.zy()) * (0.5 / self.extent.zy())
+                (p.xz() + self.extent.xz()) * (0.5 / self.extent.xz())
             } else {
                 (p.xy() + self.extent.xy()) * (0.5 / self.extent.xy())
             }

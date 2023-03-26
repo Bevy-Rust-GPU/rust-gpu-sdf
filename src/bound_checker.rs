@@ -6,14 +6,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::field::Field;
 
-use crate::{
-    default,
-    signed_distance_field::{
-        adapters::normals::CentralDiffNormal,
-        attributes::{distance::Distance, normal::Normal},
-        DistanceFunction,
-    },
-};
+use crate::prelude::{default, CentralDiffNormal, Distance, FieldFunction, Normal};
 
 /// Asserts that the provided distance function is a field rather than a bound
 #[derive(Debug, Clone, PartialEq)]
@@ -47,7 +40,7 @@ impl<Dim, Sdf> BoundChecker<Dim, Sdf> {
 
 impl<Sdf> BoundChecker<Vec2, Sdf>
 where
-    Sdf: DistanceFunction<Vec2, Distance> + Clone + 'static,
+    Sdf: FieldFunction<Vec2, Distance> + Clone + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()
@@ -85,7 +78,7 @@ where
 
 impl<Sdf> BoundChecker<Vec3, Sdf>
 where
-    Sdf: DistanceFunction<Vec3, Distance> + Clone + 'static,
+    Sdf: FieldFunction<Vec3, Distance> + Clone + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()

@@ -4,10 +4,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::signed_distance_field::{
-    attributes::{distance::Distance, normal::Normal, uv::Uv},
-    DistanceFunction,
-};
+use crate::prelude::{Distance, FieldFunction, Normal, Uv};
 
 /// Apply triplanar UV mapping to the provided SDF
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -16,27 +13,27 @@ pub struct TriplanarUvs<Sdf> {
     pub k: f32,
 }
 
-impl<Sdf, Dim> DistanceFunction<Dim, Distance> for TriplanarUvs<Sdf>
+impl<Sdf, Dim> FieldFunction<Dim, Distance> for TriplanarUvs<Sdf>
 where
-    Sdf: DistanceFunction<Dim, Distance>,
+    Sdf: FieldFunction<Dim, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: Dim) -> f32 {
         self.sdf.evaluate(attr, p)
     }
 }
 
-impl<Sdf, Dim> DistanceFunction<Dim, Normal<Dim>> for TriplanarUvs<Sdf>
+impl<Sdf, Dim> FieldFunction<Dim, Normal<Dim>> for TriplanarUvs<Sdf>
 where
-    Sdf: DistanceFunction<Dim, Normal<Dim>>,
+    Sdf: FieldFunction<Dim, Normal<Dim>>,
 {
     fn evaluate(&self, attr: Normal<Dim>, p: Dim) -> Dim {
         self.sdf.evaluate(attr, p)
     }
 }
 
-impl<Sdf> DistanceFunction<Vec3, Uv> for TriplanarUvs<Sdf>
+impl<Sdf> FieldFunction<Vec3, Uv> for TriplanarUvs<Sdf>
 where
-    Sdf: DistanceFunction<Vec3, Normal<Vec3>>,
+    Sdf: FieldFunction<Vec3, Normal<Vec3>>,
 {
     fn evaluate(&self, attr: Uv, p: Vec3) -> Vec2 {
         let front = p.xy();
@@ -61,27 +58,27 @@ pub struct SdfUvs<SdfA, SdfB> {
     pub sdf_uv: SdfB,
 }
 
-impl<SdfA, SdfB, In> DistanceFunction<In, Distance> for SdfUvs<SdfA, SdfB>
+impl<SdfA, SdfB, In> FieldFunction<In, Distance> for SdfUvs<SdfA, SdfB>
 where
-    SdfA: DistanceFunction<In, Distance>,
+    SdfA: FieldFunction<In, Distance>,
 {
     fn evaluate(&self, attr: Distance, p: In) -> f32 {
         self.sdf_base.evaluate(attr, p)
     }
 }
 
-impl<SdfA, SdfB, In> DistanceFunction<In, Normal<In>> for SdfUvs<SdfA, SdfB>
+impl<SdfA, SdfB, In> FieldFunction<In, Normal<In>> for SdfUvs<SdfA, SdfB>
 where
-    SdfA: DistanceFunction<In, Normal<In>>,
+    SdfA: FieldFunction<In, Normal<In>>,
 {
     fn evaluate(&self, attr: Normal<In>, p: In) -> In {
         self.sdf_base.evaluate(attr, p)
     }
 }
 
-impl<SdfA, SdfB, In> DistanceFunction<In, Uv> for SdfUvs<SdfA, SdfB>
+impl<SdfA, SdfB, In> FieldFunction<In, Uv> for SdfUvs<SdfA, SdfB>
 where
-    SdfB: DistanceFunction<In, Uv>,
+    SdfB: FieldFunction<In, Uv>,
 {
     fn evaluate(&self, attr: Uv, p: In) -> Vec2 {
         self.sdf_uv.evaluate(attr, p)

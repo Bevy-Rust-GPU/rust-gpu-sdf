@@ -1,6 +1,6 @@
 use rust_gpu_bridge::{glam::Vec3, Abs};
 
-use crate::prelude::{Distance, DistanceFunction};
+use crate::prelude::{Distance, FieldFunction};
 
 use super::{Raymarch, RaymarchOutput};
 
@@ -25,7 +25,7 @@ impl<const MAX_STEPS: u32> Raymarch for SphereTraceNaive<MAX_STEPS> {
         epsilon: f32,
     ) -> Self::Output
     where
-        Sdf: DistanceFunction<Vec3, Distance>,
+        Sdf: FieldFunction<Vec3, Distance>,
     {
         let mut out = RaymarchOutput::default();
         let mut t = start;

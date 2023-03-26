@@ -5,7 +5,7 @@ use rust_gpu_bridge::glam::Vec3;
 
 use crate::{
     default,
-    prelude::{Distance, DistanceFunction},
+    prelude::{Distance, FieldFunction},
 };
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
@@ -70,5 +70,5 @@ pub trait Raymarch {
         epsilon: f32,
     ) -> Self::Output
     where
-        Sdf: DistanceFunction<Vec3, Distance>;
+        Sdf: FieldFunction<Vec3, Distance>;
 }

@@ -7,32 +7,32 @@ use rust_gpu_bridge::{
     Abs, Sign,
 };
 
-use crate::signed_distance_field::{attributes::normal::Normal, Distance, DistanceFunction};
+use crate::prelude::{Distance, FieldFunction, Normal};
 
 /// Taxicab distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(C)]
 pub struct TaxicabMetric;
 
-impl DistanceFunction<f32, Distance> for TaxicabMetric {
+impl FieldFunction<f32, Distance> for TaxicabMetric {
     fn evaluate(&self, attr: Distance, p: f32) -> f32 {
         p.abs()
     }
 }
 
-impl DistanceFunction<Vec2, Distance> for TaxicabMetric {
+impl FieldFunction<Vec2, Distance> for TaxicabMetric {
     fn evaluate(&self, attr: Distance, p: Vec2) -> f32 {
         p.x.abs().add(p.y.abs())
     }
 }
 
-impl DistanceFunction<Vec3, Distance> for TaxicabMetric {
+impl FieldFunction<Vec3, Distance> for TaxicabMetric {
     fn evaluate(&self, attr: Distance, p: Vec3) -> f32 {
         p.x.abs().add(p.y.abs()).add(p.z.abs())
     }
 }
 
-impl<Dim> DistanceFunction<Dim, Normal<Dim>> for TaxicabMetric
+impl<Dim> FieldFunction<Dim, Normal<Dim>> for TaxicabMetric
 where
     Dim: Sign,
 {

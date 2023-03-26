@@ -4,7 +4,7 @@ use core::ops::{Add, Mul};
 use rust_gpu_bridge::Mix;
 use type_fields::Field;
 
-use crate::prelude::{Distance, DistanceFunction, Operator, SignedDistanceOperator};
+use crate::prelude::{Distance, FieldFunction, Operator, SignedDistanceOperator};
 
 /// Compute the blended boolean subtraction of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -16,8 +16,8 @@ pub struct SmoothSubtractionOp<Sdf> {
 
 impl<SdfA, SdfB, Dim> SignedDistanceOperator<SdfA, Dim, Distance> for SmoothSubtractionOp<SdfB>
 where
-    SdfA: DistanceFunction<Dim, Distance>,
-    SdfB: DistanceFunction<Dim, Distance>,
+    SdfA: FieldFunction<Dim, Distance>,
+    SdfB: FieldFunction<Dim, Distance>,
     Dim: Clone,
 {
     fn operator(&self, attr: Distance, sdf: &SdfA, p: Dim) -> f32 {

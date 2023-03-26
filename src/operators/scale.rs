@@ -5,7 +5,7 @@ use core::ops::{Div, Mul};
 use type_fields::Field;
 
 use crate::{
-    prelude::{DistanceFunction, Operator, SignedDistanceOperator},
+    prelude::{FieldFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::Attribute,
 };
 
@@ -19,7 +19,7 @@ pub struct ScaleOp {
 impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for ScaleOp
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Dim, Attr>,
+    Sdf: FieldFunction<Dim, Attr>,
     Dim: Div<f32, Output = Dim>,
     Attr::Type: Mul<f32, Output = Attr::Type>,
 {

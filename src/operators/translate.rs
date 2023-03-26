@@ -5,7 +5,7 @@ use core::ops::Sub;
 use type_fields::Field;
 
 use crate::{
-    prelude::{DistanceFunction, Operator, SignedDistanceOperator},
+    prelude::{FieldFunction, Operator, SignedDistanceOperator},
     signed_distance_field::attributes::Attribute,
 };
 
@@ -19,7 +19,7 @@ pub struct TranslateOp<Dim> {
 impl<Sdf, Dim, Attr> SignedDistanceOperator<Sdf, Dim, Attr> for TranslateOp<Dim>
 where
     Attr: Attribute,
-    Sdf: DistanceFunction<Dim, Attr>,
+    Sdf: FieldFunction<Dim, Attr>,
     Dim: Clone + Sub<Dim, Output = Dim>,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {

@@ -5,7 +5,7 @@ use core::ops::{Add, Mul};
 use rust_gpu_bridge::Mix;
 use type_fields::Field;
 
-use crate::prelude::{Distance, Operator, DistanceFunction, SignedDistanceOperator};
+use crate::prelude::{Distance, Operator, FieldFunction, SignedDistanceOperator};
 
 /// Compute the blended boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -17,8 +17,8 @@ pub struct SmoothIntersectionOp<Sdf> {
 
 impl<SdfA, SdfB, Dim> SignedDistanceOperator<SdfA, Dim, Distance> for SmoothIntersectionOp<SdfB>
 where
-    SdfA: DistanceFunction<Dim, Distance>,
-    SdfB: DistanceFunction<Dim, Distance>,
+    SdfA: FieldFunction<Dim, Distance>,
+    SdfB: FieldFunction<Dim, Distance>,
     Dim: Clone,
 {
     fn operator(&self, attr: Distance, sdf: &SdfA, p: Dim) -> f32 {
