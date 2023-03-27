@@ -34,8 +34,8 @@ pub mod tests {
     use type_fields::field::Field;
 
     use crate::{
-        signed_distance_field::shapes::composite::{Circle, Cube},
-        D3,
+        prelude::{Circle, Cube},
+        test_op_attrs, D3,
     };
 
     use super::{Onion, Transform};
@@ -51,4 +51,6 @@ pub mod tests {
     fn test_onion() {
         Onion::<Circle>::default().with(Onion::radius, f32::default());
     }
+
+    test_op_attrs!(Onion::<Circle>);
 }

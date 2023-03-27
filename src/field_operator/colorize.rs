@@ -38,3 +38,17 @@ impl<Sdf> Colorize<Sdf> {
         self.op().color()
     }
 }
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod tests {
+    use crate::{prelude::Point, test_op_attrs};
+
+    use super::Colorize;
+
+    #[test]
+    fn test_colorize() {
+        Colorize::<Point>::default();
+    }
+
+    test_op_attrs!(Colorize::<Point>);
+}

@@ -78,3 +78,20 @@ where
 
 /// Reflect a distance field about X / Y / Z
 pub type AxialReflect<const AXIS: usize, Sdf> = Operator<AxialReflectOp<AXIS>, Sdf>;
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod tests {
+    use crate::{
+        prelude::{Circle, Cube},
+        test_op_attrs,
+    };
+
+    use super::{AxialReflect, AXIS_XYZ};
+
+    #[test]
+    fn test_axial_reflect() {
+        AxialReflect::<AXIS_XYZ, Cube>::default();
+    }
+
+    test_op_attrs!(AxialReflect::<AXIS_XYZ, Circle>);
+}

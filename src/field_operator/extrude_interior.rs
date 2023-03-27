@@ -6,7 +6,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction};
+use crate::prelude::{Distance, FieldFunction, Normal, Uv};
 
 use super::{FieldOperator, Operator};
 
@@ -54,6 +54,46 @@ where
     }
 }
 
+impl<Sdf> FieldOperator<Sdf, Vec2, Normal<Vec2>> for ExtrudeInteriorOp
+where
+    Sdf: FieldFunction<f32, Normal<f32>>,
+{
+    fn operator(
+        &self,
+        _: Normal<Vec2>,
+        sdf: &Sdf,
+        p: Vec2,
+    ) -> <Normal<Vec2> as crate::prelude::Attribute>::Type {
+        let d = sdf.evaluate(Normal::<f32>::default(), p.x);
+        Vec2::new(d, 1.0).normalize()
+    }
+}
+
+impl<Sdf> FieldOperator<Sdf, Vec3, Normal<Vec3>> for ExtrudeInteriorOp
+where
+    Sdf: FieldFunction<Vec2, Normal<Vec2>>,
+{
+    fn operator(
+        &self,
+        _: Normal<Vec3>,
+        sdf: &Sdf,
+        p: Vec3,
+    ) -> <Normal<Vec3> as crate::prelude::Attribute>::Type {
+        let d = sdf.evaluate(Normal::<Vec2>::default(), p.truncate());
+        d.extend(1.0).normalize()
+    }
+}
+
+impl<Sdf> FieldOperator<Sdf, Vec3, Uv> for ExtrudeInteriorOp
+where
+    Uv: crate::prelude::Attribute,
+    Sdf: crate::prelude::FieldFunction<Vec2, Uv>,
+{
+    fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec3) -> <Uv as crate::prelude::Attribute>::Type {
+        sdf.evaluate(attr, p.truncate())
+    }
+}
+
 /// Uniformly scale a distance field.
 pub type ExtrudeInterior<Sdf> = Operator<ExtrudeInteriorOp, Sdf>;
 
@@ -67,12 +107,16 @@ impl<Sdf> ExtrudeInterior<Sdf> {
 pub mod tests {
     use rust_gpu_bridge::glam::Vec3;
 
-    use crate::{prelude::BoundChecker, signed_distance_field::shapes::composite::Circle};
-
-    use super::Sweep;
+    use crate::{
+        prelude::{BoundChecker, Circle, ExtrudeInterior, Point},
+        test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     #[test]
-    fn test_sweep() {
-        assert!(BoundChecker::<Vec3, ExtrudeInteriorOp::<Circle, Circle>>::default().is_field());
+    fn test_extrude_interior() {
+        assert!(BoundChecker::<Vec3, ExtrudeInterior::<Circle>>::default().is_field());
     }
+
+    test_op_attrs_2d!(ExtrudeInterior::<Point>);
+    test_op_attrs_3d!(ExtrudeInterior::<Point>);
 }

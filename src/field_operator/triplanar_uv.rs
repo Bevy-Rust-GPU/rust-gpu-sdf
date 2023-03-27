@@ -48,3 +48,20 @@ impl<Sdf> TriplanarUv<Sdf> {
         self.op().k()
     }
 }
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod test {
+    use crate::{
+        prelude::{Point, Sphere},
+        test_op_attrs_3d,
+    };
+
+    use super::TriplanarUv;
+
+    #[test]
+    fn test_triplanar_uv() {
+        TriplanarUv::<Sphere>::default();
+    }
+
+    test_op_attrs_3d!(TriplanarUv::<Point>);
+}

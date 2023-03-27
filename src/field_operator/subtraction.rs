@@ -10,24 +10,23 @@ use crate::prelude::{Distance, FieldFunction, FieldOperator, Normal, Operator, U
 /// Compute the boolean subtraction of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 #[repr(C)]
-pub struct SubtractionOp<Sdf> {
-    pub sdf: Sdf,
-}
+pub struct SubtractionOp;
 
-impl<SdfA, SdfB, Dim> FieldOperator<SdfA, Dim, Distance> for SubtractionOp<SdfB>
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Distance> for SubtractionOp
 where
     SdfA: FieldFunction<Dim, Distance>,
     SdfB: FieldFunction<Dim, Distance>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Distance, sdf: &SdfA, p: Dim) -> f32 {
-        sdf.evaluate(attr, p.clone())
+    fn operator(&self, attr: Distance, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
+        sdf_a
+            .evaluate(attr, p.clone())
             .neg()
-            .max(self.sdf.evaluate(attr, p))
+            .max(sdf_b.evaluate(attr, p))
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<SdfA, Dim, Normal<Dim>> for SubtractionOp<SdfB>
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Normal<Dim>> for SubtractionOp
 where
     SdfA: FieldFunction<Dim, Distance>,
     SdfA: FieldFunction<Dim, Normal<Dim>>,
@@ -35,19 +34,19 @@ where
     SdfB: FieldFunction<Dim, Normal<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Normal<Dim>, sdf: &SdfA, p: Dim) -> Dim {
-        let dist_a = sdf.evaluate(Distance, p.clone());
-        let dist_b = self.sdf.evaluate(Distance, p.clone());
+    fn operator(&self, attr: Normal<Dim>, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
+        let dist_a = sdf_a.evaluate(Distance, p.clone());
+        let dist_b = sdf_b.evaluate(Distance, p.clone());
 
         if -dist_a > dist_b {
-            sdf.evaluate(attr, p)
+            sdf_a.evaluate(attr, p)
         } else {
-            self.sdf.evaluate(attr, p)
+            sdf_b.evaluate(attr, p)
         }
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<SdfA, Dim, Uv> for SubtractionOp<SdfB>
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Uv> for SubtractionOp
 where
     SdfA: FieldFunction<Dim, Distance>,
     SdfA: FieldFunction<Dim, Uv>,
@@ -55,37 +54,42 @@ where
     SdfB: FieldFunction<Dim, Uv>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Uv, sdf: &SdfA, p: Dim) -> Vec2 {
-        let dist_a = sdf.evaluate(Distance, p.clone());
-        let dist_b = self.sdf.evaluate(Distance, p.clone());
+    fn operator(&self, attr: Uv, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Vec2 {
+        let dist_a = sdf_a.evaluate(Distance, p.clone());
+        let dist_b = sdf_b.evaluate(Distance, p.clone());
 
-        if dist_a < dist_b {
-            sdf.evaluate(attr, p)
+        if -dist_a > dist_b {
+            sdf_a.evaluate(attr, p)
         } else {
-            self.sdf.evaluate(attr, p)
+            sdf_b.evaluate(attr, p)
         }
     }
 }
 
 /// Compute the boolean subtraction of two distance fields.
-pub type Subtraction<SdfA, SdfB> = Operator<SubtractionOp<SdfB>, SdfA>;
+pub type Subtraction<SdfA, SdfB> = Operator<SubtractionOp, (SdfA, SdfB)>;
 
 impl<SdfA, SdfB> Subtraction<SdfA, SdfB> {
-    pub fn sdf(&mut self) -> &mut SdfB {
-        &mut self.op.sdf
+    pub fn sdf_a(&mut self) -> &mut SdfA {
+        &mut self.target().0
+    }
+
+    pub fn sdf_b(&mut self) -> &mut SdfB {
+        &mut self.target().1
     }
 }
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use type_fields::field::Field;
-
-    use crate::signed_distance_field::shapes::composite::{Cube, Sphere};
-
-    use super::Subtraction;
+    use crate::{
+        prelude::{Cube, Point, Sphere, Subtraction},
+        test_op_attrs,
+    };
 
     #[test]
     fn test_subtraction() {
-        Subtraction::<Cube, Sphere>::default().with(Subtraction::sdf, Sphere::default());
+        Subtraction::<Cube, Sphere>::default();
     }
+
+    test_op_attrs!(Subtraction::<Point, Point>);
 }

@@ -18,3 +18,17 @@ impl_passthrough_op_2!(SdfTangentOp, <Dim>, Uv, 0);
 impl_passthrough_op_2!(SdfTangentOp, <Dim>, Color, 0);
 
 pub type SdfTangent<SdfA, SdfB> = Operator<SdfTangentOp, (SdfA, SdfB)>;
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod test {
+    use crate::{prelude::Point, test_op_attrs};
+
+    use super::SdfTangent;
+
+    #[test]
+    fn test_sdf_tangent() {
+        SdfTangent::<Point, Point>::default();
+    }
+
+    test_op_attrs!(SdfTangent::<Point, Point>);
+}

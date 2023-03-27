@@ -17,6 +17,12 @@ pub struct StretchInfiniteOp<Dim> {
     pub dir: Dim,
 }
 
+impl Default for StretchInfiniteOp<f32> {
+    fn default() -> Self {
+        StretchInfiniteOp { dir: 1.0 }
+    }
+}
+
 impl Default for StretchInfiniteOp<Vec2> {
     fn default() -> Self {
         StretchInfiniteOp { dir: Vec2::X }
@@ -116,18 +122,34 @@ impl<Dim, Sdf> StretchDist<Dim, Sdf> {
 }
 
 #[cfg(all(not(feature = "spirv-std"), test))]
-pub mod test {
-    use rust_gpu_bridge::glam::Vec3;
+pub mod test_stretch_infinite {
+    use rust_gpu_bridge::glam::{Vec2, Vec3};
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Cube;
-
-    use super::{StretchDist, StretchInfinite};
+    use crate::{
+        prelude::{Cube, Point, StretchInfinite},
+        test_op_attrs_1d, test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     #[test]
     fn test_stretch_infinite() {
         StretchInfinite::<_, Cube>::default().with(StretchInfinite::dir, Vec3::default());
     }
+
+    test_op_attrs_1d!(StretchInfinite::<f32, Point>);
+    test_op_attrs_2d!(StretchInfinite::<Vec2, Point>);
+    test_op_attrs_3d!(StretchInfinite::<Vec3, Point>);
+}
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod test_stretch_dist {
+    use rust_gpu_bridge::glam::{Vec2, Vec3};
+    use type_fields::field::Field;
+
+    use crate::{
+        prelude::{Cube, Point, StretchDist},
+        test_op_attrs_1d, test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     #[test]
     fn test_stretch_dist() {
@@ -135,4 +157,8 @@ pub mod test {
             .with(StretchDist::dir, Vec3::default())
             .with(StretchDist::dist, f32::default());
     }
+
+    test_op_attrs_1d!(StretchDist::<f32, Point>);
+    test_op_attrs_2d!(StretchDist::<Vec2, Point>);
+    test_op_attrs_3d!(StretchDist::<Vec3, Point>);
 }

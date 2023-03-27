@@ -74,3 +74,17 @@ impl<Sdf> UvTangent<Sdf> {
         self.target().epsilon()
     }
 }
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod tests {
+    use crate::{prelude::Point, test_op_attrs};
+
+    use super::UvGradient;
+
+    #[test]
+    fn test_gradient_tetrahedron() {
+        UvGradient::<Point>::default();
+    }
+
+    test_op_attrs!(UvGradient::<Point>);
+}

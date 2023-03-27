@@ -64,10 +64,13 @@ impl<Dim, Sdf> Reflect<Dim, Sdf> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::glam::Vec3;
+    use rust_gpu_bridge::glam::{Vec2, Vec3};
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Sphere;
+    use crate::{
+        prelude::{Point, Sphere},
+        test_op_attrs_1d, test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     use super::Reflect;
 
@@ -75,4 +78,8 @@ pub mod test {
     fn test_reflect() {
         Reflect::<_, Sphere>::default().with(Reflect::axis, Vec3::default());
     }
+
+    test_op_attrs_1d!(Reflect::<f32, Point>);
+    test_op_attrs_2d!(Reflect::<Vec2, Point>);
+    test_op_attrs_3d!(Reflect::<Vec3, Point>);
 }

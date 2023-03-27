@@ -45,7 +45,7 @@ where
 pub mod test {
     use rust_gpu_bridge::glam::{Vec2, Vec3};
 
-    use crate::{prelude::BoundChecker, signed_distance_field::metrics::taxicab::TaxicabMetric};
+    use crate::prelude::{BoundChecker, TaxicabMetric};
 
     #[test]
     #[should_panic]

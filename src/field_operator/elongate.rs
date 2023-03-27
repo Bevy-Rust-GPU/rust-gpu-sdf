@@ -138,6 +138,15 @@ where
     }
 }
 
+impl<Sdf> FieldOperator<Sdf, f32, Uv> for ElongateOp<f32>
+where
+    Sdf: FieldFunction<f32, Uv>,
+{
+    fn operator(&self, _attr: Uv, _sdf: &Sdf, p: f32) -> Vec2 {
+        Vec2::new((p + self.extent) * (0.5 / self.extent), 0.0)
+    }
+}
+
 impl<Sdf> FieldOperator<Sdf, Vec2, Uv> for ElongateOp<Vec2>
 where
     Sdf: FieldFunction<Vec2, Uv>,
@@ -183,15 +192,20 @@ impl<Dim, Sdf> Elongate<Dim, Sdf> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::glam::Vec3;
+    use rust_gpu_bridge::glam::{Vec2, Vec3};
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Point;
-
-    use super::Elongate;
+    use crate::{
+        prelude::{Elongate, Point},
+        test_op_attrs_1d, test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     #[test]
     fn test_elongate() {
-        Elongate::<_, Point>::default().with(Elongate::extent, Vec3::default());
+        Elongate::<Vec3, Point>::default().with(Elongate::extent, Vec3::default());
     }
+
+    test_op_attrs_1d!(Elongate::<f32, Point>);
+    test_op_attrs_2d!(Elongate::<Vec2, Point>);
+    test_op_attrs_3d!(Elongate::<Vec3, Point>);
 }

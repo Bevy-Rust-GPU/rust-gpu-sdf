@@ -1,12 +1,12 @@
 //! Extrude a 2D distance field into 3D.
 
 use rust_gpu_bridge::{
-    glam::{Vec2, Vec3},
-    Abs,
+    glam::{Vec2, Vec3, Vec3Swizzles},
+    Abs, Sign,
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction};
+use crate::prelude::{Distance, FieldFunction, Normal, Uv};
 
 use super::{FieldOperator, Operator};
 
@@ -50,7 +50,60 @@ where
     }
 }
 
-/// Uniformly scale a distance field.
+impl<Sdf> FieldOperator<Sdf, Vec2, Normal<Vec2>> for ExtrudeOp
+where
+    Sdf: FieldFunction<f32, Normal<f32>>,
+{
+    fn operator(&self, _: Normal<Vec2>, sdf: &Sdf, p: Vec2) -> Vec2 {
+        let d = sdf.evaluate(Normal::<f32>::default(), p.x);
+        let w = Vec2::new(d, p.y.abs() - self.depth);
+        let s = p.y.sign();
+
+        let g = w.x.max(w.y);
+        let q = w.max(Vec2::ZERO);
+        let l = q.length();
+
+        let m = s
+            * (if g > 0.0 {
+                q / l
+            } else {
+                if w.x > w.y {
+                    Vec2::X
+                } else {
+                    Vec2::Y
+                }
+            });
+
+        m
+    }
+}
+
+impl<Sdf> FieldOperator<Sdf, Vec3, Normal<Vec3>> for ExtrudeOp
+where
+    Sdf: FieldFunction<Vec2, Normal<Vec2>>,
+{
+    fn operator(&self, _: Normal<Vec3>, sdf: &Sdf, p: Vec3) -> Vec3 {
+        let d = sdf.evaluate(Normal::<Vec2>::default(), p.xy());
+        if p.z.abs() > p.xy().length() * 0.5 {
+            Vec3::new(0.0, 0.0, p.z.sign())
+        } else {
+            d.extend(0.0)
+        }
+        .normalize()
+    }
+}
+
+impl<Sdf> FieldOperator<Sdf, Vec3, Uv> for ExtrudeOp
+where
+    Uv: crate::prelude::Attribute,
+    Sdf: crate::prelude::FieldFunction<Vec2, Uv>,
+{
+    fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec3) -> <Uv as crate::prelude::Attribute>::Type {
+        sdf.evaluate(attr, p.truncate()) + Vec2::new(0.0, p.z.abs())
+    }
+}
+
+/// Extrude a 2D distance field into 3D.
 pub type Extrude<Sdf> = Operator<ExtrudeOp, Sdf>;
 
 impl<Sdf> Extrude<Sdf> {
@@ -67,12 +120,15 @@ impl<Sdf> Extrude<Sdf> {
 pub mod tests {
     use rust_gpu_bridge::glam::Vec3;
 
-    use crate::{prelude::BoundChecker, signed_distance_field::shapes::composite::Circle};
-
-    use super::Sweep;
+    use crate::{
+        prelude::{BoundChecker, Circle, Extrude, Point},
+        test_op_attrs_3d,
+    };
 
     #[test]
-    fn test_sweep() {
-        assert!(BoundChecker::<Vec3, ExtrudeOp::<Circle, Circle>>::default().is_field());
+    fn test_extrude() {
+        assert!(BoundChecker::<Vec3, Extrude::<Circle>>::default().is_field());
     }
+
+    test_op_attrs_3d!(Extrude::<Point>);
 }

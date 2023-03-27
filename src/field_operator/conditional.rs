@@ -2,7 +2,7 @@ use type_fields::Field;
 
 use crate::prelude::{Attribute, FieldFunction};
 
-use super::{Operator, FieldOperator};
+use super::{FieldOperator, Operator};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Field)]
 #[repr(C)]
@@ -40,7 +40,10 @@ pub mod test {
     use rust_gpu_bridge::glam::Vec3;
     use type_fields::field::Field;
 
-    use crate::{prelude::StretchDistOp, signed_distance_field::shapes::composite::Sphere};
+    use crate::{
+        prelude::{IsosurfaceOp, Point, Sphere, StretchDistOp},
+        test_op_attrs,
+    };
 
     use super::Conditional;
 
@@ -49,4 +52,6 @@ pub mod test {
         Conditional::<StretchDistOp<Vec3>, Sphere, true>::default()
             .with(Conditional::conditional_op, StretchDistOp::default());
     }
+
+    test_op_attrs!(Conditional::<IsosurfaceOp, Point, false>);
 }

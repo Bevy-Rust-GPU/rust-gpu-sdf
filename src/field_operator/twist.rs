@@ -77,12 +77,13 @@ impl<Dim, Sdf> Twist<Dim, Sdf> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::glam::Vec3;
+    use rust_gpu_bridge::glam::{Vec2, Vec3};
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Torus;
-
-    use super::Twist;
+    use crate::{
+        prelude::{Point, Torus, Twist},
+        test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     #[test]
     fn test_twist() {
@@ -91,4 +92,7 @@ pub mod test {
             .with(Twist::axis_rot, Vec3::default())
             .with(Twist::k, f32::default());
     }
+
+    test_op_attrs_2d!(Twist::<Vec2, Point>);
+    test_op_attrs_3d!(Twist::<Vec3, Point>);
 }

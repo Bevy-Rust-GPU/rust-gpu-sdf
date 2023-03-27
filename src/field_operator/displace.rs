@@ -65,14 +65,16 @@ impl<SdfA, SdfB> Displace<SdfA, SdfB> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod tests {
+    use crate::{
+        prelude::{Cube, Displace, Point, Sphere},
+        test_op_attrs,
+    };
     use type_fields::field::Field;
-
-    use crate::signed_distance_field::shapes::composite::{Cube, Sphere};
-
-    use super::Displace;
 
     #[test]
     fn test_displace() {
         Displace::<Cube, Sphere>::default().with(Displace::displace, Sphere::default());
     }
+
+    test_op_attrs!(Displace::<Point, Point>);
 }

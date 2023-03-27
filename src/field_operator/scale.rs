@@ -38,12 +38,12 @@ impl<Sdf> Scale<Sdf> {
 pub mod test {
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Cube;
-
-    use super::Scale;
+    use crate::{prelude::{Cube, Scale, Point}, test_op_attrs};
 
     #[test]
     fn test_scale() {
         Scale::<Cube>::default().with(Scale::scale, f32::default());
     }
+
+    test_op_attrs!(Scale::<Point>);
 }

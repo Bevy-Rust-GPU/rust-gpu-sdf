@@ -35,15 +35,20 @@ impl<Dim, Sdf> Translate<Dim, Sdf> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::glam::Vec3;
+    use rust_gpu_bridge::glam::{Vec2, Vec3};
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Sphere;
-
-    use super::Translate;
+    use crate::{
+        prelude::{Point, Sphere, Translate},
+        test_op_attrs_1d, test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     #[test]
     fn test_translation() {
         Translate::<_, Sphere>::default().with(Translate::translation, Vec3::default());
     }
+
+    test_op_attrs_1d!(Translate::<f32, Point>);
+    test_op_attrs_2d!(Translate::<Vec2, Point>);
+    test_op_attrs_3d!(Translate::<Vec3, Point>);
 }

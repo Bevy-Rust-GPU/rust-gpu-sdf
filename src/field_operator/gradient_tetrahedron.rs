@@ -1,7 +1,10 @@
 use rust_gpu_bridge::glam::{Vec2, Vec2Swizzles, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction, Normal, Normalize};
+use crate::{
+    impl_passthrough_op_1,
+    prelude::{Color, Distance, FieldFunction, Normal, Normalize, Tangent, Uv},
+};
 
 use super::{FieldOperator, Operator};
 
@@ -19,17 +22,17 @@ impl Default for GradientTetrahedronOp {
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for GradientTetrahedronOp
+impl<Sdf> FieldOperator<Sdf, f32, Normal<f32>> for GradientTetrahedronOp
 where
-    Sdf: FieldFunction<Dim, Distance>,
+    Sdf: FieldFunction<f32, Distance>,
 {
     fn operator(
         &self,
-        attr: Distance,
+        _: Normal<f32>,
         sdf: &Sdf,
-        p: Dim,
-    ) -> <Distance as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
+        p: f32,
+    ) -> <Normal<f32> as crate::prelude::Attribute>::Type {
+        sdf.evaluate(Distance, p + self.epsilon) - sdf.evaluate(Distance, p - self.epsilon)
     }
 }
 
@@ -69,6 +72,11 @@ where
     }
 }
 
+impl_passthrough_op_1!(GradientTetrahedronOp, <Dim>, Distance);
+impl_passthrough_op_1!(GradientTetrahedronOp, <Dim>, Tangent<Dim>);
+impl_passthrough_op_1!(GradientTetrahedronOp, <Dim>, Uv);
+impl_passthrough_op_1!(GradientTetrahedronOp, <Dim>, Color);
+
 pub type GradientTetrahedron<Sdf> = Operator<GradientTetrahedronOp, Sdf>;
 
 impl<Sdf> GradientTetrahedron<Sdf> {
@@ -87,4 +95,18 @@ impl<Sdf> NormalTetrahedron<Sdf> {
     pub fn epsilon(&mut self) -> &mut f32 {
         self.target().epsilon()
     }
+}
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod tests {
+    use crate::{prelude::Point, test_op_attrs};
+
+    use super::GradientTetrahedron;
+
+    #[test]
+    fn test_gradient_tetrahedron() {
+        GradientTetrahedron::<Point>::default();
+    }
+
+    test_op_attrs!(GradientTetrahedron::<Point>);
 }

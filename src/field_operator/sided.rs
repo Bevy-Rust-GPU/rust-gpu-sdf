@@ -9,9 +9,9 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction, Normal};
+use crate::prelude::{Distance, FieldFunction, Normal, Uv};
 
-use super::{Operator, FieldOperator};
+use super::{FieldOperator, Operator};
 
 /// Given an infinitely-thin surface,
 /// divide space into interior and exterior based on axis.
@@ -59,6 +59,16 @@ where
     }
 }
 
+impl<Sdf, Dim> FieldOperator<Sdf, Dim, Uv> for SidedOp<Dim>
+where
+    Sdf: FieldFunction<Dim, Uv>,
+    Dim: Clone + Dot + Mul<f32, Output = Dim>,
+{
+    fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> Vec2 {
+        (sdf.evaluate(attr, p.clone())).clone() * p.dot(self.axis.clone()).sign()
+    }
+}
+
 pub type Sided<Dim, Sdf> = Operator<SidedOp<Dim>, Sdf>;
 
 /// Given an infinitely-thin surface,
@@ -71,15 +81,20 @@ impl<Dim, Sdf> Sided<Dim, Sdf> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::glam::Vec3;
+    use rust_gpu_bridge::glam::{Vec2, Vec3};
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Line;
-
-    use super::Sided;
+    use crate::{
+        prelude::{Line, Point, Sided},
+        test_op_attrs_1d, test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     #[test]
     fn test_sided() {
         Sided::<_, Line<Vec3>>::default().with(Sided::axis, Vec3::default());
     }
+
+    test_op_attrs_1d!(Sided::<f32, Point>);
+    test_op_attrs_2d!(Sided::<Vec2, Point>);
+    test_op_attrs_3d!(Sided::<Vec3, Point>);
 }

@@ -70,9 +70,10 @@ pub mod test {
     use rust_gpu_bridge::glam::Quat;
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::{Cube, Square};
-
-    use super::{Rotate2d, Rotate3d};
+    use crate::{
+        prelude::{Cube, Point, Rotate2d, Rotate3d, Square},
+        test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     #[test]
     fn test_rotate_2d() {
@@ -83,4 +84,7 @@ pub mod test {
     fn test_rotate_3d() {
         Rotate3d::<Cube>::default().with(Rotate3d::rotation, Quat::default());
     }
+
+    test_op_attrs_2d!(Rotate2d::<Point>);
+    test_op_attrs_3d!(Rotate3d::<Point>);
 }

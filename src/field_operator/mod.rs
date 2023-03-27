@@ -2,7 +2,6 @@
 
 pub mod axial_reflect;
 pub mod colorize;
-pub mod compose;
 pub mod composite;
 pub mod conditional;
 pub mod displace;
@@ -68,7 +67,6 @@ impl<Op, Sdf, Dim, Attr> FieldFunction<Dim, Attr> for Operator<Op, Sdf>
 where
     Attr: Attribute,
     Op: FieldOperator<Sdf, Dim, Attr>,
-    Dim: Clone,
 {
     fn evaluate(&self, attr: Attr, p: Dim) -> Attr::Type {
         self.op.operator(attr, &self.target, p)
@@ -79,9 +77,7 @@ where
 pub mod test {
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Point;
-
-    use super::{isosurface::IsosurfaceOp, Operator};
+    use crate::prelude::{IsosurfaceOp, Operator, Point};
 
     #[test]
     fn test_operator() {
@@ -121,6 +117,49 @@ macro_rules! impl_passthrough_op {
             ) -> <$attr as crate::prelude::Attribute>::Type {
                 sdf$(.$field)?.evaluate(attr, p)
             }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! test_op_attrs {
+    ($ty:ty) => {
+        crate::test_op_attrs_1d!($ty);
+        crate::test_op_attrs_2d!($ty);
+        crate::test_op_attrs_3d!($ty);
+    };
+}
+
+#[macro_export]
+macro_rules! test_op_attrs_1d {
+    ($ty:ty) => {
+        crate::test_op_attrs_impl!($ty, test_attrs_1d, f32, [crate::prelude::Distance, crate::prelude::Normal<f32>, crate::prelude::Uv]);
+    };
+}
+
+#[macro_export]
+macro_rules! test_op_attrs_2d {
+    ($ty:ty) => {
+        crate::test_op_attrs_impl!($ty, test_attrs_2d, rust_gpu_bridge::glam::Vec2, [crate::prelude::Distance, crate::prelude::Normal<rust_gpu_bridge::glam::Vec2>, crate::prelude::Uv]);
+    };
+}
+
+#[macro_export]
+macro_rules! test_op_attrs_3d {
+    ($ty:ty) => {
+        crate::test_op_attrs_impl!($ty, test_attrs_3d, rust_gpu_bridge::glam::Vec3, [crate::prelude::Distance, crate::prelude::Normal<rust_gpu_bridge::glam::Vec3>, crate::prelude::Uv]);
+    };
+}
+
+#[macro_export]
+macro_rules! test_op_attrs_impl {
+    ($ty:ty, $ident:ident, $pos:ty, [$($attrs:ty),+]) => {
+        #[test]
+        fn $ident() {
+            let f = <$ty>::default();
+            $(
+                let _ = crate::prelude::FieldFunction::evaluate(&f, <$attrs>::default(), <$pos>::default());
+            )*
         }
     };
 }

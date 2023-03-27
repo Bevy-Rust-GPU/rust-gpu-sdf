@@ -90,13 +90,15 @@ impl<Core, Shell> Sweep<Core, Shell> {
 pub mod tests {
     use rust_gpu_bridge::glam::Vec3;
 
-    use crate::{prelude::BoundChecker, signed_distance_field::shapes::composite::Circle};
-
-    use super::Sweep;
+    use crate::{
+        prelude::{BoundChecker, Circle, Point, Sweep},
+        test_op_attrs_3d,
+    };
 
     #[test]
     fn test_sweep() {
-        assert!(BoundChecker::<Vec3, SweepOp::<Circle, Circle>>::default().is_field());
+        assert!(BoundChecker::<Vec3, Sweep::<Circle, Circle>>::default().is_field());
     }
-}
 
+    test_op_attrs_3d!(Sweep::<Point, Point>);
+}

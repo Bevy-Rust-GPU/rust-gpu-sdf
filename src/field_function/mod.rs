@@ -1,7 +1,12 @@
 pub mod metric;
 pub mod shape;
 
-use crate::prelude::{Attribute, Distance};
+use rust_gpu_bridge::glam::{Vec3, Vec2};
+
+use crate::{
+    default,
+    prelude::{Attribute, Normal},
+};
 
 /// Describes a shape in terms of distance to the nearest point on its surface.
 pub trait FieldFunction<In, Attr>
@@ -11,15 +16,13 @@ where
     fn evaluate(&self, attr: Attr, p: In) -> Attr::Type;
 }
 
-impl<Dim> FieldFunction<Dim, Distance> for () {
-    fn evaluate(&self, _: Distance, _: Dim) -> f32 {
-        0.0
-    }
-}
-
-impl<Dim> FieldFunction<Dim, Distance> for f32 {
-    fn evaluate(&self, _: Distance, _: Dim) -> f32 {
-        *self
+impl<Dim, Attr> FieldFunction<Dim, Attr> for ()
+where
+    Attr: Attribute,
+    Attr::Type: Default,
+{
+    fn evaluate(&self, _: Attr, _: Dim) -> Attr::Type {
+        default()
     }
 }
 

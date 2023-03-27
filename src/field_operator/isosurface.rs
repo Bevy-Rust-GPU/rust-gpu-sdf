@@ -1,6 +1,6 @@
 //! Shift the isosurface of a distance field by a given amount.
 
-use core::ops::Sub;
+use core::ops::{Div, Sub};
 
 use type_fields::Field;
 
@@ -33,7 +33,18 @@ where
 
 impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Normal<Dim>);
 impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Tangent<Dim>);
-impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Uv);
+
+impl<Sdf, Dim> FieldOperator<Sdf, Dim, Uv> for IsosurfaceOp
+where
+    Uv: crate::prelude::Attribute,
+    Sdf: crate::prelude::FieldFunction<Dim, Uv>,
+    Dim: Div<f32, Output = Dim>,
+{
+    fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> <Uv as crate::prelude::Attribute>::Type {
+        sdf.evaluate(attr, p / self.delta)
+    }
+}
+
 impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Color);
 
 /// Add an arbitrary radius to a distance field.
@@ -49,12 +60,15 @@ impl<Sdf> Isosurface<Sdf> {
 pub mod test {
     use type_fields::field::Field;
 
-    use crate::signed_distance_field::shapes::composite::Point;
-
-    use super::Isosurface;
+    use crate::{
+        prelude::{Isosurface, Point},
+        test_op_attrs,
+    };
 
     #[test]
     fn test_isosurface() {
         Isosurface::<Point>::default().with(Isosurface::delta, f32::default());
     }
+
+    test_op_attrs!(Isosurface::<Point>);
 }

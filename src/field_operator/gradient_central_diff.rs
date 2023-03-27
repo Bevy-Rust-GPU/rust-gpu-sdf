@@ -1,7 +1,10 @@
 use rust_gpu_bridge::glam::{Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction, Normal, Normalize};
+use crate::{
+    impl_passthrough_op_1,
+    prelude::{Color, Distance, FieldFunction, Normal, Normalize, Tangent, Uv},
+};
 
 use super::{FieldOperator, Operator};
 
@@ -30,20 +33,6 @@ where
         p: f32,
     ) -> <Normal<f32> as crate::prelude::Attribute>::Type {
         sdf.evaluate(Distance, p + self.epsilon) - sdf.evaluate(Distance, p - self.epsilon)
-    }
-}
-
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for GradientCentralDiffOp
-where
-    Sdf: FieldFunction<Dim, Distance>,
-{
-    fn operator(
-        &self,
-        attr: Distance,
-        sdf: &Sdf,
-        p: Dim,
-    ) -> <Distance as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p)
     }
 }
 
@@ -87,6 +76,11 @@ where
     }
 }
 
+impl_passthrough_op_1!(GradientCentralDiffOp, <Dim>, Distance);
+impl_passthrough_op_1!(GradientCentralDiffOp, <Dim>, Tangent<Dim>);
+impl_passthrough_op_1!(GradientCentralDiffOp, <Dim>, Uv);
+impl_passthrough_op_1!(GradientCentralDiffOp, <Dim>, Color);
+
 pub type GradientCentralDiff<Sdf> = Operator<GradientCentralDiffOp, Sdf>;
 
 impl<Sdf> GradientCentralDiff<Sdf> {
@@ -105,4 +99,18 @@ impl<Sdf> NormalCentralDiff<Sdf> {
     pub fn epsilon(&mut self) -> &mut f32 {
         self.target().epsilon()
     }
+}
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod tests {
+    use crate::{prelude::Point, test_op_attrs};
+
+    use super::GradientCentralDiff;
+
+    #[test]
+    fn test_gradient_central_diff() {
+        GradientCentralDiff::<Point>::default();
+    }
+
+    test_op_attrs!(GradientCentralDiff::<Point>);
 }

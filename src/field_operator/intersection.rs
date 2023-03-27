@@ -8,23 +8,20 @@ use crate::prelude::{Distance, FieldFunction, FieldOperator, Normal, Operator, U
 /// Compute the boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 #[repr(C)]
-pub struct IntersectionOp<Sdf> {
-    pub sdf: Sdf,
-}
+pub struct IntersectionOp;
 
-impl<SdfA, SdfB, Dim> FieldOperator<SdfA, Dim, Distance> for IntersectionOp<SdfB>
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Distance> for IntersectionOp
 where
     SdfA: FieldFunction<Dim, Distance>,
     SdfB: FieldFunction<Dim, Distance>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Distance, sdf: &SdfA, p: Dim) -> f32 {
-        sdf.evaluate(attr, p.clone())
-            .max(self.sdf.evaluate(attr, p))
+    fn operator(&self, attr: Distance, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
+        sdf_a.evaluate(attr, p.clone()).max(sdf_b.evaluate(attr, p))
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<SdfA, Dim, Normal<Dim>> for IntersectionOp<SdfB>
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Normal<Dim>> for IntersectionOp
 where
     SdfA: FieldFunction<Dim, Distance>,
     SdfA: FieldFunction<Dim, Normal<Dim>>,
@@ -32,21 +29,21 @@ where
     SdfB: FieldFunction<Dim, Normal<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Normal<Dim>, sdf: &SdfA, p: Dim) -> Dim {
-        let dist_a = sdf.evaluate(Distance, p.clone());
-        let dist_b = self.sdf.evaluate(Distance, p.clone());
+    fn operator(&self, attr: Normal<Dim>, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
+        let dist_a = sdf_a.evaluate(Distance, p.clone());
+        let dist_b = sdf_b.evaluate(Distance, p.clone());
 
         let n = if dist_a > dist_b {
-            sdf.evaluate(attr, p)
+            sdf_a.evaluate(attr, p)
         } else {
-            self.sdf.evaluate(attr, p)
+            sdf_b.evaluate(attr, p)
         };
 
         n.into()
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<SdfA, Dim, Uv> for IntersectionOp<SdfB>
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Uv> for IntersectionOp
 where
     SdfA: FieldFunction<Dim, Distance>,
     SdfA: FieldFunction<Dim, Uv>,
@@ -54,37 +51,42 @@ where
     SdfB: FieldFunction<Dim, Uv>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Uv, sdf: &SdfA, p: Dim) -> Vec2 {
-        let dist_a = sdf.evaluate(Distance, p.clone());
-        let dist_b = self.sdf.evaluate(Distance, p.clone());
+    fn operator(&self, attr: Uv, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Vec2 {
+        let dist_a = sdf_a.evaluate(Distance, p.clone());
+        let dist_b = sdf_b.evaluate(Distance, p.clone());
 
-        if dist_a < dist_b {
-            sdf.evaluate(attr, p)
+        if dist_a > dist_b {
+            sdf_a.evaluate(attr, p)
         } else {
-            self.sdf.evaluate(attr, p)
+            sdf_b.evaluate(attr, p)
         }
     }
 }
 
 /// Compute the boolean intersection of two distance fields.
-pub type Intersection<SdfA, SdfB> = Operator<IntersectionOp<SdfB>, SdfA>;
+pub type Intersection<SdfA, SdfB> = Operator<IntersectionOp, (SdfA, SdfB)>;
 
 impl<SdfA, SdfB> Intersection<SdfA, SdfB> {
-    pub fn sdf(&mut self) -> &mut SdfB {
-        &mut self.op.sdf
+    pub fn sdf_a(&mut self) -> &mut SdfA {
+        &mut self.target().0
+    }
+
+    pub fn sdf_b(&mut self) -> &mut SdfB {
+        &mut self.target().1
     }
 }
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use type_fields::field::Field;
-
-    use crate::signed_distance_field::shapes::composite::{Cube, Sphere};
-
-    use super::Intersection;
+    use crate::{
+        prelude::{Cube, Intersection, Point, Sphere},
+        test_op_attrs,
+    };
 
     #[test]
     fn test_intersection() {
-        Intersection::<Cube, Sphere>::default().with(Intersection::sdf, Sphere::default());
+        Intersection::<Cube, Sphere>::default();
     }
+
+    test_op_attrs!(Intersection::<Point, Point>);
 }

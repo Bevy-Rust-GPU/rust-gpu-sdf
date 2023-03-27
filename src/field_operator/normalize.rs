@@ -36,3 +36,17 @@ impl_passthrough_op_1!(NormalizeOp, <Dim>, Uv);
 impl_passthrough_op_1!(NormalizeOp, <Dim>, Color);
 
 pub type Normalize<Sdf> = Operator<NormalizeOp, Sdf>;
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod test {
+    use crate::{prelude::Point, test_op_attrs};
+
+    use super::Normalize;
+
+    #[test]
+    fn test_normalize() {
+        Normalize::<Point>::default();
+    }
+
+    test_op_attrs!(Normalize::<Point>);
+}

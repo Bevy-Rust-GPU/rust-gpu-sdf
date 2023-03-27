@@ -2,10 +2,10 @@
 
 use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
-    Asin, Atan2, Length, Normalize,
+    Asin, Atan2, Cross, Length, Normalize,
 };
 
-use crate::prelude::{Distance, FieldFunction, Normal, Uv};
+use crate::prelude::{Distance, FieldFunction, Normal, Tangent, Uv};
 
 /// Euclidian distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -30,6 +30,12 @@ where
     }
 }
 
+impl FieldFunction<f32, Uv> for EuclideanMetric {
+    fn evaluate(&self, _attr: Uv, p: f32) -> Vec2 {
+        Vec2::new(p, 0.0)
+    }
+}
+
 impl FieldFunction<Vec2, Uv> for EuclideanMetric {
     fn evaluate(&self, _attr: Uv, p: Vec2) -> Vec2 {
         Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length())
@@ -49,9 +55,7 @@ impl FieldFunction<Vec3, Uv> for EuclideanMetric {
 pub mod test {
     use rust_gpu_bridge::glam::{Vec2, Vec3};
 
-    use crate::{
-        prelude::BoundChecker, signed_distance_field::metrics::euclidean::EuclideanMetric,
-    };
+    use crate::prelude::{BoundChecker, EuclideanMetric};
 
     #[test]
     fn test_euclidean_metric_2d() {

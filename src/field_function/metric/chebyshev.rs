@@ -64,9 +64,7 @@ impl FieldFunction<Vec3, Normal<Vec3>> for ChebyshevMetric {
 pub mod test {
     use rust_gpu_bridge::glam::{Vec2, Vec3};
 
-    use crate::{
-        prelude::BoundChecker, signed_distance_field::metrics::chebyshev::ChebyshevMetric,
-    };
+    use crate::prelude::{BoundChecker, ChebyshevMetric};
 
     #[test]
     #[should_panic]

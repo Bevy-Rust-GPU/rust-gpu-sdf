@@ -20,3 +20,17 @@ impl_passthrough_op_2!(SdfUvOp, <Dim>, Uv, 1);
 impl_passthrough_op_2!(SdfUvOp, <Dim>, Color, 0);
 
 pub type SdfUv<SdfA, SdfB> = Operator<SdfUvOp, (SdfA, SdfB)>;
+
+#[cfg(all(not(feature = "spirv-std"), test))]
+pub mod test {
+    use crate::{prelude::Point, test_op_attrs};
+
+    use super::SdfUv;
+
+    #[test]
+    fn test_sdf_uv() {
+        SdfUv::<Point, Point>::default();
+    }
+
+    test_op_attrs!(SdfUv::<Point, Point>);
+}
