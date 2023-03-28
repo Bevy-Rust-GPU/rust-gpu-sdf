@@ -1,7 +1,7 @@
-use rust_gpu_bridge::{glam::Vec2, Abs, Pow};
+use rust_gpu_bridge::{glam::Vec2, Abs, Pow, Sign};
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction};
+use crate::prelude::{Distance, FieldFunction, Normal};
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[repr(C)]
@@ -15,9 +15,16 @@ impl Default for Superellipse {
     }
 }
 
+// TODO: Account for bounding when n < 1.0
 impl FieldFunction<Vec2, Distance> for Superellipse {
     fn evaluate(&self, _attr: Distance, p: Vec2) -> f32 {
-        p.x.abs().pow(self.n) + p.y.abs().pow(self.n) - 1.0
+        (p.x.abs().pow(self.n) + p.y.abs().pow(self.n)).pow(1.0 / self.n)
+    }
+}
+
+impl FieldFunction<Vec2, Normal<Vec2>> for Superellipse {
+    fn evaluate(&self, _attr: Normal<Vec2>, p: Vec2) -> Vec2 {
+        p.abs().pow(Vec2::splat(self.n)).normalize() * p.sign()
     }
 }
 

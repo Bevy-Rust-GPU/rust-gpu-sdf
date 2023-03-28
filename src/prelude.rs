@@ -2,7 +2,7 @@ pub use crate::{
     attribute::{color::*, distance::*, normal::*, tangent::*, uv::*, *},
     bound_checker::*,
     field_function::{
-        metric::{chebyshev::*, euclidean::*, taxicab::*, *},
+        metric::{chebyshev::*, euclidean::*, taxicab::*, superellipse::*, *},
         shape::{composite::*, octahedron::*, plane::*, *},
         *,
     },

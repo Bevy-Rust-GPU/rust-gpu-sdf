@@ -12,6 +12,7 @@ use super::{FieldOperator, Operator};
 
 /// Extrude a 2D distance field into 3D, using its interior distance to determine depth.
 /// NOTE: The present implementation is a bound, not a field
+/// TODO: Refactor to use a 1D FieldFunction to describe Z curvature
 #[derive(Default, Copy, Clone, PartialEq, Field)]
 #[repr(C)]
 pub struct ExtrudeInteriorOp {

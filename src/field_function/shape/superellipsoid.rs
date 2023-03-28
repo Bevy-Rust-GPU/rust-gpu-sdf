@@ -3,6 +3,8 @@ use type_fields::Field;
 
 use crate::prelude::{Distance, FieldFunction};
 
+// TODO: Apply pow(1.0 / foo) to un-exponentiate distance after axes are summed,
+//       as per Superellipse
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[repr(C)]
 pub struct Superellipsoid {
@@ -18,9 +20,10 @@ impl Default for Superellipsoid {
 
 impl FieldFunction<Vec3, Distance> for Superellipsoid {
     fn evaluate(&self, _attr: Distance, p: Vec3) -> f32 {
-        (p.x.abs().pow(self.e1) + p.y.abs().pow(self.e2)).pow(self.e2 / self.e1)
-            + p.z.abs().pow(self.e1)
-            - 1.0
+        let d = (p.x.abs().pow(self.e1) + p.y.abs().pow(self.e2)).pow(self.e2 / self.e1)
+            + p.z.abs().pow(self.e1);
+
+        d - 1.0
     }
 }
 
