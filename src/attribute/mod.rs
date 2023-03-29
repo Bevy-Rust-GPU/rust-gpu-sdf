@@ -10,3 +10,4 @@ pub mod normal;
 pub mod tangent;
 pub mod uv;
 
+pub mod support_function;

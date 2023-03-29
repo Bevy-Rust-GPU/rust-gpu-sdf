@@ -1,5 +1,5 @@
 pub use crate::{
-    attribute::{color::*, distance::*, normal::*, tangent::*, uv::*, *},
+    attribute::{color::*, distance::*, normal::*, tangent::*, uv::*, support_function::*, *},
     bound_checker::*,
     field_function::{
         metric::{chebyshev::*, euclidean::*, taxicab::*, superellipse::*, *},

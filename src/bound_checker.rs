@@ -4,9 +4,10 @@ use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
     Abs,
 };
-use type_fields::field::Field;
 
-use crate::prelude::{default, Distance, FieldFunction, Normal, NormalCentralDiff};
+use crate::prelude::{
+    default, Distance, FieldFunction, Normal, SupportFunction, SupportFunctionAttr,
+};
 
 /// Asserts that the provided distance function is a field rather than a bound
 #[derive(Debug, Clone, PartialEq)]
@@ -28,7 +29,7 @@ where
             sdf: default(),
             samples: -20..=20,
             step: 10.0 / 20.0,
-            epsilon: 0.5,
+            epsilon: 0.00001,
             _phantom: default(),
         }
     }
@@ -53,25 +54,25 @@ where
                 // Compose sample coordinate
                 let pos = Vec2::new(x as f32, y as f32) * self.step;
 
-                // Calculate normal
-                let n = self.sdf.evaluate(Normal::<Vec2>::default(), pos);
+                // Calculate support
+                let support = SupportFunction {
+                    target: self.sdf.clone(),
+                    ..Default::default()
+                }
+                .evaluate(SupportFunctionAttr::<Vec2>::default(), pos);
 
-                // Skip samples where normal is not valid
-                // (ex. the center of a sphere)
-                if !n.is_normalized() {
+                // Skip samples with no valid support function
+                if support == Vec2::ZERO {
                     continue;
                 }
 
-                // Calculate distance
-                let d = self.sdf.evaluate(Distance, pos);
-
-                // Calculate vector from position to nearest surface
-                let surface = n * -d;
+                let d = support.length();
+                let n = support.normalize();
 
                 // Evaluate distance at surface vector, asserting that it is near zero
-                let r = self.sdf.evaluate(Distance, pos + surface);
+                let r = self.sdf.evaluate(Distance, pos + support);
                 assert!(
-                    r.abs() <= 0.00001,
+                    r.abs() <= self.epsilon,
                     "Encountered reciprocal distance {r:} at point {:}, {:} with distance {d:} and normal {:}, {}",
                     pos.x,
                     pos.y,
@@ -105,33 +106,33 @@ where
                     // Compose sample coordinate
                     let pos = Vec3::new(x as f32, y as f32, z as f32) * self.step;
 
-                    // Calculate normal
-                    let n = self.sdf.evaluate(Normal::<Vec3>::default(), pos);
+                    // Calculate support
+                    let support = SupportFunction {
+                        target: self.sdf.clone(),
+                        ..Default::default()
+                    }
+                    .evaluate(SupportFunctionAttr::<Vec3>::default(), pos);
 
-                    // Skip samples where normal is not valid
-                    // (ex. the center of a sphere)
-                    if !n.is_normalized() {
+                    // Skip samples with no valid support function
+                    if support == Vec3::ZERO {
                         continue;
                     }
 
-                    // Calculate distance
-                    let d = self.sdf.evaluate(Distance, pos);
-
-                    // Calculate vector from position to nearest surface
-                    let surface = n * -d;
+                    let d = support.length();
+                    let n = support.normalize();
 
                     // Evaluate distance at surface vector, asserting that it is near zero
-                    let r = self.sdf.evaluate(Distance, pos + surface);
+                    let r = self.sdf.evaluate(Distance, pos + support);
                     assert!(
-                        r.abs() <= 0.00001,
-                        "Encountered reciprocal distance {r:} at point {:}, {:}, {:} with distance {d:} and normal {:}, {:}, {:}",
-                        pos.x,
-                        pos.y,
-                        pos.z,
-                        n.x,
-                        n.y,
-                        n.z
-                    );
+                    r.abs() <= self.epsilon,
+                    "Encountered reciprocal distance {r:} at point {:}, {:}, {:} with distance {d:} and normal {:}, {:}, {:}",
+                    pos.x,
+                    pos.y,
+                    pos.z,
+                    n.x,
+                    n.y,
+                    n.z
+                );
                 }
             }
         }
