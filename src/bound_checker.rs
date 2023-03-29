@@ -26,21 +26,21 @@ where
     fn default() -> Self {
         BoundChecker {
             sdf: default(),
-            samples: -10..=10,
-            step: 2.0 / 20.0,
+            samples: -20..=20,
+            step: 10.0 / 20.0,
             epsilon: 0.5,
             _phantom: default(),
         }
     }
 }
 
-impl<Dim, Sdf> BoundChecker<Dim, Sdf> {
-    const DERIV_EPSILON: f32 = 0.000005;
-}
-
 impl<Sdf> BoundChecker<Vec2, Sdf>
 where
-    Sdf: FieldFunction<Vec2, Distance> + Default + Clone + 'static,
+    Sdf: FieldFunction<Vec2, Distance>
+        + FieldFunction<Vec2, Normal<Vec2>>
+        + Default
+        + Clone
+        + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()
@@ -50,26 +50,34 @@ where
         // Iterate over a regular grid
         for x in self.samples.clone() {
             for y in self.samples.clone() {
-                // Create sample coordinate
+                // Compose sample coordinate
                 let pos = Vec2::new(x as f32, y as f32) * self.step;
 
                 // Calculate normal
-                let normal = NormalCentralDiff::default()
-                    .with(NormalCentralDiff::sdf, self.sdf.clone())
-                    .with(NormalCentralDiff::epsilon, self.epsilon)
-                    .evaluate(Normal::<Vec2>::default(), pos);
+                let n = self.sdf.evaluate(Normal::<Vec2>::default(), pos);
 
-                // Apply 1D central differencing along normal,
-                // resulting in distance-space derivative
-                let a = self.sdf.evaluate(Distance, pos - normal * self.epsilon);
-                let b = self.sdf.evaluate(Distance, pos + normal * self.epsilon);
-                let deriv = b - a;
-
-                // Assert that derivative is 1 (w.r.t. floating-point error)
-                if deriv.abs() - (self.epsilon * 2.0) > Self::DERIV_EPSILON {
-                    //panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
-                    return true;
+                // Skip samples where normal is not valid
+                // (ex. the center of a sphere)
+                if !n.is_normalized() {
+                    continue;
                 }
+
+                // Calculate distance
+                let d = self.sdf.evaluate(Distance, pos);
+
+                // Calculate vector from position to nearest surface
+                let surface = n * -d;
+
+                // Evaluate distance at surface vector, asserting that it is near zero
+                let r = self.sdf.evaluate(Distance, pos + surface);
+                assert!(
+                    r.abs() <= 0.00001,
+                    "Encountered reciprocal distance {r:} at point {:}, {:} with distance {d:} and normal {:}, {}",
+                    pos.x,
+                    pos.y,
+                    n.x,
+                    n.y
+                );
             }
         }
 
@@ -79,7 +87,11 @@ where
 
 impl<Sdf> BoundChecker<Vec3, Sdf>
 where
-    Sdf: FieldFunction<Vec3, Distance> + Default + Clone + 'static,
+    Sdf: FieldFunction<Vec3, Distance>
+        + FieldFunction<Vec3, Normal<Vec3>>
+        + Default
+        + Clone
+        + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()
@@ -90,26 +102,36 @@ where
         for x in self.samples.clone() {
             for y in self.samples.clone() {
                 for z in self.samples.clone() {
-                    // Create sample coordinate
+                    // Compose sample coordinate
                     let pos = Vec3::new(x as f32, y as f32, z as f32) * self.step;
 
                     // Calculate normal
-                    let normal = NormalCentralDiff::<Sdf>::default()
-                        .with(NormalCentralDiff::sdf, self.sdf.clone())
-                        .with(NormalCentralDiff::epsilon, self.epsilon)
-                        .evaluate(Normal::<Vec3>::default(), pos);
+                    let n = self.sdf.evaluate(Normal::<Vec3>::default(), pos);
 
-                    // Apply 1D central differencing along normal,
-                    // resulting in distance-space derivative
-                    let a = self.sdf.evaluate(Distance, pos - normal * self.epsilon);
-                    let b = self.sdf.evaluate(Distance, pos + normal * self.epsilon);
-                    let deriv = b - a;
-
-                    // Assert that derivative is 1 (w.r.t. floating-point error)
-                    if deriv.abs() - (self.epsilon * 2.0) > Self::DERIV_EPSILON {
-                        //panic!("{deriv:?} at position {pos:?} is non-unit, resulting in a bound.");
-                        return true;
+                    // Skip samples where normal is not valid
+                    // (ex. the center of a sphere)
+                    if !n.is_normalized() {
+                        continue;
                     }
+
+                    // Calculate distance
+                    let d = self.sdf.evaluate(Distance, pos);
+
+                    // Calculate vector from position to nearest surface
+                    let surface = n * -d;
+
+                    // Evaluate distance at surface vector, asserting that it is near zero
+                    let r = self.sdf.evaluate(Distance, pos + surface);
+                    assert!(
+                        r.abs() <= 0.00001,
+                        "Encountered reciprocal distance {r:} at point {:}, {:}, {:} with distance {d:} and normal {:}, {:}, {:}",
+                        pos.x,
+                        pos.y,
+                        pos.z,
+                        n.x,
+                        n.y,
+                        n.z
+                    );
                 }
             }
         }
