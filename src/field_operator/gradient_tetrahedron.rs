@@ -17,7 +17,7 @@ pub struct GradientTetrahedronOp {
 impl Default for GradientTetrahedronOp {
     fn default() -> Self {
         GradientTetrahedronOp {
-            epsilon: f32::EPSILON,
+            epsilon: 0.01,
         }
     }
 }

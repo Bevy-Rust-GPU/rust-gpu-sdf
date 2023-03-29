@@ -17,7 +17,7 @@ pub struct GradientCentralDiffOp {
 impl Default for GradientCentralDiffOp {
     fn default() -> Self {
         GradientCentralDiffOp {
-            epsilon: f32::EPSILON,
+            epsilon: 0.01,
         }
     }
 }
