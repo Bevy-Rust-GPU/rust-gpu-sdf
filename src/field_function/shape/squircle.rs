@@ -65,12 +65,12 @@ impl FieldFunction<Vec2, Distance> for Squircle {
 pub mod test {
     use rust_gpu_bridge::glam::Vec2;
 
-    use crate::prelude::BoundChecker;
+    use crate::prelude::{BoundChecker, NormalTetrahedron};
 
     use super::Squircle;
 
     #[test]
     pub fn test_squircle() {
-        assert!(BoundChecker::<Vec2, Squircle>::default().is_field())
+        assert!(BoundChecker::<Vec2, NormalTetrahedron::<Squircle>>::default().is_field())
     }
 }
