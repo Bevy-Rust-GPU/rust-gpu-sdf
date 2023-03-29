@@ -4,11 +4,11 @@ use core::ops::{Mul, Sub};
 
 use rust_gpu_bridge::{
     glam::{Vec2, Vec3, Vec3Swizzles},
-    Dot, Length, Mix, Reflect as ReflectTrait, Splat, Step,
+    Dot, IsNormalized, Mix, Reflect as ReflectTrait, Splat, Step,
 };
 use type_fields::Field;
 
-use crate::prelude::{Attribute, Distance, FieldFunction, FieldOperator, Normal, Operator, Uv};
+use crate::prelude::{Distance, FieldFunction, FieldOperator, Normal, Operator, Uv};
 
 /// Reflect a distance field about an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -38,11 +38,11 @@ impl Default for ReflectOp<Vec3> {
 impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for ReflectOp<Dim>
 where
     Sdf: FieldFunction<Dim, Distance>,
-    Dim: Clone + Sub<Dim, Output = Dim> + Mul<f32, Output = Dim> + Length + Dot,
+    Dim: Clone + Sub<Dim, Output = Dim> + Mul<f32, Output = Dim> + IsNormalized + Dot,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
         assert!(
-            self.axis.clone().length() == 1.0,
+            self.axis.clone().is_normalized(),
             "ReflectOp axis must be normalized"
         );
 
@@ -58,7 +58,7 @@ where
     Dim: Clone
         + Sub<Dim, Output = Dim>
         + Mul<f32, Output = Dim>
-        + Length
+        + IsNormalized
         + Dot
         + ReflectTrait
         + Mix
@@ -66,7 +66,7 @@ where
 {
     fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
         assert!(
-            self.axis.clone().length() == 1.0,
+            self.axis.clone().is_normalized(),
             "ReflectOp axis must be normalized"
         );
 
@@ -86,7 +86,7 @@ where
 {
     fn operator(&self, attr: Uv, sdf: &Sdf, p: f32) -> Vec2 {
         assert!(
-            self.axis.length() == 1.0,
+            self.axis.is_normalized(),
             "ReflectOp axis must be normalized"
         );
 
@@ -105,7 +105,7 @@ where
 {
     fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec2) -> Vec2 {
         assert!(
-            self.axis.length() == 1.0,
+            self.axis.is_normalized(),
             "ReflectOp axis must be normalized"
         );
 
@@ -124,7 +124,7 @@ where
 {
     fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec3) -> Vec2 {
         assert!(
-            self.axis.length() == 1.0,
+            self.axis.is_normalized(),
             "ReflectOp axis must be normalized"
         );
 

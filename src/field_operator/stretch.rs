@@ -4,7 +4,7 @@ use core::ops::{Mul, Sub};
 
 use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
-    Dot, Length,
+    Dot, IsNormalized,
 };
 use type_fields::Field;
 
@@ -39,11 +39,11 @@ impl<Sdf, Dim, Attr> FieldOperator<Sdf, Dim, Attr> for StretchInfiniteOp<Dim>
 where
     Attr: Attribute,
     Sdf: FieldFunction<Dim, Attr>,
-    Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + Length + Dot,
+    Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + IsNormalized + Dot,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
         assert!(
-            self.dir.clone().length() == 1.0,
+            self.dir.clone().is_normalized(),
             "ExtrudeInfiniteOp dir must be normalized"
         );
         let q = p.clone() - self.dir.clone() * p.dot(self.dir.clone());
