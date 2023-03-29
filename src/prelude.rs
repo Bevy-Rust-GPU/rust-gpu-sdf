@@ -3,7 +3,7 @@ pub use crate::{
     bound_checker::*,
     field_function::{
         metric::{chebyshev::*, euclidean::*, taxicab::*, superellipse::*, *},
-        shape::{composite::*, octahedron::*, plane::*, *},
+        shape::{composite::*, octahedron::*, plane::*, squircle::*, *},
         *,
     },
     field_operator::{
