@@ -1,6 +1,7 @@
 //! Types that modify a distance field.
 
 pub mod axial_reflect;
+pub mod cartesian_to_spherical;
 pub mod colorize;
 pub mod composite;
 pub mod conditional;
@@ -19,14 +20,15 @@ pub mod reflect;
 pub mod repeat;
 pub mod rotate;
 pub mod scale;
-pub mod slice;
 pub mod sdf_color;
 pub mod sdf_normal;
 pub mod sdf_tangent;
 pub mod sdf_uv;
 pub mod sided;
+pub mod slice;
 pub mod smooth_intersection;
 pub mod smooth_subtraction;
+pub mod spherical_to_cartesian;
 pub mod smooth_union;
 pub mod stretch;
 pub mod subtraction;

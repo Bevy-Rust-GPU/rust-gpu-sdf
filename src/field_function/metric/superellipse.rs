@@ -15,7 +15,6 @@ impl Default for Superellipse {
     }
 }
 
-// TODO: Account for bounding when n < 1.0
 impl FieldFunction<Vec2, Distance> for Superellipse {
     fn evaluate(&self, _attr: Distance, p: Vec2) -> f32 {
         (p.x.abs().pow(self.n) + p.y.abs().pow(self.n)).pow(1.0 / self.n)
