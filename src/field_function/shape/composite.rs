@@ -8,7 +8,7 @@ use type_fields::field::Field;
 
 use crate::prelude::{
     raytrace::RayIntersection, AxialReflect, Elongate, EuclideanMetric, Isosurface, Reflect, Sided,
-    StretchDist, Sweep, Translate, AXIS_X, AXIS_XY, D2, D3,
+    StretchDist, Sweep, Translate, AXIS_X, AXIS_XY, D2, D3, AXIS_Y,
 };
 
 /// An infinitely small point.
@@ -93,9 +93,11 @@ impl<Sdf> NgonMirror<Sdf> {
     where
         Sdf: Default + 'static,
     {
-        <NgonMirror<Sdf> as Default>::default()
+        let mut sdf = <NgonMirror<Sdf> as Default>::default()
             .with(Self::sin, sin)
-            .with(Self::cos, cos)
+            .with(Self::cos, cos);
+        *sdf.axis() = sdf.axis().normalize();
+        sdf
     }
 
     pub fn sdf(&mut self) -> &mut Sdf {
@@ -140,10 +142,11 @@ pub type Quadrilateral =
 
 impl Quadrilateral {
     pub fn quadrilateral() -> Self {
-        let angle = core::f32::consts::PI / 4 as f32;
+        let angle = core::f32::consts::PI / 4.0;
         let sin = angle.sin();
         let cos = angle.cos();
         let tan = angle.tan();
+
         <Self as Default>::default()
             .with(Self::target, NgonMirror::new(sin, -cos))
             .with(Self::tan, tan)
@@ -318,12 +321,12 @@ impl Nonagon {
 
 pub type Decagon = AxialReflect<
     AXIS_XY,
-    NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>,
+    NgonMirror<NgonMirror<NgonMirror<StretchDist<Vec2, Translate<Vec2, Sided<Vec2, Point>>>>>>,
 >;
 
 impl Decagon {
     pub fn decagon() -> Self {
-        let angle = core::f32::consts::PI / 9 as f32;
+        let angle = core::f32::consts::PI / 10 as f32;
         let sin = angle.sin();
         let cos = angle.cos();
         let tan = angle.tan();
@@ -331,8 +334,25 @@ impl Decagon {
         <Self as Default>::default()
             .with(Self::target, NgonMirror::new(sin, -cos))
             .with((Self::target, NgonMirror::sdf), NgonMirror::new(sin, cos))
+            .with((Self::target, NgonMirror::sdf, NgonMirror::sdf), NgonMirror::new(sin, cos))
             .with(Self::tan, tan)
             .with(Self::radius, 1.0)
+    }
+
+    pub fn tan(&mut self) -> &mut f32 {
+        &mut self.target().sdf().sdf().sdf().op.dist
+    }
+
+    pub fn radius(&mut self) -> &mut f32 {
+        &mut self
+            .target()
+            .sdf()
+            .sdf()
+            .sdf()
+            .target
+            .op
+            .translation
+            .y
     }
 }
 

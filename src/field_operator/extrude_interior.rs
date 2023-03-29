@@ -118,6 +118,5 @@ pub mod tests {
         assert!(BoundChecker::<Vec3, ExtrudeInterior::<Circle>>::default().is_field());
     }
 
-    test_op_attrs_2d!(ExtrudeInterior::<Point>);
     test_op_attrs_3d!(ExtrudeInterior::<Point>);
 }

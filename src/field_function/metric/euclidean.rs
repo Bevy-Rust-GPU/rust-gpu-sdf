@@ -23,9 +23,14 @@ where
 
 impl<Dim> FieldFunction<Dim, Normal<Dim>> for EuclideanMetric
 where
-    Dim: Normalize,
+    Dim: Default + PartialEq + Normalize,
 {
     fn evaluate(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
+        let d = Dim::default();
+        if p == d {
+            return d
+        }
+
         p.normalize()
     }
 }

@@ -6,7 +6,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Attribute, FieldFunction, FieldOperator, Operator};
+use crate::prelude::{Attribute, Distance, FieldFunction, FieldOperator, Normal, Operator, Uv};
 
 pub const AXIS_X: usize = 1;
 pub const AXIS_Y: usize = 2;
@@ -36,12 +36,11 @@ where
     }
 }
 
-impl<const AXIS: usize, Sdf, Attr> FieldOperator<Sdf, Vec2, Attr> for AxialReflectOp<AXIS>
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Vec2, Distance> for AxialReflectOp<AXIS>
 where
-    Attr: Attribute,
-    Sdf: FieldFunction<Vec2, Attr>,
+    Sdf: FieldFunction<Vec2, Distance>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, mut p: Vec2) -> Attr::Type {
+    fn operator(&self, attr: Distance, sdf: &Sdf, mut p: Vec2) -> f32 {
         if AXIS & AXIS_X > 0 {
             p.x = p.x.abs();
         }
@@ -54,12 +53,69 @@ where
     }
 }
 
-impl<const AXIS: usize, Sdf, Attr> FieldOperator<Sdf, Vec3, Attr> for AxialReflectOp<AXIS>
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Vec2, Normal<Vec2>> for AxialReflectOp<AXIS>
 where
-    Attr: Attribute,
-    Sdf: FieldFunction<Vec3, Attr>,
+    Sdf: FieldFunction<Vec2, Normal<Vec2>>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, mut p: Vec3) -> Attr::Type {
+    fn operator(&self, attr: Normal<Vec2>, sdf: &Sdf, p: Vec2) -> Vec2 {
+        let mut pa = p;
+
+        if AXIS & AXIS_X > 0 {
+            pa.x = p.x.abs();
+        }
+
+        if AXIS & AXIS_Y > 0 {
+            pa.y = p.y.abs();
+        }
+
+        let mut n = sdf.evaluate(attr, pa);
+
+        if AXIS & AXIS_X > 0 && p.x < 0.0 {
+            n.x *= -1.0;
+        }
+
+        if AXIS & AXIS_Y > 0 && p.y < 0.0 {
+            n.y *= -1.0;
+        }
+
+        n
+    }
+}
+
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Vec2, Uv> for AxialReflectOp<AXIS>
+where
+    Sdf: FieldFunction<Vec2, Uv>,
+{
+    fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec2) -> Vec2 {
+        let mut pa = p;
+
+        if AXIS & AXIS_X > 0 {
+            pa.x = p.x.abs();
+        }
+
+        if AXIS & AXIS_Y > 0 {
+            pa.y = p.y.abs();
+        }
+
+        let mut n = sdf.evaluate(attr, pa);
+
+        if AXIS & AXIS_X > 0 && p.x < 0.0 {
+            n.x *= -1.0;
+        }
+
+        if AXIS & AXIS_Y > 0 && p.y < 0.0 {
+            n.y *= -1.0;
+        }
+
+        n
+    }
+}
+
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Vec3, Distance> for AxialReflectOp<AXIS>
+where
+    Sdf: FieldFunction<Vec3, Distance>,
+{
+    fn operator(&self, attr: Distance, sdf: &Sdf, mut p: Vec3) -> f32 {
         if AXIS & AXIS_X > 0 {
             p.x = p.x.abs();
         }
@@ -73,6 +129,76 @@ where
         }
 
         sdf.evaluate(attr, p)
+    }
+}
+
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Vec3, Normal<Vec3>> for AxialReflectOp<AXIS>
+where
+    Sdf: FieldFunction<Vec3, Normal<Vec3>>,
+{
+    fn operator(&self, attr: Normal<Vec3>, sdf: &Sdf, p: Vec3) -> Vec3 {
+        let mut pa = p;
+
+        if AXIS & AXIS_X > 0 {
+            pa.x = p.x.abs();
+        }
+
+        if AXIS & AXIS_Y > 0 {
+            pa.y = p.y.abs();
+        }
+
+        if AXIS & AXIS_Z > 0 {
+            pa.z = p.z.abs();
+        }
+
+        let mut n = sdf.evaluate(attr, pa);
+
+        if AXIS & AXIS_X > 0 && p.x < 0.0 {
+            n.x *= -1.0;
+        }
+
+        if AXIS & AXIS_Y > 0 && p.y < 0.0 {
+            n.y *= -1.0;
+        }
+
+        if AXIS & AXIS_Z > 0 && p.z < 0.0 {
+            n.z *= -1.0;
+        }
+
+        n
+    }
+}
+
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Vec3, Uv> for AxialReflectOp<AXIS>
+where
+    Sdf: FieldFunction<Vec3, Uv>,
+{
+    fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec3) -> Vec2 {
+        let mut pa = p;
+
+        if AXIS & AXIS_X > 0 {
+            pa.x = p.x.abs();
+        }
+
+        if AXIS & AXIS_Y > 0 {
+            pa.y = p.y.abs();
+        }
+
+        if AXIS & AXIS_Z > 0 {
+            pa.z = p.z.abs();
+        }
+
+        let mut n = sdf.evaluate(attr, pa);
+
+        if AXIS & AXIS_X > 0 && p.x < 0.0 {
+            n.x *= -1.0;
+        }
+
+        if AXIS & AXIS_Y > 0 && p.y < 0.0 {
+            n.y *= -1.0;
+        }
+
+        n
     }
 }
 

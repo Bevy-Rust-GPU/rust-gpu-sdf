@@ -93,6 +93,16 @@ where
     }
 }
 
+impl<Sdf> FieldOperator<Sdf, Vec2, Uv> for ExtrudeOp
+where
+    Uv: crate::prelude::Attribute,
+    Sdf: crate::prelude::FieldFunction<f32, Uv>,
+{
+    fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec2) -> <Uv as crate::prelude::Attribute>::Type {
+        sdf.evaluate(attr, p.x) + Vec2::new(0.0, p.y.abs())
+    }
+}
+
 impl<Sdf> FieldOperator<Sdf, Vec3, Uv> for ExtrudeOp
 where
     Uv: crate::prelude::Attribute,
@@ -118,17 +128,24 @@ impl<Sdf> Extrude<Sdf> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod tests {
-    use rust_gpu_bridge::glam::Vec3;
+    use rust_gpu_bridge::glam::{Vec2, Vec3};
 
     use crate::{
-        prelude::{BoundChecker, Circle, Extrude, Point},
+        prelude::{BoundChecker, Circle, Sphere, Extrude, Point},
+        test_op_attrs_2d,
         test_op_attrs_3d,
     };
 
     #[test]
-    fn test_extrude() {
-        assert!(BoundChecker::<Vec3, Extrude::<Circle>>::default().is_field());
+    fn test_extrude_2d() {
+        assert!(BoundChecker::<Vec2, Extrude::<Circle>>::default().is_field());
     }
 
+    #[test]
+    fn test_extrude_3d() {
+        assert!(BoundChecker::<Vec3, Extrude::<Sphere>>::default().is_field());
+    }
+
+    test_op_attrs_2d!(Extrude::<Point>);
     test_op_attrs_3d!(Extrude::<Point>);
 }

@@ -19,6 +19,7 @@ pub mod reflect;
 pub mod repeat;
 pub mod rotate;
 pub mod scale;
+pub mod slice;
 pub mod sdf_color;
 pub mod sdf_normal;
 pub mod sdf_tangent;

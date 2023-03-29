@@ -4,7 +4,7 @@ use core::ops::Add;
 
 use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
-    Abs, Sign,
+    Abs, Sign, Normalize
 };
 
 use crate::prelude::{Distance, FieldFunction, Normal};
@@ -34,10 +34,10 @@ impl FieldFunction<Vec3, Distance> for TaxicabMetric {
 
 impl<Dim> FieldFunction<Dim, Normal<Dim>> for TaxicabMetric
 where
-    Dim: Sign,
+    Dim: Sign + Normalize,
 {
     fn evaluate(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
-        p.sign()
+        p.sign().normalize()
     }
 }
 

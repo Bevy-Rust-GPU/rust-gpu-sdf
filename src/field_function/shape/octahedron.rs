@@ -1,9 +1,9 @@
 //! An octahedron.
 
-use rust_gpu_bridge::glam::Vec3;
+use rust_gpu_bridge::{glam::Vec3, Normalize, Sign};
 use type_fields::Field;
 
-use crate::prelude::{Distance, FieldFunction};
+use crate::prelude::{Distance, FieldFunction, Normal};
 
 /// An octahedron.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -42,6 +42,15 @@ impl FieldFunction<Vec3, Distance> for Octahedron {
 
         // Euclidean metric
         j.length().into()
+    }
+}
+
+impl<Dim> FieldFunction<Dim, Normal<Dim>> for Octahedron
+where
+    Dim: Sign + Normalize,
+{
+    fn evaluate(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
+        p.sign().normalize()
     }
 }
 
