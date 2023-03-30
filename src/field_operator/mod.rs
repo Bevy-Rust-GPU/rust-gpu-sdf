@@ -78,6 +78,23 @@ where
     }
 }
 
+#[cfg(feature = "glam")]
+pub mod boxed {
+    extern crate alloc;
+    use alloc::boxed::Box;
+
+    use crate::prelude::{Attribute, FieldOperator};
+
+    impl<Sdf, Dim, Attr> FieldOperator<Sdf, Dim, Attr> for Box<dyn FieldOperator<Sdf, Dim, Attr>>
+    where
+        Attr: Attribute,
+    {
+        fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> <Attr as Attribute>::Type {
+            self.as_ref().operator(attr, sdf, p)
+        }
+    }
+}
+
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
     use type_fields::field::Field;

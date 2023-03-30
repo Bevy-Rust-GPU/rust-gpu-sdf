@@ -30,3 +30,20 @@ where
         self(p)
     }
 }
+
+#[cfg(feature = "glam")]
+pub mod boxed {
+    extern crate alloc;
+    use alloc::boxed::Box;
+
+    use crate::prelude::{Attribute, FieldFunction};
+
+    impl<In, Attr> FieldFunction<In, Attr> for Box<dyn FieldFunction<In, Attr>>
+    where
+        Attr: Attribute,
+    {
+        fn evaluate(&self, attr: Attr, p: In) -> <Attr as Attribute>::Type {
+            self.as_ref().evaluate(attr, p)
+        }
+    }
+}
