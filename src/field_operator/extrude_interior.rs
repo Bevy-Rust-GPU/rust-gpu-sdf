@@ -110,7 +110,7 @@ pub mod tests {
 
     use crate::{
         prelude::{BoundChecker, Circle, ExtrudeInterior, Point},
-        test_op_attrs_2d, test_op_attrs_3d,
+        test_op_attrs_3d,
     };
 
     #[test]
