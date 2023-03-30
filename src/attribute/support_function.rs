@@ -60,11 +60,11 @@ where
     }
 }
 
-impl_passthrough_op_1!(SupportFunctionOp, <Dim>, Distance);
-impl_passthrough_op_1!(SupportFunctionOp, <Dim>, Normal<Dim>);
-impl_passthrough_op_1!(SupportFunctionOp, <Dim>, Tangent<Dim>);
-impl_passthrough_op_1!(SupportFunctionOp, <Dim>, Uv);
-impl_passthrough_op_1!(SupportFunctionOp, <Dim>, Color);
+impl_passthrough_op_1!(SupportFunctionOp, Distance, Dim);
+impl_passthrough_op_1!(SupportFunctionOp, Normal<Dim>, Dim);
+impl_passthrough_op_1!(SupportFunctionOp, Tangent<Dim>, Dim);
+impl_passthrough_op_1!(SupportFunctionOp, Uv, Dim);
+impl_passthrough_op_1!(SupportFunctionOp, Color, Dim);
 
 /// Support function wrapper
 pub type SupportFunction<Sdf> = Operator<SupportFunctionOp, Sdf>;

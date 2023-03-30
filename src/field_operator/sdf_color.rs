@@ -13,11 +13,11 @@ use super::{FieldOperator, Operator};
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 pub struct SdfColorOp;
 
-impl_passthrough_op_2!(SdfColorOp, <Dim>, Distance, 0);
-impl_passthrough_op_2!(SdfColorOp, <Dim>, Normal<Dim>, 0);
-impl_passthrough_op_2!(SdfColorOp, <Dim>, Tangent<Dim>, 0);
-impl_passthrough_op_2!(SdfColorOp, <Dim>, Uv, 0);
-impl_passthrough_op_2!(SdfColorOp, <Dim>, Color, 1);
+impl_passthrough_op_2!(SdfColorOp, Distance, 0, Dim);
+impl_passthrough_op_2!(SdfColorOp, Normal<Dim>, 0, Dim);
+impl_passthrough_op_2!(SdfColorOp, Tangent<Dim>, 0, Dim);
+impl_passthrough_op_2!(SdfColorOp, Uv, 0, Dim);
+impl_passthrough_op_2!(SdfColorOp, Color, 1, Dim);
 
 pub type SdfColor<SdfA, SdfB> = Operator<SdfColorOp, (SdfA, SdfB)>;
 

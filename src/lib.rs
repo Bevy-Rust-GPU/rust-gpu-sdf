@@ -2,7 +2,6 @@
 
 pub mod bound_checker;
 pub mod field_operator;
-pub mod raycast;
 pub use type_fields;
 pub mod attribute;
 pub mod field_function;

@@ -42,10 +42,10 @@ where
     }
 }
 
-impl_passthrough_op_1!(UvGradientOp, <Dim>, Distance);
-impl_passthrough_op_1!(UvGradientOp, <Dim>, Normal<Dim>);
-impl_passthrough_op_1!(UvGradientOp, <Dim>, Uv);
-impl_passthrough_op_1!(UvGradientOp, <Dim>, Color);
+impl_passthrough_op_1!(UvGradientOp, Distance, Dim);
+impl_passthrough_op_1!(UvGradientOp, Normal<Dim>, Dim);
+impl_passthrough_op_1!(UvGradientOp, Uv, Dim);
+impl_passthrough_op_1!(UvGradientOp, Color, Dim);
 
 pub type UvGradient<Sdf> = Operator<UvGradientOp, Sdf>;
 

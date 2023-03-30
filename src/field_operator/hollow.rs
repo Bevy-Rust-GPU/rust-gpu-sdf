@@ -63,7 +63,7 @@ where
     }
 }
 
-impl_passthrough_op_1!(HollowOp, <Dim>, Color);
+impl_passthrough_op_1!(HollowOp, Color, Dim);
 
 /// Convert a solid shape into a hollow one with an infinitely thin surface.
 pub type Hollow<Sdf> = Operator<HollowOp, Sdf>;

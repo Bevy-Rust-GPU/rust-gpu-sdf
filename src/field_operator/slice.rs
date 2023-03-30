@@ -72,7 +72,7 @@ where
     }
 }
 
-impl_passthrough_op_1!(SliceOp, <Dim>, Color);
+impl_passthrough_op_1!(SliceOp, Color, Dim);
 
 /// Take a 2D slice of a 3D field
 pub type Slice<Sdf> = Operator<SliceOp, Sdf>;

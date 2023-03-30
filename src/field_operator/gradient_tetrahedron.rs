@@ -72,10 +72,10 @@ where
     }
 }
 
-impl_passthrough_op_1!(GradientTetrahedronOp, <Dim>, Distance);
-impl_passthrough_op_1!(GradientTetrahedronOp, <Dim>, Tangent<Dim>);
-impl_passthrough_op_1!(GradientTetrahedronOp, <Dim>, Uv);
-impl_passthrough_op_1!(GradientTetrahedronOp, <Dim>, Color);
+impl_passthrough_op_1!(GradientTetrahedronOp, Distance, Dim);
+impl_passthrough_op_1!(GradientTetrahedronOp, Tangent<Dim>, Dim);
+impl_passthrough_op_1!(GradientTetrahedronOp, Uv, Dim);
+impl_passthrough_op_1!(GradientTetrahedronOp, Color, Dim);
 
 pub type GradientTetrahedron<Sdf> = Operator<GradientTetrahedronOp, Sdf>;
 

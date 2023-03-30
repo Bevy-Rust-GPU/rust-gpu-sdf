@@ -36,10 +36,10 @@ where
     }
 }
 
-impl_passthrough_op_1!(TriplanarUvOp, <Dim>, Distance);
-impl_passthrough_op_1!(TriplanarUvOp, <Dim>, Normal<Dim>);
-impl_passthrough_op_1!(TriplanarUvOp, <Dim>, Tangent<Dim>);
-impl_passthrough_op_1!(TriplanarUvOp, <Dim>, Color);
+impl_passthrough_op_1!(TriplanarUvOp, Distance, Dim);
+impl_passthrough_op_1!(TriplanarUvOp, Normal<Dim>, Dim);
+impl_passthrough_op_1!(TriplanarUvOp, Tangent<Dim>, Dim);
+impl_passthrough_op_1!(TriplanarUvOp, Color, Dim);
 
 pub type TriplanarUv<Sdf> = Operator<TriplanarUvOp, Sdf>;
 

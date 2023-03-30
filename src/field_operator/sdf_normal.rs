@@ -9,11 +9,11 @@ use super::{FieldOperator, Operator};
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SdfNormalOp;
 
-impl_passthrough_op_2!(SdfNormalOp, <Dim>, Distance, 0);
-impl_passthrough_op_2!(SdfNormalOp, <Dim>, Normal<Dim>, 1);
-impl_passthrough_op_2!(SdfNormalOp, <Dim>, Tangent<Dim>, 0);
-impl_passthrough_op_2!(SdfNormalOp, <Dim>, Uv, 0);
-impl_passthrough_op_2!(SdfNormalOp, <Dim>, Color, 0);
+impl_passthrough_op_2!(SdfNormalOp, Distance, 0, Dim);
+impl_passthrough_op_2!(SdfNormalOp, Normal<Dim>, 1, Dim);
+impl_passthrough_op_2!(SdfNormalOp, Tangent<Dim>, 0, Dim);
+impl_passthrough_op_2!(SdfNormalOp, Uv, 0, Dim);
+impl_passthrough_op_2!(SdfNormalOp, Color, 0, Dim);
 
 pub type SdfNormal<SdfA, SdfB> = Operator<SdfNormalOp, (SdfA, SdfB)>;
 

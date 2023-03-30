@@ -76,10 +76,10 @@ where
     }
 }
 
-impl_passthrough_op_1!(GradientCentralDiffOp, <Dim>, Distance);
-impl_passthrough_op_1!(GradientCentralDiffOp, <Dim>, Tangent<Dim>);
-impl_passthrough_op_1!(GradientCentralDiffOp, <Dim>, Uv);
-impl_passthrough_op_1!(GradientCentralDiffOp, <Dim>, Color);
+impl_passthrough_op_1!(GradientCentralDiffOp, Distance, Dim);
+impl_passthrough_op_1!(GradientCentralDiffOp, Tangent<Dim>, Dim);
+impl_passthrough_op_1!(GradientCentralDiffOp, Uv, Dim);
+impl_passthrough_op_1!(GradientCentralDiffOp, Color, Dim);
 
 pub type GradientCentralDiff<Sdf> = Operator<GradientCentralDiffOp, Sdf>;
 

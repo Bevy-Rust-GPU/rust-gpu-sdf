@@ -1,3 +1,5 @@
+//! Operators dedicating to visualizing 3D distance functions via ray intersection
+
 pub mod raytrace;
 pub mod sphere_trace_lipschitz;
 pub mod sphere_trace_naive;
@@ -5,6 +7,26 @@ pub mod sphere_trace_naive;
 use rust_gpu_bridge::glam::Vec3;
 
 use crate::default;
+
+#[derive(Copy, Clone, PartialEq)]
+#[repr(C)]
+pub struct RaycastInput {
+    pub eye: Vec3,
+    pub dir: Vec3,
+    pub start: f32,
+    pub end: f32,
+}
+
+impl Default for RaycastInput {
+    fn default() -> Self {
+        RaycastInput {
+            eye: Vec3::ZERO,
+            dir: -Vec3::Z,
+            start: 0.0,
+            end: 1000.0,
+        }
+    }
+}
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
 #[repr(C)]
@@ -50,21 +72,4 @@ impl RaycastOutput {
     pub fn miss(&mut self, step: u32) {
         self.steps = step;
     }
-}
-
-/// Raycasting implementations for visualizing 3D signed distance fields.
-pub trait Raycast<Sdf> {
-    type Output;
-
-    /// March from `eye` along the ray defined by `dir`,
-    /// sampling `sdf` at discrete intervals and returning the result.
-    fn raymarch(
-        &self,
-        sdf: &Sdf,
-        start: f32,
-        end: f32,
-        eye: Vec3,
-        dir: Vec3,
-        epsilon: f32,
-    ) -> Self::Output;
 }

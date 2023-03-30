@@ -11,11 +11,11 @@ use super::{FieldOperator, Operator};
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
 pub struct SdfTangentOp;
 
-impl_passthrough_op_2!(SdfTangentOp, <Dim>, Distance, 0);
-impl_passthrough_op_2!(SdfTangentOp, <Dim>, Normal<Dim>, 0);
-impl_passthrough_op_2!(SdfTangentOp, <Dim>, Tangent<Dim>, 1);
-impl_passthrough_op_2!(SdfTangentOp, <Dim>, Uv, 0);
-impl_passthrough_op_2!(SdfTangentOp, <Dim>, Color, 0);
+impl_passthrough_op_2!(SdfTangentOp, Distance, 0, Dim);
+impl_passthrough_op_2!(SdfTangentOp, Normal<Dim>, 0, Dim);
+impl_passthrough_op_2!(SdfTangentOp, Tangent<Dim>, 1, Dim);
+impl_passthrough_op_2!(SdfTangentOp, Uv, 0, Dim);
+impl_passthrough_op_2!(SdfTangentOp, Color, 0, Dim);
 
 pub type SdfTangent<SdfA, SdfB> = Operator<SdfTangentOp, (SdfA, SdfB)>;
 

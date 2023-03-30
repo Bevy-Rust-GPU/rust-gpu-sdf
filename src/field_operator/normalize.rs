@@ -31,9 +31,9 @@ where
     }
 }
 
-impl_passthrough_op_1!(NormalizeOp, <Dim>, Distance);
-impl_passthrough_op_1!(NormalizeOp, <Dim>, Uv);
-impl_passthrough_op_1!(NormalizeOp, <Dim>, Color);
+impl_passthrough_op_1!(NormalizeOp, Distance, Dim);
+impl_passthrough_op_1!(NormalizeOp, Uv, Dim);
+impl_passthrough_op_1!(NormalizeOp, Color, Dim);
 
 pub type Normalize<Sdf> = Operator<NormalizeOp, Sdf>;
 

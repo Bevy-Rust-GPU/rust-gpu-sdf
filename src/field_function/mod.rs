@@ -1,12 +1,7 @@
 pub mod metric;
 pub mod shape;
 
-use rust_gpu_bridge::glam::{Vec3, Vec2};
-
-use crate::{
-    default,
-    prelude::{Attribute, Normal},
-};
+use crate::{default, prelude::Attribute};
 
 /// Describes a shape in terms of distance to the nearest point on its surface.
 pub trait FieldFunction<In, Attr>

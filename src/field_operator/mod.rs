@@ -28,8 +28,8 @@ pub mod sided;
 pub mod slice;
 pub mod smooth_intersection;
 pub mod smooth_subtraction;
-pub mod spherical_to_cartesian;
 pub mod smooth_union;
+pub mod spherical_to_cartesian;
 pub mod stretch;
 pub mod subtraction;
 pub mod sweep;
@@ -37,6 +37,8 @@ pub mod translate;
 pub mod triplanar_uv;
 pub mod twist;
 pub mod union;
+
+pub mod raycast;
 
 use crate::prelude::{Attribute, FieldFunction};
 
@@ -92,33 +94,40 @@ pub mod test {
 
 #[macro_export]
 macro_rules! impl_passthrough_op_1 {
-    ($ty:ty, <$pos: ident>, $attr:ty) => {
-        crate::impl_passthrough_op!($ty, <$pos, Sdf>, Sdf, $attr);
+    ($ty:ty, $attr:ty, $pos:ident $($gen:tt)*) => {
+        impl<Sdf, $pos $($gen)*> FieldOperator<Sdf, $pos, $attr> for $ty
+        where
+            $attr: crate::prelude::Attribute,
+            Sdf: crate::prelude::FieldFunction<$pos, $attr>,
+        {
+            fn operator(
+                &self,
+                attr: $attr,
+                sdf: &Sdf,
+                p: $pos,
+            ) -> <$attr as crate::prelude::Attribute>::Type {
+                sdf.evaluate(attr, p)
+            }
+        }
     };
 }
 
 #[macro_export]
 macro_rules! impl_passthrough_op_2 {
-    ($ty:ty, <$pos: ident>, $attr:ty $(, $field:tt)?) => {
-        crate::impl_passthrough_op!($ty, <$pos, SdfA, SdfB>, (SdfA, SdfB), $attr $(, $field)?);
-    };
-}
-
-#[macro_export]
-macro_rules! impl_passthrough_op {
-    ($ty:ty, <$pos: ident, $($sdf_gen:ident),+>, $sdf_ty:ty, $attr:ty $(, $field:tt)?) => {
-        impl<$($sdf_gen),+, $pos> FieldOperator<$sdf_ty, $pos, $attr> for $ty
+    ($ty:ty, $attr:ty, $field:tt, $pos:ident $($gen:tt)*) => {
+        impl<SdfA, SdfB, $pos $($gen)*> FieldOperator<(SdfA, SdfB), $pos, $attr> for $ty
         where
             $attr: crate::prelude::Attribute,
-            $($sdf_gen: crate::prelude::FieldFunction<$pos, $attr>),+
+            SdfA: crate::prelude::FieldFunction<$pos, $attr>,
+            SdfB: crate::prelude::FieldFunction<$pos, $attr>,
         {
             fn operator(
                 &self,
                 attr: $attr,
-                sdf: &$sdf_ty,
+                sdf: &(SdfA, SdfB),
                 p: $pos,
             ) -> <$attr as crate::prelude::Attribute>::Type {
-                sdf$(.$field)?.evaluate(attr, p)
+                sdf.$field.evaluate(attr, p)
             }
         }
     };

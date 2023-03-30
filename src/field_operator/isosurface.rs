@@ -31,8 +31,8 @@ where
     }
 }
 
-impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Normal<Dim>);
-impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Tangent<Dim>);
+impl_passthrough_op_1!(IsosurfaceOp, Normal<Dim>, Dim);
+impl_passthrough_op_1!(IsosurfaceOp, Tangent<Dim>, Dim);
 
 impl<Sdf, Dim> FieldOperator<Sdf, Dim, Uv> for IsosurfaceOp
 where
@@ -45,7 +45,7 @@ where
     }
 }
 
-impl_passthrough_op_1!(IsosurfaceOp, <Dim>, Color);
+impl_passthrough_op_1!(IsosurfaceOp, Color, Dim);
 
 /// Add an arbitrary radius to a distance field.
 pub type Isosurface<Sdf> = Operator<IsosurfaceOp, Sdf>;

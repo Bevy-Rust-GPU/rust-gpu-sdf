@@ -26,10 +26,10 @@ impl<Sdf> FieldOperator<Sdf, Vec3, Color> for ColorizeOp {
     }
 }
 
-impl_passthrough_op_1!(ColorizeOp, <Dim>, Distance);
-impl_passthrough_op_1!(ColorizeOp, <Dim>, Normal<Dim>);
-impl_passthrough_op_1!(ColorizeOp, <Dim>, Tangent<Dim>);
-impl_passthrough_op_1!(ColorizeOp, <Dim>, Uv);
+impl_passthrough_op_1!(ColorizeOp, Distance, Dim);
+impl_passthrough_op_1!(ColorizeOp, Normal<Dim>, Dim);
+impl_passthrough_op_1!(ColorizeOp, Tangent<Dim>, Dim);
+impl_passthrough_op_1!(ColorizeOp, Uv, Dim);
 
 pub type Colorize<Sdf> = Operator<ColorizeOp, Sdf>;
 
