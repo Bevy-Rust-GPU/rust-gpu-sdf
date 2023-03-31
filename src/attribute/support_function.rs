@@ -7,7 +7,7 @@ use rust_gpu_bridge::IsNormalized;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Attribute, Color, Distance, FieldFunction, FieldOperator, Normal, Operator, Tangent, Uv,
+        Attribute, Color, Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv,
     },
 };
 
@@ -40,7 +40,7 @@ pub struct SupportFunctionOp;
 
 impl<Sdf, Dim> FieldOperator<Sdf, Dim, Support<Dim>> for SupportFunctionOp
 where
-    Sdf: FieldFunction<Dim, Distance> + FieldFunction<Dim, Normal<Dim>>,
+    Sdf: Field<Dim, Distance> + Field<Dim, Normal<Dim>>,
     Dim: Default + Clone + Mul<f32, Output = Dim> + IsNormalized,
 {
     fn operator(

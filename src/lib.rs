@@ -1,10 +1,9 @@
 #![no_std]
 
 pub mod bound_tester;
-pub mod field_operator;
 pub use type_fields;
 pub mod attribute;
-pub mod field_function;
+pub mod field;
 
 pub mod prelude;
 

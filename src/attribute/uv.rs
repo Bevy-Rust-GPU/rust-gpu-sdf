@@ -1,6 +1,6 @@
 use rust_gpu_bridge::glam::Vec2;
 
-use crate::prelude::FieldFunction;
+use crate::prelude::Field;
 
 use super::Attribute;
 
@@ -12,7 +12,7 @@ impl Attribute for Uv {
     type Type = Vec2;
 }
 
-impl<Dim> FieldFunction<Dim, Uv> for Vec2 {
+impl<Dim> Field<Dim, Uv> for Vec2 {
     fn field(&self, _: Uv, _: Dim) -> Vec2 {
         *self
     }

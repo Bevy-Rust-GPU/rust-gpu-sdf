@@ -8,7 +8,7 @@ use rust_gpu_bridge::{
 };
 
 use crate::prelude::{
-    default, BoundError, Distance, ErrorTerm, FieldAttribute, FieldFunction, Normal, Support,
+    default, BoundError, Distance, ErrorTerm, Field, FieldAttribute, Normal, Support,
     SupportFunction,
 };
 
@@ -40,11 +40,7 @@ where
 
 impl<Sdf> BoundTester<Vec2, Sdf>
 where
-    Sdf: FieldFunction<Vec2, Distance>
-        + FieldFunction<Vec2, Normal<Vec2>>
-        + Default
-        + Clone
-        + 'static,
+    Sdf: Field<Vec2, Distance> + Field<Vec2, Normal<Vec2>> + Default + Clone + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()
@@ -57,7 +53,7 @@ where
                 // Compose sample coordinate
                 let pos = Vec2::new(x as f32, y as f32) * self.step;
 
-                // Calculate support
+                // Calculate error term
                 let error_term = BoundError {
                     target: SupportFunction {
                         target: self.sdf.clone(),
@@ -67,9 +63,14 @@ where
                 }
                 .attribute::<ErrorTerm<Vec2>>(pos);
 
+                // Skip samples with no valid support function
+                if error_term.support.normal == Vec2::ZERO {
+                    continue;
+                }
+
                 assert!(
                     error_term.error.abs() <= self.epsilon,
-                    "Encountered error term {:?} at point {:}, {:} with distance {:} and normal {:}, {}",
+                    "Encountered error {:?} at point {:}, {:} with distance {:} and normal {:}, {}",
                     pos.x,
                     pos.y,
                     error_term.error,
@@ -86,11 +87,7 @@ where
 
 impl<Sdf> BoundTester<Vec3, Sdf>
 where
-    Sdf: FieldFunction<Vec3, Distance>
-        + FieldFunction<Vec3, Normal<Vec3>>
-        + Default
-        + Clone
-        + 'static,
+    Sdf: Field<Vec3, Distance> + Field<Vec3, Normal<Vec3>> + Default + Clone + 'static,
 {
     pub fn is_field(self) -> bool {
         !self.is_bound()
@@ -104,30 +101,32 @@ where
                     // Compose sample coordinate
                     let pos = Vec3::new(x as f32, y as f32, z as f32) * self.step;
 
-                    // Calculate support
-                    let support = SupportFunction {
-                        target: self.sdf.clone(),
+                    // Calculate error term
+                    let error_term = BoundError {
+                        target: SupportFunction {
+                            target: self.sdf.clone(),
+                            ..default()
+                        },
                         ..Default::default()
                     }
-                    .field(Support::<Vec3>::default(), pos);
+                    .attribute::<ErrorTerm<Vec3>>(pos);
 
                     // Skip samples with no valid support function
-                    if support.normal == Vec3::ZERO {
+                    if error_term.support.normal == Vec3::ZERO {
                         continue;
                     }
 
-                    // Evaluate distance at surface vector, asserting that it is near zero
-                    let r = self.sdf.field(Distance, pos + support.support_vector());
                     assert!(
-                    r.abs() <= self.epsilon,
-                    "Encountered reciprocal distance {r:} at point {:}, {:}, {:} with distance {:} and normal {:}, {:}, {:}",
+                    error_term.error.abs() <= self.epsilon,
+                    "Encountered error {:} at point {:}, {:}, {:} with distance {:} and normal {:}, {:}, {:}",
+                    error_term.error,
                     pos.x,
                     pos.y,
                     pos.z,
-                    support.distance,
-                    support.normal.x,
-                    support.normal.y,
-                    support.normal.z
+                    error_term.support.distance,
+                    error_term.support.normal.x,
+                    error_term.support.normal.y,
+                    error_term.support.normal.z
                 );
                 }
             }

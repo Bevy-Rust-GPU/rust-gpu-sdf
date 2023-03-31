@@ -32,7 +32,7 @@ use core::ops::{Add, Mul};
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Attribute, Color, Distance, FieldFunction, FieldOperator, Normal, Operator, Support,
+        Attribute, Color, Distance, Field, FieldOperator, Normal, Operator, Support,
         SupportFunction, Tangent, Uv,
     },
 };
@@ -57,7 +57,7 @@ pub struct BoundErrorOp;
 
 impl<Sdf, Dim> FieldOperator<Sdf, Dim, ErrorTerm<Dim>> for BoundErrorOp
 where
-    Sdf: FieldFunction<Dim, Distance> + FieldFunction<Dim, Support<Dim>>,
+    Sdf: Field<Dim, Distance> + Field<Dim, Support<Dim>>,
     Dim: Default + Clone + Add<Dim, Output = Dim> + Mul<f32, Output = Dim>,
 {
     fn operator(
@@ -67,8 +67,9 @@ where
         p: Dim,
     ) -> <ErrorTerm<Dim> as Attribute>::Type {
         let support = sdf.field(Support::default(), p.clone());
-        out.error = sdf.field(Distance, p.clone() + support.support_vector());
+        let sv = support.support_vector();
         out.support = support;
+        out.error = sdf.field(Distance, p.clone() + sv);
         out
     }
 }

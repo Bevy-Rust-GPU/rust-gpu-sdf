@@ -1,4 +1,4 @@
-use crate::prelude::FieldFunction;
+use crate::prelude::Field;
 
 use super::Attribute;
 
@@ -10,7 +10,7 @@ impl Attribute for Distance {
     type Type = f32;
 }
 
-impl<Dim> FieldFunction<Dim, Distance> for f32 {
+impl<Dim> Field<Dim, Distance> for f32 {
     fn field(&self, _: Distance, _: Dim) -> f32 {
         *self
     }
