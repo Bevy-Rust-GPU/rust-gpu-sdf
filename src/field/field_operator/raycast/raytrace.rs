@@ -35,7 +35,6 @@ where
         out.steps = 1;
 
         if let Some(t) = sdf.intersect(input.eye + input.dir * input.start, input.dir) {
-            out.hit = true;
             out.closest_t = t;
             out.closest_dist = 0.0;
         }

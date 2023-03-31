@@ -42,17 +42,17 @@ where
             let pos = input.eye + input.dir * t;
             let dist = sdf.field(Distance, pos);
 
-            out.step(t, dist);
+            out.march_step(t, dist);
 
             if dist < 0.0 {
-                out.hit(step);
+                out.march_hit(step);
                 break;
             }
 
             t += self.epsilon.max(dist.abs());
 
             if t > input.end {
-                out.miss(step);
+                out.march_miss(step);
                 break;
             }
         }

@@ -4,8 +4,7 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Color, Distance, Field, FieldOperator, Normal, Operator, RaycastOutput,
-        Tangent, Uv,
+        Color, Distance, Field, FieldOperator, Normal, Operator, RaycastOutput, Tangent, Uv,
     },
 };
 
@@ -48,28 +47,23 @@ impl<const MAX_STEPS: u32, Sdf> FieldOperator<Sdf, RaycastInput, RaycastOutput>
 where
     Sdf: Field<Vec3, Distance>,
 {
-    fn operator(
-        &self,
-        mut out: RaycastOutput,
-        sdf: &Sdf,
-        input: RaycastInput,
-    ) -> RaycastOutput {
+    fn operator(&self, mut out: RaycastOutput, sdf: &Sdf, input: RaycastInput) -> RaycastOutput {
         let mut t = input.start;
         for i in 0..MAX_STEPS {
             let pos = input.eye + input.dir * t;
             let dist = sdf.field(Distance, pos);
 
-            out.step(t, dist);
+            out.march_step(t, dist);
 
             if dist < 0.0 {
-                out.hit(i);
+                out.march_hit(i);
                 break;
             }
 
             t += self.epsilon.max(dist.abs() * self.frac_1_k);
 
             if t > input.end {
-                out.miss(i);
+                out.march_miss(i);
                 break;
             }
         }
