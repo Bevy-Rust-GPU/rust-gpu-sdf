@@ -18,7 +18,7 @@ where
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
         let x = p.y * p.x.cos();
         let y = p.y * p.x.sin();
-        sdf.evaluate(attr, Vec2::new(y, x))
+        sdf.field(attr, Vec2::new(y, x))
     }
 }
 
@@ -31,7 +31,7 @@ where
         let x = p.y * p.x.sin() * p.z.cos();
         let y = p.y * p.x.sin() * p.z.sin();
         let z = p.y * p.x.cos();
-        sdf.evaluate(attr, Vec3::new(x, y, z))
+        sdf.field(attr, Vec3::new(x, y, z))
     }
 }
 

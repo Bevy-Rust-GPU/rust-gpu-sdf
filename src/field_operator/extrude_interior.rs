@@ -29,7 +29,7 @@ where
         sdf: &Sdf,
         p: Vec2,
     ) -> <Distance as crate::prelude::Attribute>::Type {
-        let d = sdf.evaluate(attr, p.x);
+        let d = sdf.field(attr, p.x);
         let w = Vec2::new(d, p.y.abs() + d.min(0.0) * self.depth);
         let exterior = w.max(Vec2::ZERO).length();
         let interior = w.x.max(w.y).min(0.0);
@@ -47,7 +47,7 @@ where
         sdf: &Sdf,
         p: Vec3,
     ) -> <Distance as crate::prelude::Attribute>::Type {
-        let d = sdf.evaluate(attr, p.truncate());
+        let d = sdf.field(attr, p.truncate());
         let w = Vec2::new(d, p.z.abs() + d.min(0.0) * self.depth);
         let exterior = w.max(Vec2::ZERO).length();
         let interior = w.x.max(w.y).min(0.0);
@@ -65,7 +65,7 @@ where
         sdf: &Sdf,
         p: Vec2,
     ) -> <Normal<Vec2> as crate::prelude::Attribute>::Type {
-        let d = sdf.evaluate(Normal::<f32>::default(), p.x);
+        let d = sdf.field(Normal::<f32>::default(), p.x);
         Vec2::new(d, 1.0).normalize()
     }
 }
@@ -80,7 +80,7 @@ where
         sdf: &Sdf,
         p: Vec3,
     ) -> <Normal<Vec3> as crate::prelude::Attribute>::Type {
-        let d = sdf.evaluate(Normal::<Vec2>::default(), p.truncate());
+        let d = sdf.field(Normal::<Vec2>::default(), p.truncate());
         d.extend(1.0).normalize()
     }
 }
@@ -91,7 +91,7 @@ where
     Sdf: crate::prelude::FieldFunction<Vec2, Uv>,
 {
     fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec3) -> <Uv as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p.truncate())
+        sdf.field(attr, p.truncate())
     }
 }
 
@@ -109,7 +109,7 @@ pub mod tests {
     use rust_gpu_bridge::glam::Vec3;
 
     use crate::{
-        prelude::{BoundChecker, Circle, ExtrudeInterior, Point},
+        prelude::{BoundTester, Circle, ExtrudeInterior, Point},
         test_op_attrs_3d,
     };
 

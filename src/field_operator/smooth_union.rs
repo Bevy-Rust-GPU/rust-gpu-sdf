@@ -21,8 +21,8 @@ where
     Dim: Clone,
 {
     fn operator(&self, attr: Distance, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
-        let d1 = sdf_a.evaluate(attr, p.clone());
-        let d2 = sdf_b.evaluate(attr, p);
+        let d1 = sdf_a.field(attr, p.clone());
+        let d2 = sdf_b.field(attr, p);
         let h = (0.5 + 0.5 * (d2 - d1) / self.k).clamp(0.0, 1.0);
         d2.mix(d1, h).sub(self.k * h * (1.0 - h))
     }
@@ -47,13 +47,13 @@ where
         + Splat,
 {
     fn operator(&self, attr: Normal<Dim>, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
-        let d1 = sdf_a.evaluate(Distance, p.clone());
-        let d2 = sdf_b.evaluate(Distance, p.clone());
+        let d1 = sdf_a.field(Distance, p.clone());
+        let d2 = sdf_b.field(Distance, p.clone());
 
         let h = ((d2.clone() - d1.clone()).div(self.k).mul(0.5).add(0.5)).saturate();
 
-        let n1 = sdf_a.evaluate(attr, p.clone());
-        let n2 = sdf_b.evaluate(attr, p.clone());
+        let n1 = sdf_a.field(attr, p.clone());
+        let n2 = sdf_b.field(attr, p.clone());
 
         n2.mix(n1, Dim::splat(h)).normalize()
     }
@@ -78,12 +78,12 @@ where
         + Splat,
 {
     fn operator(&self, attr: Tangent<Dim>, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
-        let d1 = sdf_a.evaluate(Distance, p.clone());
-        let d2 = sdf_b.evaluate(Distance, p.clone());
+        let d1 = sdf_a.field(Distance, p.clone());
+        let d2 = sdf_b.field(Distance, p.clone());
         let h = ((d2.clone() - d1.clone()).div(self.k).mul(0.5).add(0.5)).saturate();
 
-        let n1 = sdf_a.evaluate(attr, p.clone());
-        let n2 = sdf_b.evaluate(attr, p.clone());
+        let n1 = sdf_a.field(attr, p.clone());
+        let n2 = sdf_b.field(attr, p.clone());
 
         n2.mix(n1, Dim::splat(h)).normalize()
     }
@@ -109,13 +109,13 @@ where
         + AsVec2,
 {
     fn operator(&self, attr: Uv, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Vec2 {
-        let d1 = sdf_a.evaluate(Distance, p.clone());
-        let d2 = sdf_b.evaluate(Distance, p.clone());
+        let d1 = sdf_a.field(Distance, p.clone());
+        let d2 = sdf_b.field(Distance, p.clone());
 
         let h = ((d2.clone() - d1.clone()).div(self.k).mul(0.5).add(0.5)).saturate();
 
-        let n1 = sdf_a.evaluate(attr, p.clone());
-        let n2 = sdf_b.evaluate(attr, p.clone());
+        let n1 = sdf_a.field(attr, p.clone());
+        let n2 = sdf_b.field(attr, p.clone());
         if h > 0.5 {
             n1
         } else {

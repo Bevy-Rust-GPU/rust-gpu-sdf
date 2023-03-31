@@ -361,7 +361,7 @@ pub mod tests {
     use rust_gpu_bridge::glam::{Vec2, Vec3};
 
     use crate::prelude::{
-        BoundChecker, Capsule, Cube, Decagon, Hexagon, Line, Nonagon, Octagon, Pentagon,
+        BoundTester, Capsule, Cube, Decagon, Hexagon, Line, Nonagon, Octagon, Pentagon,
         Quadrilateral, Septagon, Square, Torus, Triangle,
     };
 

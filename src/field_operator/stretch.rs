@@ -47,7 +47,7 @@ where
             "ExtrudeInfiniteOp dir must be normalized"
         );
         let q = p.clone() - self.dir.clone() * p.dot(self.dir.clone());
-        sdf.evaluate(attr, q)
+        sdf.field(attr, q)
     }
 }
 
@@ -104,7 +104,7 @@ where
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
         let q =
             p.clone() - (self.dir.clone() * p.dot(self.dir.clone()).clamp(-self.dist, self.dist));
-        sdf.evaluate(attr, q)
+        sdf.field(attr, q)
     }
 }
 

@@ -45,7 +45,7 @@ where
     Dim: Clone + Mul<Dim, Output = Dim> + Sign + Dot,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
-        sdf.evaluate(attr, p.clone()) * p.clone().dot(self.axis.clone()).sign()
+        sdf.field(attr, p.clone()) * p.clone().dot(self.axis.clone()).sign()
     }
 }
 
@@ -55,7 +55,7 @@ where
     Dim: Clone + Dot + Mul<f32, Output = Dim>,
 {
     fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
-        (sdf.evaluate(attr, p.clone())).clone() * p.dot(self.axis.clone()).sign()
+        (sdf.field(attr, p.clone())).clone() * p.dot(self.axis.clone()).sign()
     }
 }
 
@@ -65,7 +65,7 @@ where
     Dim: Clone + Dot + Mul<f32, Output = Dim>,
 {
     fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> Vec2 {
-        (sdf.evaluate(attr, p.clone())).clone() * p.dot(self.axis.clone()).sign()
+        (sdf.field(attr, p.clone())).clone() * p.dot(self.axis.clone()).sign()
     }
 }
 

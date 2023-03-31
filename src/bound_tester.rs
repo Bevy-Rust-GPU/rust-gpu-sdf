@@ -1,3 +1,5 @@
+//! Utility type for testing the bound error term of a distance function
+
 use core::{marker::PhantomData, ops::RangeInclusive};
 
 use rust_gpu_bridge::{
@@ -6,13 +8,14 @@ use rust_gpu_bridge::{
 };
 
 use crate::prelude::{
-    default, Distance, FieldFunction, Normal, SupportFunction, SupportFunctionAttr,
+    default, BoundError, Distance, ErrorTerm, FieldAttribute, FieldFunction, Normal, Support,
+    SupportFunction,
 };
 
 /// Asserts that the provided distance function is a field rather than a bound
 #[derive(Debug, Clone, PartialEq)]
 #[repr(C)]
-pub struct BoundChecker<Dim, Sdf> {
+pub struct BoundTester<Dim, Sdf> {
     pub sdf: Sdf,
     pub samples: RangeInclusive<isize>,
     pub step: f32,
@@ -20,12 +23,12 @@ pub struct BoundChecker<Dim, Sdf> {
     pub _phantom: PhantomData<Dim>,
 }
 
-impl<Dim, Sdf> Default for BoundChecker<Dim, Sdf>
+impl<Dim, Sdf> Default for BoundTester<Dim, Sdf>
 where
     Sdf: Default,
 {
     fn default() -> Self {
-        BoundChecker {
+        BoundTester {
             sdf: default(),
             samples: -20..=20,
             step: 10.0 / 20.0,
@@ -35,7 +38,7 @@ where
     }
 }
 
-impl<Sdf> BoundChecker<Vec2, Sdf>
+impl<Sdf> BoundTester<Vec2, Sdf>
 where
     Sdf: FieldFunction<Vec2, Distance>
         + FieldFunction<Vec2, Normal<Vec2>>
@@ -55,29 +58,24 @@ where
                 let pos = Vec2::new(x as f32, y as f32) * self.step;
 
                 // Calculate support
-                let support = SupportFunction {
-                    target: self.sdf.clone(),
+                let error_term = BoundError {
+                    target: SupportFunction {
+                        target: self.sdf.clone(),
+                        ..default()
+                    },
                     ..Default::default()
                 }
-                .evaluate(SupportFunctionAttr::<Vec2>::default(), pos);
+                .attribute::<ErrorTerm<Vec2>>(pos);
 
-                // Skip samples with no valid support function
-                if support == Vec2::ZERO {
-                    continue;
-                }
-
-                let d = support.length();
-                let n = support.normalize();
-
-                // Evaluate distance at surface vector, asserting that it is near zero
-                let r = self.sdf.evaluate(Distance, pos + support);
                 assert!(
-                    r.abs() <= self.epsilon,
-                    "Encountered reciprocal distance {r:} at point {:}, {:} with distance {d:} and normal {:}, {}",
+                    error_term.error.abs() <= self.epsilon,
+                    "Encountered error term {:?} at point {:}, {:} with distance {:} and normal {:}, {}",
                     pos.x,
                     pos.y,
-                    n.x,
-                    n.y
+                    error_term.error,
+                    error_term.support.distance,
+                    error_term.support.normal.x,
+                    error_term.support.normal.y
                 );
             }
         }
@@ -86,7 +84,7 @@ where
     }
 }
 
-impl<Sdf> BoundChecker<Vec3, Sdf>
+impl<Sdf> BoundTester<Vec3, Sdf>
 where
     Sdf: FieldFunction<Vec3, Distance>
         + FieldFunction<Vec3, Normal<Vec3>>
@@ -111,27 +109,25 @@ where
                         target: self.sdf.clone(),
                         ..Default::default()
                     }
-                    .evaluate(SupportFunctionAttr::<Vec3>::default(), pos);
+                    .field(Support::<Vec3>::default(), pos);
 
                     // Skip samples with no valid support function
-                    if support == Vec3::ZERO {
+                    if support.normal == Vec3::ZERO {
                         continue;
                     }
 
-                    let d = support.length();
-                    let n = support.normalize();
-
                     // Evaluate distance at surface vector, asserting that it is near zero
-                    let r = self.sdf.evaluate(Distance, pos + support);
+                    let r = self.sdf.field(Distance, pos + support.support_vector());
                     assert!(
                     r.abs() <= self.epsilon,
-                    "Encountered reciprocal distance {r:} at point {:}, {:}, {:} with distance {d:} and normal {:}, {:}, {:}",
+                    "Encountered reciprocal distance {r:} at point {:}, {:}, {:} with distance {:} and normal {:}, {:}, {:}",
                     pos.x,
                     pos.y,
                     pos.z,
-                    n.x,
-                    n.y,
-                    n.z
+                    support.distance,
+                    support.normal.x,
+                    support.normal.y,
+                    support.normal.z
                 );
                 }
             }

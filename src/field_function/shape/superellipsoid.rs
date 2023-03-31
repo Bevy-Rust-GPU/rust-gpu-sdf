@@ -19,7 +19,7 @@ impl Default for Superellipsoid {
 }
 
 impl FieldFunction<Vec3, Distance> for Superellipsoid {
-    fn evaluate(&self, _attr: Distance, p: Vec3) -> f32 {
+    fn field(&self, _attr: Distance, p: Vec3) -> f32 {
         let d = (p.x.abs().pow(self.e1) + p.y.abs().pow(self.e2)).pow(self.e2 / self.e1)
             + p.z.abs().pow(self.e1);
 
@@ -28,7 +28,7 @@ impl FieldFunction<Vec3, Distance> for Superellipsoid {
 }
 
 impl FieldFunction<Vec3, Normal<Vec3>> for Superellipsoid {
-    fn evaluate(&self, _attr: Normal<Vec3>, p: Vec3) -> Vec3 {
+    fn field(&self, _attr: Normal<Vec3>, p: Vec3) -> Vec3 {
         let pa = p.abs();
         let pp = pa.pow(Vec3::new(self.e1, self.e2, self.e1));
         pp.normalize() * p.sign()
@@ -39,7 +39,7 @@ impl FieldFunction<Vec3, Normal<Vec3>> for Superellipsoid {
 pub mod test {
     use rust_gpu_bridge::glam::Vec3;
 
-    use crate::prelude::BoundChecker;
+    use crate::prelude::BoundTester;
 
     use super::Superellipsoid;
 

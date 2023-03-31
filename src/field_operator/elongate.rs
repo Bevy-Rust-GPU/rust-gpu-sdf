@@ -41,7 +41,7 @@ where
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: f32) -> f32 {
         let q = p.abs() - self.extent;
-        sdf.evaluate(attr, q.max(0.0)).add(q.min(0.0))
+        sdf.field(attr, q.max(0.0)).add(q.min(0.0))
     }
 }
 
@@ -51,7 +51,7 @@ where
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Vec2) -> f32 {
         let q = p.abs() - self.extent;
-        sdf.evaluate(attr, q.max(Vec2::ZERO))
+        sdf.field(attr, q.max(Vec2::ZERO))
             .add(q.x.max(q.y).min(0.0))
     }
 }
@@ -62,7 +62,7 @@ where
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Vec3) -> f32 {
         let q = p.abs() - self.extent;
-        sdf.evaluate(attr, q.max(Vec3::ZERO))
+        sdf.field(attr, q.max(Vec3::ZERO))
             .add(q.x.max(q.y.max(q.z)).min(0.0))
     }
 }

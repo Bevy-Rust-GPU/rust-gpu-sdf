@@ -15,19 +15,19 @@ use crate::prelude::{Distance, FieldFunction, Normal};
 pub struct TaxicabMetric;
 
 impl FieldFunction<f32, Distance> for TaxicabMetric {
-    fn evaluate(&self, _attr: Distance, p: f32) -> f32 {
+    fn field(&self, _attr: Distance, p: f32) -> f32 {
         p.abs()
     }
 }
 
 impl FieldFunction<Vec2, Distance> for TaxicabMetric {
-    fn evaluate(&self, _attr: Distance, p: Vec2) -> f32 {
+    fn field(&self, _attr: Distance, p: Vec2) -> f32 {
         p.x.abs().add(p.y.abs())
     }
 }
 
 impl FieldFunction<Vec3, Distance> for TaxicabMetric {
-    fn evaluate(&self, _attr: Distance, p: Vec3) -> f32 {
+    fn field(&self, _attr: Distance, p: Vec3) -> f32 {
         p.x.abs().add(p.y.abs()).add(p.z.abs())
     }
 }
@@ -36,7 +36,7 @@ impl<Dim> FieldFunction<Dim, Normal<Dim>> for TaxicabMetric
 where
     Dim: Sign + Normalize,
 {
-    fn evaluate(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
+    fn field(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
         p.sign().normalize()
     }
 }
@@ -45,7 +45,7 @@ where
 pub mod test {
     use rust_gpu_bridge::glam::{Vec2, Vec3};
 
-    use crate::prelude::{BoundChecker, TaxicabMetric};
+    use crate::prelude::{BoundTester, TaxicabMetric};
 
     #[test]
     #[should_panic]

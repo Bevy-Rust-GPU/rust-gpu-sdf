@@ -18,7 +18,7 @@ where
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
         let r = p.length();
         let a = p.x.atan2(p.y);
-        sdf.evaluate(attr, Vec2::new(a, r))
+        sdf.field(attr, Vec2::new(a, r))
     }
 }
 
@@ -31,7 +31,7 @@ where
         let r = p.length();
         let i = (p.z / r).acos();
         let a = p.y.sign() * (p.x / p.xy().length()).acos();
-        sdf.evaluate(attr, Vec3::new(i, r, a))
+        sdf.field(attr, Vec3::new(i, r, a))
     }
 }
 

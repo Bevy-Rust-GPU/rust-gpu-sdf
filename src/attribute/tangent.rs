@@ -28,19 +28,19 @@ impl<Dim> Attribute for Tangent<Dim> {
 }
 
 impl<Dim> FieldFunction<Dim, Tangent<f32>> for f32 {
-    fn evaluate(&self, _: Tangent<f32>, _: Dim) -> f32 {
+    fn field(&self, _: Tangent<f32>, _: Dim) -> f32 {
         *self
     }
 }
 
 impl<Dim> FieldFunction<Dim, Tangent<Vec2>> for Vec2 {
-    fn evaluate(&self, _: Tangent<Vec2>, _: Dim) -> Vec2 {
+    fn field(&self, _: Tangent<Vec2>, _: Dim) -> Vec2 {
         *self
     }
 }
 
 impl<Dim> FieldFunction<Dim, Tangent<Vec3>> for Vec3 {
-    fn evaluate(&self, _: Tangent<Vec3>, _: Dim) -> Vec3 {
+    fn field(&self, _: Tangent<Vec3>, _: Dim) -> Vec3 {
         *self
     }
 }

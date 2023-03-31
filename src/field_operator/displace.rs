@@ -22,8 +22,8 @@ where
     Dim: Clone,
 {
     fn operator(&self, attr: Distance, sdf: &SdfA, p: Dim) -> f32 {
-        sdf.evaluate(attr, p.clone())
-            .add(self.displace.evaluate(attr, p))
+        sdf.field(attr, p.clone())
+            .add(self.displace.field(attr, p))
     }
 }
 
@@ -34,9 +34,9 @@ where
     Dim: Clone + Add<Dim, Output = Dim> + Normalize,
 {
     fn operator(&self, attr: Normal<Dim>, sdf: &SdfA, p: Dim) -> Dim {
-        sdf.evaluate(attr, p.clone())
+        sdf.field(attr, p.clone())
             .clone()
-            .add(self.displace.evaluate(attr, p).clone())
+            .add(self.displace.field(attr, p).clone())
             .normalize()
     }
 }
@@ -48,9 +48,9 @@ where
     Dim: Clone + Add<Dim, Output = Dim> + Normalize,
 {
     fn operator(&self, attr: Uv, sdf: &SdfA, p: Dim) -> Vec2 {
-        sdf.evaluate(attr, p.clone())
+        sdf.field(attr, p.clone())
             .clone()
-            .add(self.displace.evaluate(attr, p).clone())
+            .add(self.displace.field(attr, p).clone())
             .normalize()
     }
 }

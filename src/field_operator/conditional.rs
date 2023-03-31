@@ -22,7 +22,7 @@ where
         if CONDITION {
             self.conditional_op.operator(attr, sdf, p)
         } else {
-            sdf.evaluate(attr, p)
+            sdf.field(attr, p)
         }
     }
 }

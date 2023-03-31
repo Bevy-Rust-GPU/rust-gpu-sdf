@@ -15,7 +15,7 @@ use crate::prelude::{Distance, FieldFunction};
 pub struct Squircle;
 
 impl FieldFunction<Vec2, Distance> for Squircle {
-    fn evaluate(&self, _attr: Distance, mut p: Vec2) -> f32 {
+    fn field(&self, _attr: Distance, mut p: Vec2) -> f32 {
         // Axial reflection
         p = p.abs();
 
@@ -65,7 +65,7 @@ impl FieldFunction<Vec2, Distance> for Squircle {
 pub mod test {
     use rust_gpu_bridge::glam::Vec2;
 
-    use crate::prelude::{BoundChecker, NormalTetrahedron};
+    use crate::prelude::{BoundTester, NormalTetrahedron};
 
     use super::Squircle;
 

@@ -20,7 +20,7 @@ where
     Sdf: FieldFunction<Dim, Distance>,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
-        sdf.evaluate(attr, p).abs()
+        sdf.field(attr, p).abs()
     }
 }
 
@@ -31,9 +31,9 @@ where
     Dim: Clone + Mul<f32, Output = Dim>,
 {
     fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
-        let d = sdf.evaluate(Distance, p.clone());
+        let d = sdf.field(Distance, p.clone());
         let s = d.sign();
-        sdf.evaluate(attr, p.clone() * s)
+        sdf.field(attr, p.clone() * s)
     }
 }
 
@@ -44,9 +44,9 @@ where
     Dim: Clone + Mul<f32, Output = Dim>,
 {
     fn operator(&self, attr: Tangent<Dim>, sdf: &Sdf, p: Dim) -> Dim {
-        let d = sdf.evaluate(Distance, p.clone());
+        let d = sdf.field(Distance, p.clone());
         let s = d.sign();
-        sdf.evaluate(attr, p.clone() * s)
+        sdf.field(attr, p.clone() * s)
     }
 }
 
@@ -57,9 +57,9 @@ where
     Dim: Clone + Mul<f32, Output = Dim>,
 {
     fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> Vec2 {
-        let d = sdf.evaluate(Distance, p.clone());
+        let d = sdf.field(Distance, p.clone());
         let s = d.sign();
-        sdf.evaluate(attr, p.clone() * s)
+        sdf.field(attr, p.clone() * s)
     }
 }
 

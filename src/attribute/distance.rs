@@ -11,7 +11,7 @@ impl Attribute for Distance {
 }
 
 impl<Dim> FieldFunction<Dim, Distance> for f32 {
-    fn evaluate(&self, _: Distance, _: Dim) -> f32 {
+    fn field(&self, _: Distance, _: Dim) -> f32 {
         *self
     }
 }

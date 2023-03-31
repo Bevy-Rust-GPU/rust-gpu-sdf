@@ -16,13 +16,13 @@ impl Default for Superellipse {
 }
 
 impl FieldFunction<Vec2, Distance> for Superellipse {
-    fn evaluate(&self, _attr: Distance, p: Vec2) -> f32 {
+    fn field(&self, _attr: Distance, p: Vec2) -> f32 {
         (p.x.abs().pow(self.n) + p.y.abs().pow(self.n)).pow(1.0 / self.n)
     }
 }
 
 impl FieldFunction<Vec2, Normal<Vec2>> for Superellipse {
-    fn evaluate(&self, _attr: Normal<Vec2>, p: Vec2) -> Vec2 {
+    fn field(&self, _attr: Normal<Vec2>, p: Vec2) -> Vec2 {
         p.abs().pow(Vec2::splat(self.n)).normalize() * p.sign()
     }
 }
@@ -31,7 +31,7 @@ impl FieldFunction<Vec2, Normal<Vec2>> for Superellipse {
 pub mod test {
     use rust_gpu_bridge::glam::Vec2;
 
-    use crate::prelude::BoundChecker;
+    use crate::prelude::BoundTester;
 
     use super::Superellipse;
 

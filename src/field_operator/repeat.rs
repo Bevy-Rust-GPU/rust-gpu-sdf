@@ -51,7 +51,7 @@ where
         let q = (p.add(0.5).mul(self.period.clone()))
             .modulo(self.period.clone())
             .sub(self.period.clone().mul(0.5));
-        sdf.evaluate(attr, q)
+        sdf.field(attr, q)
     }
 }
 
@@ -108,7 +108,7 @@ where
                 * (p / self.period.clone())
                     .round()
                     .clamp(-self.count.clone(), self.count.clone());
-        sdf.evaluate(attr, q)
+        sdf.field(attr, q)
     }
 }
 

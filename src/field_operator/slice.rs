@@ -33,7 +33,7 @@ where
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Vec2) -> f32 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        sdf.evaluate(attr, u + v)
+        sdf.field(attr, u + v)
     }
 }
 
@@ -44,7 +44,7 @@ where
     fn operator(&self, _: Normal<Vec2>, sdf: &Sdf, p: Vec2) -> Vec2 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        let n = sdf.evaluate(Normal::<Vec3>::default(), u + v);
+        let n = sdf.field(Normal::<Vec3>::default(), u + v);
         Vec2::new(n.dot(self.u), n.dot(self.v)).normalize()
     }
 }
@@ -56,7 +56,7 @@ where
     fn operator(&self, _: Tangent<Vec2>, sdf: &Sdf, p: Vec2) -> Vec2 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        let n = sdf.evaluate(Tangent::<Vec3>::default(), u + v);
+        let n = sdf.field(Tangent::<Vec3>::default(), u + v);
         Vec2::new(n.dot(self.u), n.dot(self.v)).normalize()
     }
 }
@@ -68,7 +68,7 @@ where
     fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec2) -> Vec2 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        sdf.evaluate(attr, u + v)
+        sdf.field(attr, u + v)
     }
 }
 

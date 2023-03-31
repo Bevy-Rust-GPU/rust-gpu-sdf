@@ -25,8 +25,8 @@ where
         (core, shell): &(Core, Shell),
         p: Vec2,
     ) -> <Distance as crate::prelude::Attribute>::Type {
-        let q = core.evaluate(attr, p.x);
-        shell.evaluate(attr, q)
+        let q = core.field(attr, p.x);
+        shell.field(attr, q)
     }
 }
 
@@ -41,8 +41,8 @@ where
         (core, shell): &(Core, Shell),
         p: Vec3,
     ) -> <Distance as crate::prelude::Attribute>::Type {
-        let q = Vec2::new(core.evaluate(attr, p.truncate()), p.z);
-        shell.evaluate(attr, q)
+        let q = Vec2::new(core.field(attr, p.truncate()), p.z);
+        shell.field(attr, q)
     }
 }
 
@@ -52,8 +52,8 @@ where
     Shell: FieldFunction<Vec2, Normal<Vec2>>,
 {
     fn operator(&self, _: Normal<Vec3>, (core, shell): &(Core, Shell), p: Vec3) -> Vec3 {
-        let q = Vec2::new(core.evaluate(Distance, p.truncate()), p.z);
-        let n = shell.evaluate(Normal::<Vec2>::default(), q);
+        let q = Vec2::new(core.field(Distance, p.truncate()), p.z);
+        let n = shell.field(Normal::<Vec2>::default(), q);
         let w = p.xy().normalize() * n.x;
         Vec3::new(w.x, w.y, n.y).into()
     }
@@ -65,10 +65,10 @@ where
     Shell: FieldFunction<Vec2, Uv>,
 {
     fn operator(&self, attr: Uv, (core, shell): &(Core, Shell), p: Vec3) -> Vec2 {
-        let dist_core = core.evaluate(Distance, p.truncate());
-        let uv_core = core.evaluate(attr, p.truncate());
+        let dist_core = core.field(Distance, p.truncate());
+        let uv_core = core.field(attr, p.truncate());
         let q = Vec2::new(dist_core, p.z);
-        let uv_shell = shell.evaluate(attr, q);
+        let uv_shell = shell.field(attr, q);
         Vec2::new(uv_core.x, uv_shell.x + uv_shell.y)
     }
 }
@@ -91,7 +91,7 @@ pub mod tests {
     use rust_gpu_bridge::glam::Vec3;
 
     use crate::{
-        prelude::{BoundChecker, Circle, Point, Sweep},
+        prelude::{BoundTester, Circle, Point, Sweep},
         test_op_attrs_3d,
     };
 

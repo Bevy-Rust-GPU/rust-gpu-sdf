@@ -1,6 +1,6 @@
 #![no_std]
 
-pub mod bound_checker;
+pub mod bound_tester;
 pub mod field_operator;
 pub use type_fields;
 pub mod attribute;

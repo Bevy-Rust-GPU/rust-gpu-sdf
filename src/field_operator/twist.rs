@@ -43,7 +43,7 @@ where
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
         let q = Vec2::from_angle(self.k * self.axis_pos.dot(p)).rotate(p);
-        sdf.evaluate(attr, q)
+        sdf.field(attr, q)
     }
 }
 
@@ -54,7 +54,7 @@ where
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec3) -> Attr::Type {
         let q = Quat::from_axis_angle(self.axis_rot, self.k * self.axis_pos.dot(p)) * p;
-        sdf.evaluate(attr, q)
+        sdf.field(attr, q)
     }
 }
 

@@ -6,7 +6,9 @@ pub mod sphere_trace_naive;
 
 use rust_gpu_bridge::glam::Vec3;
 
-use crate::default;
+use crate::{default, prelude::{Attribute, FieldFunction}};
+
+use super::{FieldOperator, Operator};
 
 #[derive(Copy, Clone, PartialEq)]
 #[repr(C)]
@@ -73,3 +75,8 @@ impl RaycastOutput {
         self.steps = step;
     }
 }
+
+impl Attribute for RaycastOutput {
+    type Type = RaycastOutput;
+}
+

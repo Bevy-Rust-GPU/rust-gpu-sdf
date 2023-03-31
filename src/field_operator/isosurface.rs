@@ -27,7 +27,7 @@ where
     Sdf: FieldFunction<Dim, Distance>,
 {
     fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
-        sdf.evaluate(attr, p).sub(self.delta)
+        sdf.field(attr, p).sub(self.delta)
     }
 }
 
@@ -41,7 +41,7 @@ where
     Dim: Div<f32, Output = Dim>,
 {
     fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> <Uv as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p / self.delta)
+        sdf.field(attr, p / self.delta)
     }
 }
 

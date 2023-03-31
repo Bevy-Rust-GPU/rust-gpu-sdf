@@ -28,7 +28,7 @@ where
         sdf: &Sdf,
         p: Vec2,
     ) -> <Distance as crate::prelude::Attribute>::Type {
-        let d = sdf.evaluate(attr, p.x);
+        let d = sdf.field(attr, p.x);
         let w = Vec2::new(d, p.y.abs() - self.depth);
         w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()
     }
@@ -44,7 +44,7 @@ where
         sdf: &Sdf,
         p: Vec3,
     ) -> <Distance as crate::prelude::Attribute>::Type {
-        let d = sdf.evaluate(attr, p.truncate());
+        let d = sdf.field(attr, p.truncate());
         let w = Vec2::new(d, p.z.abs() - self.depth);
         w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()
     }
@@ -55,7 +55,7 @@ where
     Sdf: FieldFunction<f32, Normal<f32>>,
 {
     fn operator(&self, _: Normal<Vec2>, sdf: &Sdf, p: Vec2) -> Vec2 {
-        let d = sdf.evaluate(Normal::<f32>::default(), p.x);
+        let d = sdf.field(Normal::<f32>::default(), p.x);
         let w = Vec2::new(d, p.y.abs() - self.depth);
         let s = p.y.sign();
 
@@ -83,7 +83,7 @@ where
     Sdf: FieldFunction<Vec2, Normal<Vec2>>,
 {
     fn operator(&self, _: Normal<Vec3>, sdf: &Sdf, p: Vec3) -> Vec3 {
-        let d = sdf.evaluate(Normal::<Vec2>::default(), p.xy());
+        let d = sdf.field(Normal::<Vec2>::default(), p.xy());
         if p.z.abs() > p.xy().length() * 0.5 {
             Vec3::new(0.0, 0.0, p.z.sign())
         } else {
@@ -99,7 +99,7 @@ where
     Sdf: crate::prelude::FieldFunction<f32, Uv>,
 {
     fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec2) -> <Uv as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p.x) + Vec2::new(0.0, p.y.abs())
+        sdf.field(attr, p.x) + Vec2::new(0.0, p.y.abs())
     }
 }
 
@@ -109,7 +109,7 @@ where
     Sdf: crate::prelude::FieldFunction<Vec2, Uv>,
 {
     fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec3) -> <Uv as crate::prelude::Attribute>::Type {
-        sdf.evaluate(attr, p.truncate()) + Vec2::new(0.0, p.z.abs())
+        sdf.field(attr, p.truncate()) + Vec2::new(0.0, p.z.abs())
     }
 }
 
@@ -131,7 +131,7 @@ pub mod tests {
     use rust_gpu_bridge::glam::{Vec2, Vec3};
 
     use crate::{
-        prelude::{BoundChecker, Circle, Sphere, Extrude, Point},
+        prelude::{BoundTester, Circle, Sphere, Extrude, Point},
         test_op_attrs_2d,
         test_op_attrs_3d,
     };

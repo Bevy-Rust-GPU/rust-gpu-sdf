@@ -17,7 +17,7 @@ where
     Dim: Clone + rust_gpu_bridge::Normalize,
 {
     fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
-        sdf.evaluate(attr, p).clone().normalize()
+        sdf.field(attr, p).clone().normalize()
     }
 }
 
@@ -27,7 +27,7 @@ where
     Dim: Clone + rust_gpu_bridge::Normalize,
 {
     fn operator(&self, attr: Tangent<Dim>, sdf: &Sdf, p: Dim) -> Dim {
-        sdf.evaluate(attr, p).clone().normalize()
+        sdf.field(attr, p).clone().normalize()
     }
 }
 

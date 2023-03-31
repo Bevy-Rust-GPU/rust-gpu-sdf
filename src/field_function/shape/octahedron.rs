@@ -19,7 +19,7 @@ impl Default for Octahedron {
 }
 
 impl FieldFunction<Vec3, Distance> for Octahedron {
-    fn evaluate(&self, _attr: Distance, p: Vec3) -> f32 {
+    fn field(&self, _attr: Distance, p: Vec3) -> f32 {
         // Axial reflection
         let p = p.abs();
 
@@ -49,7 +49,7 @@ impl<Dim> FieldFunction<Dim, Normal<Dim>> for Octahedron
 where
     Dim: Sign + Normalize,
 {
-    fn evaluate(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
+    fn field(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
         p.sign().normalize()
     }
 }
@@ -58,7 +58,7 @@ where
 pub mod test {
     use rust_gpu_bridge::glam::Vec3;
 
-    use crate::prelude::BoundChecker;
+    use crate::prelude::BoundTester;
 
     use super::Octahedron;
 

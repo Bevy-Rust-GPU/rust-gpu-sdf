@@ -21,7 +21,7 @@ where
     Attr::Type: Mul<f32, Output = Attr::Type>,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
-        sdf.evaluate(attr, p / self.scale).mul(self.scale)
+        sdf.field(attr, p / self.scale).mul(self.scale)
     }
 }
 

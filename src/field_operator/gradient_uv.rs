@@ -35,10 +35,10 @@ where
         p: Vec3,
     ) -> <Tangent<Vec3> as crate::prelude::Attribute>::Type {
         let k = Vec2::new(1.0, -1.0);
-        k.xyy() * sdf.evaluate(Uv, p + k.xyy() * self.epsilon).dot(self.axis)
-            + k.yyx() * sdf.evaluate(Uv, p + k.yyx() * self.epsilon).dot(self.axis)
-            + k.yxy() * sdf.evaluate(Uv, p + k.yxy() * self.epsilon).dot(self.axis)
-            + k.xxx() * sdf.evaluate(Uv, p + k.xxx() * self.epsilon).dot(self.axis)
+        k.xyy() * sdf.field(Uv, p + k.xyy() * self.epsilon).dot(self.axis)
+            + k.yyx() * sdf.field(Uv, p + k.yyx() * self.epsilon).dot(self.axis)
+            + k.yxy() * sdf.field(Uv, p + k.yxy() * self.epsilon).dot(self.axis)
+            + k.xxx() * sdf.field(Uv, p + k.xxx() * self.epsilon).dot(self.axis)
     }
 }
 

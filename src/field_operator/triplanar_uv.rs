@@ -27,7 +27,7 @@ where
         let top = p.xz();
 
         let weights = sdf
-            .evaluate(Normal::<Vec3>::default(), p)
+            .field(Normal::<Vec3>::default(), p)
             .abs()
             .pow(Vec3::splat(self.k))
             .normalize();

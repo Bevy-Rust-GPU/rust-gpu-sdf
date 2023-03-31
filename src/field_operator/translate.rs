@@ -20,7 +20,7 @@ where
     Dim: Clone + Sub<Dim, Output = Dim>,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
-        sdf.evaluate(attr, p - self.translation.clone())
+        sdf.field(attr, p - self.translation.clone())
     }
 }
 

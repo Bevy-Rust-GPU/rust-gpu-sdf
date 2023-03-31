@@ -4,7 +4,7 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Attribute, Color, Distance, FieldFunction, FieldOperator, Normal, Operator, RaycastOutput,
+        Color, Distance, FieldFunction, FieldOperator, Normal, Operator, RaycastOutput,
         Tangent, Uv,
     },
 };
@@ -43,10 +43,6 @@ impl<const MAX_STEPS: u32> SphereTraceLipschitzOp<MAX_STEPS> {
     }
 }
 
-impl Attribute for RaycastOutput {
-    type Type = RaycastOutput;
-}
-
 impl<const MAX_STEPS: u32, Sdf> FieldOperator<Sdf, RaycastInput, RaycastOutput>
     for SphereTraceLipschitzOp<MAX_STEPS>
 where
@@ -57,11 +53,11 @@ where
         mut out: RaycastOutput,
         sdf: &Sdf,
         input: RaycastInput,
-    ) -> <RaycastOutput as Attribute>::Type {
+    ) -> RaycastOutput {
         let mut t = input.start;
         for i in 0..MAX_STEPS {
             let pos = input.eye + input.dir * t;
-            let dist = sdf.evaluate(Distance, pos);
+            let dist = sdf.field(Distance, pos);
 
             out.step(t, dist);
 

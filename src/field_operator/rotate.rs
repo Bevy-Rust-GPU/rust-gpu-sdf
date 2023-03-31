@@ -19,7 +19,7 @@ where
     Sdf: FieldFunction<Vec2, Attr>,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
-        sdf.evaluate(attr, Vec2::from_angle(-self.angle).rotate(p))
+        sdf.field(attr, Vec2::from_angle(-self.angle).rotate(p))
     }
 }
 
@@ -52,7 +52,7 @@ where
     Sdf: FieldFunction<Vec3, Attr>,
 {
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec3) -> Attr::Type {
-        sdf.evaluate(attr, self.rotation.inverse() * p)
+        sdf.field(attr, self.rotation.inverse() * p)
     }
 }
 

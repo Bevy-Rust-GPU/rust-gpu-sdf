@@ -1,6 +1,8 @@
 pub use crate::{
-    attribute::{color::*, distance::*, normal::*, support_function::*, tangent::*, uv::*, *},
-    bound_checker::*,
+    attribute::{
+        bound_error::*, color::*, distance::*, normal::*, support_function::*, tangent::*, uv::*, *,
+    },
+    bound_tester::*,
     field_function::{
         metric::{chebyshev::*, euclidean::*, superellipse::*, taxicab::*, *},
         shape::{composite::*, octahedron::*, plane::*, squircle::*, *},

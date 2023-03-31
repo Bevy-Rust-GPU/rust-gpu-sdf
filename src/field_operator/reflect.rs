@@ -48,7 +48,7 @@ where
 
         let q = p.clone() - self.axis.clone() * p.clone().dot(self.axis.clone()).min(0.0) * 2.0;
 
-        sdf.evaluate(attr, q)
+        sdf.field(attr, q)
     }
 }
 
@@ -74,7 +74,7 @@ where
         let pc = self.axis.clone() * c.min(0.0) * 2.0;
         let q = p.clone() - pc;
 
-        let n = sdf.evaluate(attr, q);
+        let n = sdf.field(attr, q);
         n.clone()
             .mix(n.reflect(self.axis.clone()), Dim::splat(c.step(0.0)))
     }
@@ -94,7 +94,7 @@ where
         let pc = c.min(0.0) * 2.0;
         let q = p - pc;
 
-        let n = sdf.evaluate(attr, q);
+        let n = sdf.field(attr, q);
         n.mix(n * Vec2::new(-1.0, 1.0), Vec2::splat(c.step(0.0)))
     }
 }
@@ -113,7 +113,7 @@ where
         let pc = self.axis * c.min(0.0) * 2.0;
         let q = p - pc;
 
-        let n = sdf.evaluate(attr, q);
+        let n = sdf.field(attr, q);
         n.mix(n.reflect(self.axis), Vec2::splat(c.step(0.0)))
     }
 }
@@ -132,7 +132,7 @@ where
         let pc = self.axis * c.min(0.0) * 2.0;
         let q = p - pc;
 
-        let n = sdf.evaluate(attr, q);
+        let n = sdf.field(attr, q);
         n.mix(n.reflect(self.axis.xy()), Vec2::splat(c.step(0.0)))
     }
 }

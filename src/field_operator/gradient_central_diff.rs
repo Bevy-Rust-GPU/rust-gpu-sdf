@@ -32,7 +32,7 @@ where
         sdf: &Sdf,
         p: f32,
     ) -> <Normal<f32> as crate::prelude::Attribute>::Type {
-        sdf.evaluate(Distance, p + self.epsilon) - sdf.evaluate(Distance, p - self.epsilon)
+        sdf.field(Distance, p + self.epsilon) - sdf.field(Distance, p - self.epsilon)
     }
 }
 
@@ -47,10 +47,10 @@ where
         p: Vec2,
     ) -> <Normal<Vec2> as crate::prelude::Attribute>::Type {
         Vec2::new(
-            sdf.evaluate(Distance, Vec2::new(p.x + self.epsilon, p.y))
-                - sdf.evaluate(Distance, Vec2::new(p.x - self.epsilon, p.y)),
-            sdf.evaluate(Distance, Vec2::new(p.x, p.y + self.epsilon))
-                - sdf.evaluate(Distance, Vec2::new(p.x, p.y - self.epsilon)),
+            sdf.field(Distance, Vec2::new(p.x + self.epsilon, p.y))
+                - sdf.field(Distance, Vec2::new(p.x - self.epsilon, p.y)),
+            sdf.field(Distance, Vec2::new(p.x, p.y + self.epsilon))
+                - sdf.field(Distance, Vec2::new(p.x, p.y - self.epsilon)),
         )
     }
 }
@@ -66,12 +66,12 @@ where
         p: Vec3,
     ) -> <Normal<Vec3> as crate::prelude::Attribute>::Type {
         Vec3::new(
-            sdf.evaluate(Distance, Vec3::new(p.x + self.epsilon, p.y, p.z))
-                - sdf.evaluate(Distance, Vec3::new(p.x - self.epsilon, p.y, p.z)),
-            sdf.evaluate(Distance, Vec3::new(p.x, p.y + self.epsilon, p.z))
-                - sdf.evaluate(Distance, Vec3::new(p.x, p.y - self.epsilon, p.z)),
-            sdf.evaluate(Distance, Vec3::new(p.x, p.y, p.z + self.epsilon))
-                - sdf.evaluate(Distance, Vec3::new(p.x, p.y, p.z - self.epsilon)),
+            sdf.field(Distance, Vec3::new(p.x + self.epsilon, p.y, p.z))
+                - sdf.field(Distance, Vec3::new(p.x - self.epsilon, p.y, p.z)),
+            sdf.field(Distance, Vec3::new(p.x, p.y + self.epsilon, p.z))
+                - sdf.field(Distance, Vec3::new(p.x, p.y - self.epsilon, p.z)),
+            sdf.field(Distance, Vec3::new(p.x, p.y, p.z + self.epsilon))
+                - sdf.field(Distance, Vec3::new(p.x, p.y, p.z - self.epsilon)),
         )
     }
 }

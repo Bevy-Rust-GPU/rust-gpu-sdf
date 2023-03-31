@@ -1,6 +1,6 @@
 //! Vector to nearest surface
 
-use core::{marker::PhantomData, ops::Mul};
+use core::ops::Mul;
 
 use rust_gpu_bridge::IsNormalized;
 
@@ -12,51 +12,60 @@ use crate::{
 };
 
 /// Support function attribute marker
-pub struct SupportFunctionAttr<Dim> {
-    pub _phantom: PhantomData<Dim>,
+#[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
+pub struct Support<Dim> {
+    pub normal: Dim,
+    pub distance: f32,
 }
 
-impl<Dim> Default for SupportFunctionAttr<Dim> {
-    fn default() -> Self {
-        SupportFunctionAttr {
-            _phantom: Default::default(),
-        }
+impl<Dim> Support<Dim> {
+    pub fn support_vector(&self) -> Dim
+    where
+        Dim: Clone + Mul<f32, Output = Dim>,
+    {
+        self.normal.clone() * -self.distance
     }
 }
 
-impl<Dim> Attribute for SupportFunctionAttr<Dim> {
-    type Type = Dim;
+impl<Dim> Attribute for Support<Dim>
+where
+    Dim: Default,
+{
+    type Type = Self;
 }
 
 /// Support function wrapper operator
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SupportFunctionOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, SupportFunctionAttr<Dim>> for SupportFunctionOp
+impl<Sdf, Dim> FieldOperator<Sdf, Dim, Support<Dim>> for SupportFunctionOp
 where
     Sdf: FieldFunction<Dim, Distance> + FieldFunction<Dim, Normal<Dim>>,
     Dim: Default + Clone + Mul<f32, Output = Dim> + IsNormalized,
 {
     fn operator(
         &self,
-        _: SupportFunctionAttr<Dim>,
+        mut out: Support<Dim>,
         sdf: &Sdf,
         p: Dim,
-    ) -> <SupportFunctionAttr<Dim> as Attribute>::Type {
+    ) -> <Support<Dim> as Attribute>::Type {
         // Calculate normal
-        let n = sdf.evaluate(Normal::<Dim>::default(), p.clone());
+        let n = sdf.field(Normal::<Dim>::default(), p.clone());
 
         // Skip samples where normal is not valid
         // (ex. the center of a sphere)
         if !n.clone().is_normalized() {
-            return Dim::default();
+            return out;
         }
 
         // Calculate distance
-        let d = sdf.evaluate(Distance, p);
+        let d = sdf.field(Distance, p);
 
-        // Calculate vector from position to nearest surface
-        n * -d
+        // Write into output
+        out.normal = n;
+        out.distance = d;
+
+        out
     }
 }
 

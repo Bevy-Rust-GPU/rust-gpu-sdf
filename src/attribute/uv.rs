@@ -13,7 +13,7 @@ impl Attribute for Uv {
 }
 
 impl<Dim> FieldFunction<Dim, Uv> for Vec2 {
-    fn evaluate(&self, _: Uv, _: Dim) -> Vec2 {
+    fn field(&self, _: Uv, _: Dim) -> Vec2 {
         *self
     }
 }

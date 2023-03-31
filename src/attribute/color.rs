@@ -13,7 +13,7 @@ impl Attribute for Color {
 }
 
 impl<Dim> FieldFunction<Dim, Color> for Vec4 {
-    fn evaluate(&self, _: Color, _: Dim) -> Vec4 {
+    fn field(&self, _: Color, _: Dim) -> Vec4 {
         *self
     }
 }

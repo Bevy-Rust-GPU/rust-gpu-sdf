@@ -40,7 +40,7 @@ where
 
         for step in 0..MAX_STEPS {
             let pos = input.eye + input.dir * t;
-            let dist = sdf.evaluate(Distance, pos);
+            let dist = sdf.field(Distance, pos);
 
             out.step(t, dist);
 

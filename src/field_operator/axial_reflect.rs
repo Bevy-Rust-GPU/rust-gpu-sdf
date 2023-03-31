@@ -32,7 +32,7 @@ where
             p = p.abs();
         }
 
-        sdf.evaluate(attr, p)
+        sdf.field(attr, p)
     }
 }
 
@@ -49,7 +49,7 @@ where
             p.y = p.y.abs();
         }
 
-        sdf.evaluate(attr, p)
+        sdf.field(attr, p)
     }
 }
 
@@ -68,7 +68,7 @@ where
             pa.y = p.y.abs();
         }
 
-        let mut n = sdf.evaluate(attr, pa);
+        let mut n = sdf.field(attr, pa);
 
         if AXIS & AXIS_X > 0 && p.x < 0.0 {
             n.x *= -1.0;
@@ -97,7 +97,7 @@ where
             pa.y = p.y.abs();
         }
 
-        let mut n = sdf.evaluate(attr, pa);
+        let mut n = sdf.field(attr, pa);
 
         if AXIS & AXIS_X > 0 && p.x < 0.0 {
             n.x *= -1.0;
@@ -128,7 +128,7 @@ where
             p.z = p.z.abs();
         }
 
-        sdf.evaluate(attr, p)
+        sdf.field(attr, p)
     }
 }
 
@@ -151,7 +151,7 @@ where
             pa.z = p.z.abs();
         }
 
-        let mut n = sdf.evaluate(attr, pa);
+        let mut n = sdf.field(attr, pa);
 
         if AXIS & AXIS_X > 0 && p.x < 0.0 {
             n.x *= -1.0;
@@ -188,7 +188,7 @@ where
             pa.z = p.z.abs();
         }
 
-        let mut n = sdf.evaluate(attr, pa);
+        let mut n = sdf.field(attr, pa);
 
         if AXIS & AXIS_X > 0 && p.x < 0.0 {
             n.x *= -1.0;

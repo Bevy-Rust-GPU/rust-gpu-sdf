@@ -20,9 +20,9 @@ where
 {
     fn operator(&self, attr: Distance, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
         sdf_a
-            .evaluate(attr, p.clone())
+            .field(attr, p.clone())
             .neg()
-            .max(sdf_b.evaluate(attr, p))
+            .max(sdf_b.field(attr, p))
     }
 }
 
@@ -35,13 +35,13 @@ where
     Dim: Clone,
 {
     fn operator(&self, attr: Normal<Dim>, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
-        let dist_a = sdf_a.evaluate(Distance, p.clone());
-        let dist_b = sdf_b.evaluate(Distance, p.clone());
+        let dist_a = sdf_a.field(Distance, p.clone());
+        let dist_b = sdf_b.field(Distance, p.clone());
 
         if -dist_a > dist_b {
-            sdf_a.evaluate(attr, p)
+            sdf_a.field(attr, p)
         } else {
-            sdf_b.evaluate(attr, p)
+            sdf_b.field(attr, p)
         }
     }
 }
@@ -55,13 +55,13 @@ where
     Dim: Clone,
 {
     fn operator(&self, attr: Uv, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Vec2 {
-        let dist_a = sdf_a.evaluate(Distance, p.clone());
-        let dist_b = sdf_b.evaluate(Distance, p.clone());
+        let dist_a = sdf_a.field(Distance, p.clone());
+        let dist_b = sdf_b.field(Distance, p.clone());
 
         if -dist_a > dist_b {
-            sdf_a.evaluate(attr, p)
+            sdf_a.field(attr, p)
         } else {
-            sdf_b.evaluate(attr, p)
+            sdf_b.field(attr, p)
         }
     }
 }

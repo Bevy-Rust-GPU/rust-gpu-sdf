@@ -42,7 +42,7 @@ pub mod raycast;
 
 use crate::prelude::{Attribute, FieldFunction};
 
-/// Modifies the input / output of a [`FieldFunction`].
+/// Modifies the input / output of a [`FieldAttribute`].
 pub trait FieldOperator<Sdf, Pos, Attr>
 where
     Attr: Attribute,
@@ -50,17 +50,7 @@ where
     fn operator(&self, attr: Attr, sdf: &Sdf, p: Pos) -> Attr::Type;
 }
 
-impl<Sdf, Pos, Attr> FieldOperator<Sdf, Pos, Attr> for ()
-where
-    Attr: Attribute,
-    Sdf: FieldFunction<Pos, Attr>,
-{
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Pos) -> Attr::Type {
-        sdf.evaluate(attr, p)
-    }
-}
-
-/// Applies a [`FieldOperator`] to a [`FieldFunction`].
+/// Applies a [`FieldOperator`] to a [`FieldAttribute`].
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, type_fields::Field)]
 #[repr(C)]
 pub struct Operator<Op, Sdf> {
@@ -73,7 +63,7 @@ where
     Attr: Attribute,
     Op: FieldOperator<Sdf, Dim, Attr>,
 {
-    fn evaluate(&self, attr: Attr, p: Dim) -> Attr::Type {
+    fn field(&self, attr: Attr, p: Dim) -> Attr::Type {
         self.op.operator(attr, &self.target, p)
     }
 }
@@ -114,7 +104,6 @@ macro_rules! impl_passthrough_op_1 {
     ($ty:ty, $attr:ty, $pos:ident $($gen:tt)*) => {
         impl<Sdf, $pos $($gen)*> FieldOperator<Sdf, $pos, $attr> for $ty
         where
-            $attr: crate::prelude::Attribute,
             Sdf: crate::prelude::FieldFunction<$pos, $attr>,
         {
             fn operator(
@@ -123,7 +112,7 @@ macro_rules! impl_passthrough_op_1 {
                 sdf: &Sdf,
                 p: $pos,
             ) -> <$attr as crate::prelude::Attribute>::Type {
-                sdf.evaluate(attr, p)
+                sdf.field(attr, p)
             }
         }
     };
@@ -134,7 +123,6 @@ macro_rules! impl_passthrough_op_2 {
     ($ty:ty, $attr:ty, $field:tt, $pos:ident $($gen:tt)*) => {
         impl<SdfA, SdfB, $pos $($gen)*> FieldOperator<(SdfA, SdfB), $pos, $attr> for $ty
         where
-            $attr: crate::prelude::Attribute,
             SdfA: crate::prelude::FieldFunction<$pos, $attr>,
             SdfB: crate::prelude::FieldFunction<$pos, $attr>,
         {
@@ -144,7 +132,7 @@ macro_rules! impl_passthrough_op_2 {
                 sdf: &(SdfA, SdfB),
                 p: $pos,
             ) -> <$attr as crate::prelude::Attribute>::Type {
-                sdf.$field.evaluate(attr, p)
+                sdf.$field.field(attr, p)
             }
         }
     };
@@ -187,7 +175,7 @@ macro_rules! test_op_attrs_impl {
         fn $ident() {
             let f = <$ty>::default();
             $(
-                let _ = crate::prelude::FieldFunction::evaluate(&f, <$attrs>::default(), <$pos>::default());
+                let _ = crate::prelude::FieldAttribute::evaluate(&f, <$attrs>::default(), <$pos>::default());
             )*
         }
     };

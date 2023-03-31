@@ -2,10 +2,10 @@
 
 use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
-    Asin, Atan2, Cross, Length, Normalize,
+    Asin, Atan2, Length, Normalize,
 };
 
-use crate::prelude::{Distance, FieldFunction, Normal, Tangent, Uv};
+use crate::prelude::{Distance, FieldFunction, Normal, Uv};
 
 /// Euclidian distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -16,7 +16,7 @@ impl<Dim> FieldFunction<Dim, Distance> for EuclideanMetric
 where
     Dim: Length,
 {
-    fn evaluate(&self, _attr: Distance, p: Dim) -> f32 {
+    fn field(&self, _attr: Distance, p: Dim) -> f32 {
         p.length()
     }
 }
@@ -25,10 +25,10 @@ impl<Dim> FieldFunction<Dim, Normal<Dim>> for EuclideanMetric
 where
     Dim: Default + PartialEq + Normalize,
 {
-    fn evaluate(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
+    fn field(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
         let d = Dim::default();
         if p == d {
-            return d
+            return d;
         }
 
         p.normalize()
@@ -36,19 +36,19 @@ where
 }
 
 impl FieldFunction<f32, Uv> for EuclideanMetric {
-    fn evaluate(&self, _attr: Uv, p: f32) -> Vec2 {
+    fn field(&self, _attr: Uv, p: f32) -> Vec2 {
         Vec2::new(p, 0.0)
     }
 }
 
 impl FieldFunction<Vec2, Uv> for EuclideanMetric {
-    fn evaluate(&self, _attr: Uv, p: Vec2) -> Vec2 {
+    fn field(&self, _attr: Uv, p: Vec2) -> Vec2 {
         Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length())
     }
 }
 
 impl FieldFunction<Vec3, Uv> for EuclideanMetric {
-    fn evaluate(&self, _attr: Uv, p: Vec3) -> Vec2 {
+    fn field(&self, _attr: Uv, p: Vec3) -> Vec2 {
         Vec2::new(
             (p.x.atan2(p.z) / core::f32::consts::TAU) + 0.5,
             (p.y.asin() / core::f32::consts::PI) + 0.5,
@@ -60,7 +60,7 @@ impl FieldFunction<Vec3, Uv> for EuclideanMetric {
 pub mod test {
     use rust_gpu_bridge::glam::{Vec2, Vec3};
 
-    use crate::prelude::{BoundChecker, EuclideanMetric};
+    use crate::prelude::{BoundTester, EuclideanMetric};
 
     #[test]
     fn test_euclidean_metric_2d() {
