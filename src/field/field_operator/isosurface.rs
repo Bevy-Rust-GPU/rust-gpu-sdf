@@ -11,6 +11,8 @@ use crate::{
 
 /// Shift the isosurface of a distance field by a given amount.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "bevy", derive(bevy::reflect::TypeUuid))]
+#[cfg_attr(feature = "bevy", uuid = "d588f817-4e15-4b1e-b98c-dc2b0d47f719")]
 #[repr(C)]
 pub struct IsosurfaceOp {
     pub delta: f32,
@@ -48,6 +50,20 @@ where
 }
 
 impl_passthrough_op_2!(IsosurfaceOp, Color, 0, SdfA, Dim);
+
+#[cfg(feature = "bevy")]
+use rust_gpu_bridge::{Named, String, ToString, format};
+
+#[cfg(feature = "bevy")]
+impl Named for IsosurfaceOp {
+    fn module() -> String {
+        module_path!().to_string()
+    }
+
+    fn short_name() -> String {
+        "IsosurfaceOp".to_string()
+    }
+}
 
 /// Add an arbitrary radius to a distance field.
 pub type Isosurface<SdfA> = Operator<IsosurfaceOp, SdfA>;
