@@ -3,10 +3,8 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Normalize, Tangent, Uv},
+    prelude::{Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Tangent, Uv},
 };
-
-use super::{FieldOperator, Operator};
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[repr(C)]
@@ -16,9 +14,7 @@ pub struct GradientCentralDiffOp {
 
 impl Default for GradientCentralDiffOp {
     fn default() -> Self {
-        GradientCentralDiffOp {
-            epsilon: 0.01,
-        }
+        GradientCentralDiffOp { epsilon: 0.01 }
     }
 }
 

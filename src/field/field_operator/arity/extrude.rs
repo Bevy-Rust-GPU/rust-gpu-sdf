@@ -6,9 +6,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, Normal, Uv};
-
-use super::{FieldOperator, Operator};
+use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 
 /// Extrude a 2D distance field into 3D.
 #[derive(Default, Copy, Clone, PartialEq, Field)]

@@ -1,11 +1,11 @@
 //! Shift the isosurface of a distance field by a given amount.
 
-use core::ops::{Div, Sub};
+use core::ops::Div;
 
 use type_fields::Field;
 
 use crate::{
-    impl_passthrough_op_1,
+    impl_passthrough_op_2,
     prelude::{Color, Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv},
 };
 
@@ -22,53 +22,47 @@ impl Default for IsosurfaceOp {
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for IsosurfaceOp
+impl<SdfA, Dim> FieldOperator<SdfA, Dim, Distance> for IsosurfaceOp
 where
-    Sdf: Field<Dim, Distance>,
+    SdfA: Field<Dim, Distance>,
+    Dim: Clone,
 {
-    fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
-        sdf.field(attr, p).sub(self.delta)
+    fn operator(&self, attr: Distance, sdf_a: &SdfA, p: Dim) -> f32 {
+        sdf_a.field(attr, p.clone()) - self.delta
     }
 }
 
-impl_passthrough_op_1!(IsosurfaceOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(IsosurfaceOp, Tangent<Dim>, Dim);
+impl_passthrough_op_2!(IsosurfaceOp, Normal<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(IsosurfaceOp, Tangent<Dim>, 0, SdfA, Dim);
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Uv> for IsosurfaceOp
+impl<SdfA, Dim> FieldOperator<SdfA, Dim, Uv> for IsosurfaceOp
 where
     Uv: crate::prelude::Attribute,
-    Sdf: crate::prelude::Field<Dim, Uv>,
-    Dim: Div<f32, Output = Dim>,
+    SdfA: crate::prelude::Field<Dim, Uv>,
+    Dim: Clone + Div<f32, Output = Dim>,
 {
-    fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> <Uv as crate::prelude::Attribute>::Type {
-        sdf.field(attr, p / self.delta)
+    fn operator(&self, attr: Uv, sdf_a: &SdfA, p: Dim) -> <Uv as crate::prelude::Attribute>::Type {
+        let p = p.clone() / self.delta;
+        sdf_a.field(attr, p)
     }
 }
 
-impl_passthrough_op_1!(IsosurfaceOp, Color, Dim);
+impl_passthrough_op_2!(IsosurfaceOp, Color, 0, SdfA, Dim);
 
 /// Add an arbitrary radius to a distance field.
-pub type Isosurface<Sdf> = Operator<IsosurfaceOp, Sdf>;
-
-impl<Sdf> Isosurface<Sdf> {
-    pub fn delta(&mut self) -> &mut f32 {
-        &mut self.op.delta
-    }
-}
+pub type Isosurface<SdfA> = Operator<IsosurfaceOp, SdfA>;
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use type_fields::field::Field;
-
     use crate::{
-        prelude::{Isosurface, Point},
+        prelude::{IsosurfaceProxy, Point},
         test_op_attrs,
     };
 
     #[test]
     fn test_isosurface() {
-        Isosurface::<Point>::default().with(Isosurface::delta, f32::default());
+        IsosurfaceProxy::<Point>::default();
     }
 
-    test_op_attrs!(Isosurface::<Point>);
+    test_op_attrs!(IsosurfaceProxy::<Point>);
 }

@@ -13,6 +13,7 @@ use super::{FieldOperator, Operator};
 
 /// Apply triplanar UV mapping to the provided SDF
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[repr(C)]
 pub struct TriplanarUvOp {
     pub k: f32,
 }

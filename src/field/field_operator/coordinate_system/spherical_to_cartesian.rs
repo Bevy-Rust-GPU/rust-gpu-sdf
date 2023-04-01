@@ -3,11 +3,10 @@ use rust_gpu_bridge::{
     Cos, Sin,
 };
 
-use crate::prelude::{Attribute, Field};
-
-use super::{FieldOperator, Operator};
+use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(C)]
 pub struct SphericalToCartesianOp;
 
 impl<Sdf, Attr> FieldOperator<Sdf, Vec2, Attr> for SphericalToCartesianOp

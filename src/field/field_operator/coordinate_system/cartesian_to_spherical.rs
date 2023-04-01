@@ -3,11 +3,10 @@ use rust_gpu_bridge::{
     Acos, Atan2, Sign,
 };
 
-use crate::prelude::{Attribute, Field};
-
-use super::{FieldOperator, Operator};
+use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(C)]
 pub struct CartesianToSphericalOp;
 
 impl<Sdf, Attr> FieldOperator<Sdf, Vec2, Attr> for CartesianToSphericalOp
@@ -39,7 +38,10 @@ pub type CartesianToSpherical<Sdf> = Operator<CartesianToSphericalOp, Sdf>;
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use crate::{prelude::{CartesianToSpherical, Point}, test_op_attrs_2d, test_op_attrs_3d};
+    use crate::{
+        prelude::{CartesianToSpherical, Point},
+        test_op_attrs_2d, test_op_attrs_3d,
+    };
 
     #[test]
     fn test_cartesian_to_spherical() {

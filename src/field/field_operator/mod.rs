@@ -1,44 +1,28 @@
 //! Types that modify a distance field.
 
-pub mod axial_reflect;
-pub mod cartesian_to_spherical;
-pub mod colorize;
 pub mod composite;
-pub mod conditional;
 pub mod displace;
+pub mod displace_proxy;
 pub mod elongate;
-pub mod extrude;
-pub mod extrude_interior;
-pub mod gradient_central_diff;
-pub mod gradient_tetrahedron;
-pub mod gradient_uv;
 pub mod hollow;
-pub mod intersection;
+pub mod isosurface_proxy;
 pub mod isosurface;
 pub mod normalize;
-pub mod reflect;
-pub mod repeat;
-pub mod rotate;
-pub mod scale;
-pub mod sdf_color;
-pub mod sdf_normal;
-pub mod sdf_tangent;
-pub mod sdf_uv;
 pub mod sided;
-pub mod slice;
-pub mod smooth_intersection;
-pub mod smooth_subtraction;
-pub mod smooth_union;
-pub mod spherical_to_cartesian;
 pub mod stretch;
-pub mod subtraction;
-pub mod sweep;
-pub mod translate;
 pub mod triplanar_uv;
 pub mod twist;
-pub mod union;
 
+pub mod arity;
+pub mod boolean;
+pub mod coordinate_system;
+pub mod gradient;
+pub mod proxy;
 pub mod raycast;
+pub mod reflect;
+pub mod repeat;
+pub mod smooth_boolean;
+pub mod transform;
 
 use crate::prelude::{Attribute, Field};
 
@@ -89,13 +73,13 @@ pub mod boxed {
 pub mod test {
     use type_fields::field::Field;
 
-    use crate::prelude::{IsosurfaceOp, Operator, Point};
+    use crate::prelude::{IsosurfaceProxyOp, Operator, Point};
 
     #[test]
     fn test_operator() {
-        Operator::<IsosurfaceOp, Point>::default()
+        Operator::<IsosurfaceProxyOp, Point>::default()
             .with(Operator::target, Point::default())
-            .with(Operator::op, IsosurfaceOp::default());
+            .with(Operator::op, IsosurfaceProxyOp::default());
     }
 }
 
@@ -120,11 +104,10 @@ macro_rules! impl_passthrough_op_1 {
 
 #[macro_export]
 macro_rules! impl_passthrough_op_2 {
-    ($ty:ty, $attr:ty, $field:tt, $pos:ident $($gen:tt)*) => {
+    ($ty:ty, $attr:ty, $field:tt, $sdf:ident, $pos:ident $($gen:tt)*) => {
         impl<SdfA, SdfB, $pos $($gen)*> FieldOperator<(SdfA, SdfB), $pos, $attr> for $ty
         where
-            SdfA: crate::prelude::Field<$pos, $attr>,
-            SdfB: crate::prelude::Field<$pos, $attr>,
+            $sdf: crate::prelude::Field<$pos, $attr>,
         {
             fn operator(
                 &self,

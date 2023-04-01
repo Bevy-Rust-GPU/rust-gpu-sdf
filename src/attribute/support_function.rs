@@ -13,6 +13,7 @@ use crate::{
 
 /// Support function attribute marker
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
+#[repr(C)]
 pub struct Support<Dim> {
     pub normal: Dim,
     pub distance: f32,
@@ -36,6 +37,7 @@ where
 
 /// Support function wrapper operator
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(C)]
 pub struct SupportFunctionOp;
 
 impl<Sdf, Dim> FieldOperator<Sdf, Dim, Support<Dim>> for SupportFunctionOp

@@ -6,9 +6,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, Normal, Uv};
-
-use super::{FieldOperator, Operator};
+use crate::prelude::{Distance, Field, Normal, Uv, FieldOperator, Operator};
 
 /// Extrude a 2D distance field into 3D, using its interior distance to determine depth.
 /// NOTE: The present implementation is a bound, not a field

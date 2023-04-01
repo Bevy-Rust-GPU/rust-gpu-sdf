@@ -39,6 +39,7 @@ use crate::{
 
 /// Bound error term
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
+#[repr(C)]
 pub struct ErrorTerm<Dim> {
     pub support: Support<Dim>,
     pub error: f32,
@@ -53,6 +54,7 @@ where
 
 /// Bound error wrapper operator
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(C)]
 pub struct BoundErrorOp;
 
 impl<Sdf, Dim> FieldOperator<Sdf, Dim, ErrorTerm<Dim>> for BoundErrorOp

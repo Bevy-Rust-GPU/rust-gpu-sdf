@@ -5,13 +5,12 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Tangent, Uv},
+    prelude::{Color, Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv},
 };
-
-use super::{FieldOperator, Operator};
 
 /// Take a 2D slice of a 3D field
 #[derive(Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct SliceOp {
     pub u: Vec3,
     pub v: Vec3,

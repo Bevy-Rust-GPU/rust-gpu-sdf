@@ -4,7 +4,6 @@ use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
     Cos, Sin, Sqrt, Tan,
 };
-use type_fields::field::Field;
 
 use crate::prelude::{
     raytrace::RayIntersection, AxialReflect, Elongate, EuclideanMetric, Isosurface, Reflect, Sided,
@@ -24,7 +23,7 @@ pub type Ball = Isosurface<Point>;
 
 impl Ball {
     pub fn radius(&mut self) -> &mut f32 {
-        &mut self.op.delta
+        self.op().delta()
     }
 }
 
@@ -80,6 +79,8 @@ pub type Torus = Sweep<Circle, Circle>;
 
 impl Torus {
     pub fn torus() -> Self {
+        use type_fields::field::Field;
+
         <Self as Default>::default()
             .with((Torus::core, Circle::radius), 0.75)
             .with((Torus::shell, Circle::radius), 0.25)
@@ -93,6 +94,7 @@ impl<Sdf> NgonMirror<Sdf> {
     where
         Sdf: Default + 'static,
     {
+        use type_fields::field::Field;
         let mut sdf = <NgonMirror<Sdf> as Default>::default()
             .with(Self::sin, sin)
             .with(Self::cos, cos);
@@ -118,6 +120,7 @@ pub type Triangle =
 
 impl Triangle {
     pub fn triangle() -> Self {
+        use type_fields::field::Field;
         let angle = core::f32::consts::PI / 3 as f32;
         let sin = angle.sin();
         let cos = angle.cos();
@@ -142,6 +145,7 @@ pub type Quadrilateral =
 
 impl Quadrilateral {
     pub fn quadrilateral() -> Self {
+        use type_fields::field::Field;
         let angle = core::f32::consts::PI / 4.0;
         let sin = angle.sin();
         let cos = angle.cos();
@@ -169,6 +173,7 @@ pub type Pentagon = AxialReflect<
 
 impl Pentagon {
     pub fn pentagon() -> Self {
+        use type_fields::field::Field;
         let angle = core::f32::consts::PI / 5 as f32;
         let sin = angle.sin();
         let cos = angle.cos();
@@ -195,6 +200,7 @@ pub type Hexagon =
 
 impl Hexagon {
     pub fn hexagon() -> Self {
+        use type_fields::field::Field;
         let angle = core::f32::consts::PI / 6 as f32;
         let sin = angle.sin();
         let cos = angle.cos();
@@ -214,6 +220,7 @@ pub type Septagon = AxialReflect<
 
 impl Septagon {
     pub fn septagon() -> Self {
+        use type_fields::field::Field;
         let angle = core::f32::consts::PI / 7 as f32;
         let sin = angle.sin();
         let cos = angle.cos();
@@ -246,6 +253,7 @@ pub type Octagon = AxialReflect<
 
 impl Octagon {
     pub fn octagon() -> Self {
+        use type_fields::field::Field;
         let angle = core::f32::consts::PI / 8 as f32;
         let sin = angle.sin();
         let cos = angle.cos();
@@ -276,6 +284,7 @@ pub type Nonagon = AxialReflect<
 
 impl Nonagon {
     pub fn nonagon() -> Self {
+        use type_fields::field::Field;
         let angle = core::f32::consts::PI / 9 as f32;
         let sin = angle.sin();
         let cos = angle.cos();
@@ -326,6 +335,7 @@ pub type Decagon = AxialReflect<
 
 impl Decagon {
     pub fn decagon() -> Self {
+        use type_fields::field::Field;
         let angle = core::f32::consts::PI / 10 as f32;
         let sin = angle.sin();
         let cos = angle.cos();

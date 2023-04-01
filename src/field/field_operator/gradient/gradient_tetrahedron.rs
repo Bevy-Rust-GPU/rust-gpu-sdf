@@ -3,10 +3,8 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Normalize, Tangent, Uv},
+    prelude::{Color, Distance, Field, Normal, Normalize, Tangent, Uv, FieldOperator, Operator},
 };
-
-use super::{FieldOperator, Operator};
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[repr(C)]

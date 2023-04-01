@@ -3,13 +3,12 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Normalize, Tangent, Uv},
+    prelude::{Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Tangent, Uv},
 };
-
-use super::{FieldOperator, Operator};
 
 /// Calculate a 3D gradient given a 2D UV
 #[derive(Copy, Clone, PartialEq, Field)]
+#[repr(C)]
 pub struct UvGradientOp {
     pub axis: Vec2,
     pub epsilon: f32,

@@ -9,8 +9,6 @@ use super::{FieldOperator, Operator};
 #[repr(C)]
 pub struct NormalizeOp;
 
-impl NormalizeOp {}
-
 impl<Sdf, Dim> FieldOperator<Sdf, Dim, Normal<Dim>> for NormalizeOp
 where
     Sdf: Field<Dim, Normal<Dim>>,
