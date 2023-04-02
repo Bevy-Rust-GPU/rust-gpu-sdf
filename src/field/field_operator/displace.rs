@@ -9,6 +9,7 @@ use crate::{
 
 /// Displace the output of a distance field using the output of another distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct DisplaceOp {
     pub delta: f32,

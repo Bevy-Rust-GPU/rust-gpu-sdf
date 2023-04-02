@@ -1,5 +1,9 @@
 //! Types that modify a distance field.
 
+pub mod checker;
+pub mod color_normal;
+pub mod color_tangent;
+pub mod color_uv;
 pub mod composite;
 pub mod displace;
 pub mod displace_proxy;
@@ -8,6 +12,7 @@ pub mod hollow;
 pub mod isosurface;
 pub mod isosurface_proxy;
 pub mod normalize;
+pub mod scale_uv;
 pub mod sided;
 pub mod stretch;
 pub mod triplanar_uv;
@@ -36,6 +41,7 @@ where
 
 /// Applies a [`FieldOperator`] to a [`FieldAttribute`].
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, type_fields::Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[cfg_attr(feature = "bevy", derive(bevy::reflect::TypeUuid))]
 #[cfg_attr(feature = "bevy", uuid = "d588f817-4e15-4b1e-b98c-dc2b0d47f719")]
 #[repr(C)]
@@ -51,33 +57,6 @@ where
 {
     fn field(&self, attr: Attr, p: Dim) -> Attr::Type {
         self.op.operator(attr, &self.target, p)
-    }
-}
-
-#[cfg(feature = "glam")]
-use rust_gpu_bridge::{format, Named, String, ToString};
-
-#[cfg(feature = "glam")]
-impl<Op, Sdf> Named for Operator<Op, Sdf>
-where
-    Op: Named,
-    Sdf: Named,
-{
-    fn module() -> String {
-        module_path!().to_string()
-    }
-
-    fn short_name() -> String {
-        format!("Operator<{}, {}>", Op::short_name(), Sdf::short_name())
-    }
-
-    fn name() -> String {
-        format!(
-            "{}::Operator<{}, {}>",
-            Self::module(),
-            Op::name(),
-            Sdf::name()
-        )
     }
 }
 

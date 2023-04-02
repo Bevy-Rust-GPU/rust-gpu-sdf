@@ -6,6 +6,7 @@ use rust_gpu_bridge::{
 use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct CartesianToSphericalOp;
 

@@ -12,6 +12,7 @@ use crate::prelude::{Distance, Field, Normal, Uv, FieldOperator, Operator};
 /// NOTE: The present implementation is a bound, not a field
 /// TODO: Refactor to use a 1D FieldFunction to describe Z curvature
 #[derive(Default, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct ExtrudeInteriorOp {
     pub depth: f32,

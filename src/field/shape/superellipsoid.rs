@@ -6,6 +6,7 @@ use crate::prelude::{Distance, Field, Normal};
 // TODO: Apply pow(1.0 / foo) to un-exponentiate distance after axes are summed,
 //       as per Superellipse
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct Superellipsoid {
     pub e1: f32,

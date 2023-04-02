@@ -7,6 +7,7 @@ use crate::prelude::{Distance, Field, Normal};
 
 /// An octahedron.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct Octahedron {
     pub size: f32,

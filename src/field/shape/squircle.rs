@@ -11,6 +11,7 @@ use crate::prelude::{Distance, Field};
 //
 // Desmos decomposition: https://www.desmos.com/calculator/i9cgthn0ls
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct Squircle;
 

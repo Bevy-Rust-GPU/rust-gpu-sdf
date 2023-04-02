@@ -11,6 +11,7 @@ use crate::prelude::{Distance, Field, Normal};
 
 /// A plane.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct Plane<Dim> {
     pub dir: Dim,

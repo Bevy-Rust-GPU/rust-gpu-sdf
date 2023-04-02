@@ -10,6 +10,7 @@ use crate::{
 
 /// Take a 2D slice of a 3D field
 #[derive(Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct SliceOp {
     pub u: Vec3,

@@ -16,6 +16,7 @@ use super::{FieldOperator, Operator};
 /// Given an infinitely-thin surface,
 /// divide space into interior and exterior based on axis.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct SidedOp<Dim> {
     pub axis: Dim,

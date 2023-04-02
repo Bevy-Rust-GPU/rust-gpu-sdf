@@ -18,6 +18,7 @@ use super::RaycastInput;
 /// Note: The precomputed lipschitz bound `k` must be correct in respect to the
 /// provided SDF for accurate behaviour; incorrect values will result in visual artifacting.
 #[derive(Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct SphereTraceLipschitzOp<const MAX_STEPS: u32> {
     pub epsilon: f32,

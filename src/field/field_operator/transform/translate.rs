@@ -8,6 +8,7 @@ use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 
 /// Apply a positional translation to a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct TranslateOp<Dim> {
     pub translation: Dim,

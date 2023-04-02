@@ -12,6 +12,7 @@ use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 
 /// Repeat a distance field a set number of times in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct RepeatCountOp<Dim> {
     pub period: Dim,

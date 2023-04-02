@@ -7,6 +7,7 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 
 /// Compute the boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct IntersectionOp;
 

@@ -12,6 +12,7 @@ use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 
 /// Extrude a shape infinitely along an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct StretchInfiniteOp<Dim> {
     pub dir: Dim,
@@ -62,6 +63,7 @@ impl<Dim, Sdf> StretchInfinite<Dim, Sdf> {
 
 /// Extrude a shape by an arbitrary distance along an arbitrary axis, preserving exterior geometry as caps.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct StretchDistOp<Dim> {
     pub dir: Dim,

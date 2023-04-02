@@ -3,10 +3,11 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Tangent, Uv},
+    prelude::{Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Tangent, Uv, RaycastOutput},
 };
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct GradientCentralDiffOp {
     pub epsilon: f32,
@@ -14,7 +15,7 @@ pub struct GradientCentralDiffOp {
 
 impl Default for GradientCentralDiffOp {
     fn default() -> Self {
-        GradientCentralDiffOp { epsilon: 0.01 }
+        GradientCentralDiffOp { epsilon: 0.001 }
     }
 }
 
@@ -76,6 +77,7 @@ impl_passthrough_op_1!(GradientCentralDiffOp, Distance, Dim);
 impl_passthrough_op_1!(GradientCentralDiffOp, Tangent<Dim>, Dim);
 impl_passthrough_op_1!(GradientCentralDiffOp, Uv, Dim);
 impl_passthrough_op_1!(GradientCentralDiffOp, Color, Dim);
+impl_passthrough_op_1!(GradientCentralDiffOp, RaycastOutput, Dim);
 
 pub type GradientCentralDiff<Sdf> = Operator<GradientCentralDiffOp, Sdf>;
 

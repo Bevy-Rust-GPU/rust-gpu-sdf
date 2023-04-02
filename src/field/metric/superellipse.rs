@@ -4,6 +4,7 @@ use type_fields::Field;
 use crate::prelude::{Distance, Field, Normal};
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct Superellipse {
     pub n: f32,

@@ -2,11 +2,12 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_2,
-    prelude::{Color, Distance, FieldOperator, Normal, Operator, Tangent, Uv},
+    prelude::{Color, Distance, FieldOperator, Normal, Operator, Tangent, Uv, RaycastOutput},
 };
 
 /// Override the tangents of an SDF with the tangents of another SDF
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct ProxyTangentOp;
 
@@ -15,6 +16,7 @@ impl_passthrough_op_2!(ProxyTangentOp, Normal<Dim>, 0, SdfA, Dim);
 impl_passthrough_op_2!(ProxyTangentOp, Tangent<Dim>, 1, SdfB, Dim);
 impl_passthrough_op_2!(ProxyTangentOp, Uv, 0, SdfA, Dim);
 impl_passthrough_op_2!(ProxyTangentOp, Color, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyTangentOp, RaycastOutput, 0, SdfA, Dim);
 
 pub type ProxyTangent<SdfA, SdfB> = Operator<ProxyTangentOp, (SdfA, SdfB)>;
 

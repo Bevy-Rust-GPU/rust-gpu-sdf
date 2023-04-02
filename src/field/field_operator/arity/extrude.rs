@@ -10,6 +10,7 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 
 /// Extrude a 2D distance field into 3D.
 #[derive(Default, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct ExtrudeOp {
     pub axis: Vec3,

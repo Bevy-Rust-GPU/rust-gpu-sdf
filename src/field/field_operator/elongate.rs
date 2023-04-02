@@ -12,6 +12,7 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 
 /// Extrude a shape along its axes, preserving exterior geometry.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct ElongateOp<Dim> {
     pub extent: Dim,
@@ -183,27 +184,6 @@ where
         };
 
         m
-    }
-}
-
-#[cfg(feature = "glam")]
-use rust_gpu_bridge::{format, Named, String, ToString};
-
-#[cfg(feature = "glam")]
-impl<Dim> Named for ElongateOp<Dim>
-where
-    Dim: Named,
-{
-    fn module() -> String {
-        module_path!().to_string()
-    }
-
-    fn short_name() -> String {
-        format!("ElongateOp<{}>", Dim::short_name())
-    }
-
-    fn name() -> String {
-        format!("{}::ElongateOp<{}>", Self::module(), Dim::name())
     }
 }
 

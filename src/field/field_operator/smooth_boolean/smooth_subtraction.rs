@@ -1,13 +1,14 @@
 //! Compute the blended boolean subtraction of two distance fields.
 use core::ops::{Add, Div, Mul, Sub};
 
-use rust_gpu_bridge::{glam::Vec2, AsVec2, Clamp, Mix, Normalize, Saturate, Splat, Step};
+use rust_gpu_bridge::{glam::Vec2, Clamp, Mix, Normalize, Saturate, Splat, Step};
 use type_fields::Field;
 
 use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv};
 
 /// Compute the blended boolean subtraction of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct SmoothSubtractionOp {
     pub k: f32,
@@ -116,8 +117,7 @@ where
         + Mix
         + Saturate
         + Normalize
-        + Splat
-        + AsVec2,
+        + Splat,
 {
     fn operator(&self, attr: Uv, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Vec2 {
         let d1 = sdf_a.field(Distance, p.clone());

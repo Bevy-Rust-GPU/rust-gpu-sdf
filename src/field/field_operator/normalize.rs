@@ -1,11 +1,12 @@
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Tangent, Uv},
+    prelude::{Color, Distance, Field, Normal, Tangent, Uv, RaycastOutput},
 };
 
 use super::{FieldOperator, Operator};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct NormalizeOp;
 
@@ -32,6 +33,7 @@ where
 impl_passthrough_op_1!(NormalizeOp, Distance, Dim);
 impl_passthrough_op_1!(NormalizeOp, Uv, Dim);
 impl_passthrough_op_1!(NormalizeOp, Color, Dim);
+impl_passthrough_op_1!(NormalizeOp, RaycastOutput, Dim);
 
 pub type Normalize<Sdf> = Operator<NormalizeOp, Sdf>;
 

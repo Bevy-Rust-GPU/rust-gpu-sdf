@@ -13,6 +13,7 @@ use crate::{
 
 /// Shift the isosurface of a distance field by a given amount.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct IsosurfaceProxyOp;
 
@@ -64,8 +65,8 @@ pub mod test {
 
     #[test]
     fn test_isosurface() {
-        IsosurfaceProxy::<Point>::default();
+        IsosurfaceProxy::<Point, f32>::default();
     }
 
-    test_op_attrs!(IsosurfaceProxy::<Point>);
+    test_op_attrs!(IsosurfaceProxy::<Point, f32>);
 }

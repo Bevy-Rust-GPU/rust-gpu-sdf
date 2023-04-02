@@ -12,6 +12,7 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 
 /// Reflect a distance field about an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct ReflectOp<Dim> {
     pub axis: Dim,

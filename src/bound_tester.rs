@@ -8,8 +8,7 @@ use rust_gpu_bridge::{
 };
 
 use crate::prelude::{
-    default, BoundError, Distance, ErrorTerm, Field, FieldAttribute, Normal, Support,
-    SupportFunction,
+    default, BoundError, Distance, ErrorTerm, Field, FieldAttribute, Normal, SupportFunction,
 };
 
 /// Asserts that the provided distance function is a field rather than a bound

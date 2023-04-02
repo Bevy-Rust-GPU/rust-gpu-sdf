@@ -3,10 +3,11 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Normalize, Tangent, Uv, FieldOperator, Operator},
+    prelude::{Color, Distance, Field, Normal, Normalize, Tangent, Uv, FieldOperator, Operator, RaycastOutput},
 };
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct GradientTetrahedronOp {
     pub epsilon: f32,
@@ -15,7 +16,7 @@ pub struct GradientTetrahedronOp {
 impl Default for GradientTetrahedronOp {
     fn default() -> Self {
         GradientTetrahedronOp {
-            epsilon: 0.01,
+            epsilon: 0.001,
         }
     }
 }
@@ -74,6 +75,7 @@ impl_passthrough_op_1!(GradientTetrahedronOp, Distance, Dim);
 impl_passthrough_op_1!(GradientTetrahedronOp, Tangent<Dim>, Dim);
 impl_passthrough_op_1!(GradientTetrahedronOp, Uv, Dim);
 impl_passthrough_op_1!(GradientTetrahedronOp, Color, Dim);
+impl_passthrough_op_1!(GradientTetrahedronOp, RaycastOutput, Dim);
 
 pub type GradientTetrahedron<Sdf> = Operator<GradientTetrahedronOp, Sdf>;
 

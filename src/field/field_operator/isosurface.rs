@@ -5,12 +5,13 @@ use core::ops::Div;
 use type_fields::Field;
 
 use crate::{
-    impl_passthrough_op_2,
+    impl_passthrough_op_1,
     prelude::{Color, Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv},
 };
 
 /// Shift the isosurface of a distance field by a given amount.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[cfg_attr(feature = "bevy", derive(bevy::reflect::TypeUuid))]
 #[cfg_attr(feature = "bevy", uuid = "d588f817-4e15-4b1e-b98c-dc2b0d47f719")]
 #[repr(C)]
@@ -34,8 +35,8 @@ where
     }
 }
 
-impl_passthrough_op_2!(IsosurfaceOp, Normal<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(IsosurfaceOp, Tangent<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_1!(IsosurfaceOp, Normal<Dim>, Dim);
+impl_passthrough_op_1!(IsosurfaceOp, Tangent<Dim>, Dim);
 
 impl<SdfA, Dim> FieldOperator<SdfA, Dim, Uv> for IsosurfaceOp
 where
@@ -49,21 +50,7 @@ where
     }
 }
 
-impl_passthrough_op_2!(IsosurfaceOp, Color, 0, SdfA, Dim);
-
-#[cfg(feature = "bevy")]
-use rust_gpu_bridge::{Named, String, ToString, format};
-
-#[cfg(feature = "bevy")]
-impl Named for IsosurfaceOp {
-    fn module() -> String {
-        module_path!().to_string()
-    }
-
-    fn short_name() -> String {
-        "IsosurfaceOp".to_string()
-    }
-}
+impl_passthrough_op_1!(IsosurfaceOp, Color, Dim);
 
 /// Add an arbitrary radius to a distance field.
 pub type Isosurface<SdfA> = Operator<IsosurfaceOp, SdfA>;
@@ -71,14 +58,14 @@ pub type Isosurface<SdfA> = Operator<IsosurfaceOp, SdfA>;
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
     use crate::{
-        prelude::{IsosurfaceProxy, Point},
+        prelude::{Isosurface, Point},
         test_op_attrs,
     };
 
     #[test]
     fn test_isosurface() {
-        IsosurfaceProxy::<Point>::default();
+        Isosurface::<Point>::default();
     }
 
-    test_op_attrs!(IsosurfaceProxy::<Point>);
+    test_op_attrs!(Isosurface::<Point>);
 }

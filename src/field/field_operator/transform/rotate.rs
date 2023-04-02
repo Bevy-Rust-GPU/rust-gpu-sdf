@@ -8,6 +8,7 @@ use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 
 /// Rotate a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct Rotate2dOp {
     pub angle: f32,

@@ -9,6 +9,7 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 /// Create a 3D distance field by sweeping a 2D distance field
 /// around the perimiter of another 2D distance field
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct SweepOp;
 

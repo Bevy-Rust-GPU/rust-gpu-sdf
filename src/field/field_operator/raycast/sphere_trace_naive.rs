@@ -14,6 +14,7 @@ use crate::{
 /// Marches along a ray, sampling the provided SDF at each step to determine
 /// a minimum safe distance for the following iteration.
 #[derive(Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct SphereTraceNaiveOp<const MAX_STEPS: u32> {
     pub epsilon: f32,

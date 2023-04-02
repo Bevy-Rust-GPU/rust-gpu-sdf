@@ -19,6 +19,7 @@ pub trait RayIntersection {
 ///
 /// Evaluates the [`RayIntersection`] of the provided type.
 #[derive(Default, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct RaytraceOp;
 

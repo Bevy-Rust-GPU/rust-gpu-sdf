@@ -9,6 +9,7 @@ use crate::prelude::{Distance, Field, Normal, Uv};
 
 /// Euclidian distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[cfg_attr(feature = "bevy", derive(bevy::reflect::TypeUuid))]
 #[cfg_attr(feature = "bevy", uuid = "9c0e79ee-c437-47aa-9230-d3c13f3bacb8")]
 #[repr(C)]
@@ -55,20 +56,6 @@ impl Field<Vec3, Uv> for EuclideanMetric {
             (p.x.atan2(p.z) / core::f32::consts::TAU) + 0.5,
             (p.y.asin() / core::f32::consts::PI) + 0.5,
         )
-    }
-}
-
-#[cfg(feature = "glam")]
-use rust_gpu_bridge::{Named, String, ToString};
-
-#[cfg(feature = "glam")]
-impl rust_gpu_bridge::Named for EuclideanMetric {
-    fn module() -> String {
-        module_path!().to_string()
-    }
-
-    fn short_name() -> String {
-        "EuclideanMetric".to_string()
     }
 }
 

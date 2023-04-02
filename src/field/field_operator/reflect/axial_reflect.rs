@@ -19,6 +19,7 @@ pub const AXIS_XYZ: usize = AXIS_XY | AXIS_Z;
 /// NOTE: Will produce a bound unless any geometry crossing
 ///       the reflecting planes is already a field w.r.t. its reflection.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct AxialReflectOp<const AXIS: usize>;
 

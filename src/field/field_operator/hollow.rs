@@ -12,6 +12,7 @@ use crate::{
 
 /// Convert a solid shape into a hollow one with an infinitely thin surface.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct HollowOp;
 

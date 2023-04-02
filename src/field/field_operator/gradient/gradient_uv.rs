@@ -3,11 +3,12 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Tangent, Uv},
+    prelude::{Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Tangent, Uv, RaycastOutput},
 };
 
 /// Calculate a 3D gradient given a 2D UV
 #[derive(Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct UvGradientOp {
     pub axis: Vec2,
@@ -18,7 +19,7 @@ impl Default for UvGradientOp {
     fn default() -> Self {
         UvGradientOp {
             axis: Vec2::X,
-            epsilon: f32::EPSILON,
+            epsilon: 0.00001,
         }
     }
 }
@@ -45,6 +46,7 @@ impl_passthrough_op_1!(UvGradientOp, Distance, Dim);
 impl_passthrough_op_1!(UvGradientOp, Normal<Dim>, Dim);
 impl_passthrough_op_1!(UvGradientOp, Uv, Dim);
 impl_passthrough_op_1!(UvGradientOp, Color, Dim);
+impl_passthrough_op_1!(UvGradientOp, RaycastOutput, Dim);
 
 pub type UvGradient<Sdf> = Operator<UvGradientOp, Sdf>;
 

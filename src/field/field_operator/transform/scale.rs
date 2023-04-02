@@ -8,6 +8,7 @@ use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 
 /// Uniformly scale a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct ScaleOp {
     pub scale: f32,

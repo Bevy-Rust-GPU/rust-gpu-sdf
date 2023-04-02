@@ -13,6 +13,7 @@ use super::{FieldOperator, Operator};
 
 /// Apply triplanar UV mapping to the provided SDF
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct TriplanarUvOp {
     pub k: f32,

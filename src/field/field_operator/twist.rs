@@ -9,6 +9,7 @@ use super::{FieldOperator, Operator};
 
 /// Twist a distance field around an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
 pub struct TwistOp<Dim> {
     pub axis_pos: Dim,
