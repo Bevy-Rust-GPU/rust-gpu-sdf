@@ -9,7 +9,7 @@ use crate::prelude::{Attributes, Fields};
 /// Extension trait of `Fields`;
 /// `Cons`es the provided tuple, evaluates it via `FieldAttributesImpl`,
 /// then returns the `Uncons` of the result.
-pub trait FieldAttributes<In, const COUNT: usize> {
+pub trait FieldAttributes<In> {
     fn attributes<Attr>(&self, p: In) -> <<Attr::Cons as Attributes>::Type as Uncons>::Uncons
     where
         Self: Fields<In, Attr::Cons>,
@@ -18,7 +18,7 @@ pub trait FieldAttributes<In, const COUNT: usize> {
         <Attr::Cons as Attributes>::Type: Uncons;
 }
 
-impl<T, In, const COUNT: usize> FieldAttributes<In, COUNT> for T {
+impl<T, In> FieldAttributes<In> for T {
     fn attributes<Attr>(&self, p: In) -> <<Attr::Cons as Attributes>::Type as Uncons>::Uncons
     where
         Self: Fields<In, Attr::Cons>,
