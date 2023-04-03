@@ -16,16 +16,16 @@ pub trait ContextQuery<'a, State, T> {
 
 impl<'a, T, LHS, RHS, State, Inner> ContextQuery<'a, (State, Inner), (LHS, RHS)> for T
 where
-    T: Context<'a, State, LHS> + ContextQuery<'a, Inner, RHS>,
-    LHS: Clone + 'a,
+    T: Context<State, LHS> + ContextQuery<'a, Inner, RHS>,
+    LHS: 'a,
 {
     type Type = (
-        LHS,
+        &'a LHS,
         <T as ContextQuery<'a, Inner, RHS>>::Type,
     );
 
     fn context_query(&'a self) -> Self::Type {
-        (self.context().clone(), self.context_query())
+        (self.context(), self.context_query())
     }
 }
 

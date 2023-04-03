@@ -17,14 +17,14 @@ pub trait ContextPath<'a, Ctx, In> {
 impl<'a, RHS, Ctx, In> ContextPath<'a, Ctx, In> for (Cdr, RHS)
 where
     RHS: ContextPath<'a, Ctx, In>,
-    Ctx: Context<'a, RHS, In>,
+    Ctx: Context<RHS, In>,
 {
     type Type = In;
 }
 
 impl<'a, Ctx, In, RHS> ContextPath<'a, Ctx, In> for (Car, RHS)
 where
-    Ctx: Context<'a, (Car, RHS), In>,
+    Ctx: Context<(Car, RHS), In>,
 {
     type Type = In;
 }

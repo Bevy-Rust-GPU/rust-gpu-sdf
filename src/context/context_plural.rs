@@ -11,18 +11,18 @@ pub trait ContextPlural<'a, State, Items>: ContextQuery<'a, State, Items::Cons>
 where
     Items: Cons,
 {
-    type Plural: 'a;
+    type Plural;
 
     fn context_plural(&'a self) -> Self::Plural;
 }
 
 impl<'a, T, State, Items> ContextPlural<'a, State, Items> for T
 where
+    Self: ContextQuery<'a, State, Items::Cons>,
     Items: Cons,
-    T: ContextQuery<'a, State, Items::Cons, Type = Items::Cons>,
-    <Items::Cons as Uncons>::Uncons: 'a,
+    Self::Type: Uncons,
 {
-    type Plural = <Items::Cons as Uncons>::Uncons;
+    type Plural = <Self::Type as Uncons>::Uncons;
 
     fn context_plural(&'a self) -> Self::Plural {
         self.context_query().uncons()

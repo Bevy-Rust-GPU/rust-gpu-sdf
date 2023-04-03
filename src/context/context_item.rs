@@ -4,16 +4,16 @@ use crate::prelude::Context;
 ///
 /// Extension API trait over `Context`;
 /// moves T into the function position.
-pub trait ContextItem<'a, State>: Sized {
-    fn item<Item>(&'a self) -> &'a Item
+pub trait ContextItem<State>: Sized {
+    fn item<Item>(&self) -> &Item
     where
-        Self: Context<'a, State, Item>;
+        Self: Context<State, Item>;
 }
 
-impl<'a, T, State> ContextItem<'a, State> for T {
-    fn item<Item>(&'a self) -> &'a Item
+impl<T, State> ContextItem<State> for T {
+    fn item<Item>(&self) -> &Item
     where
-        T: Context<'a, State, Item>,
+        T: Context<State, Item>,
     {
         Context::<State, Item>::context(self)
     }

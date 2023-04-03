@@ -1,6 +1,6 @@
 //! Function associating several attribute values with a point in space.
 
-use type_fields::cons::{Cons, Uncons};
+use type_fields::cons::{Cons, ConsRef, Uncons};
 
 use crate::prelude::{Attributes, Context, Fields, FieldsContext};
 
@@ -48,11 +48,11 @@ pub trait FieldAttributesContext<'a, Ctx, State> {
     ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
     where
         Self: Fields<Attr::Cons>,
-        Self: FieldsContext<'a, Ctx, State>,
-        Ctx: Context<'a, State, <Attr::Cons as Attributes>::Input>,
+        Self: FieldsContext<Ctx, State>,
+        Ctx: Context<State, <Attr::Cons as Attributes>::Input>,
         Attr: Cons,
         Attr::Cons: Attributes,
-        <Attr::Cons as Attributes>::Input: Clone + 'a,
+        <Attr::Cons as Attributes>::Input: 'a,
         <Attr::Cons as Attributes>::Output: Uncons;
 }
 
@@ -63,13 +63,49 @@ impl<'a, T, Ctx, State> FieldAttributesContext<'a, Ctx, State> for T {
     ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
     where
         Self: Fields<Attr::Cons>,
-        Self: FieldsContext<'a, Ctx, State>,
-        Ctx: Context<'a, State, <Attr::Cons as Attributes>::Input>,
+        Self: FieldsContext<Ctx, State>,
+        Ctx: Context<State, <Attr::Cons as Attributes>::Input>,
         Attr: Cons,
         Attr::Cons: Attributes,
-        <Attr::Cons as Attributes>::Input: Clone + 'a,
+        <Attr::Cons as Attributes>::Input: 'a,
         <Attr::Cons as Attributes>::Output: Uncons,
     {
         self.fields_context(ctx).uncons()
+    }
+}
+
+pub trait FieldAttributeContextCons<'a, Ctx, State>
+where
+    Ctx: Cons,
+{
+    fn attributes_context_cons<Attr>(
+        &'a self,
+        ctx: Ctx,
+    ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
+    where
+        Attr: Cons,
+        Attr::Cons: Attributes,
+        <Attr::Cons as Attributes>::Output: Uncons,
+        Self: Fields<Attr::Cons>,
+        Ctx::Cons: Context<State, <<Attr as Cons>::Cons as Attributes>::Input>;
+}
+
+impl<'a, T, Ctx, State> FieldAttributeContextCons<'a, Ctx, State> for T
+where
+    Ctx: Cons,
+{
+    fn attributes_context_cons<Attr>(
+        &'a self,
+        ctx: Ctx,
+    ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
+    where
+        Attr: Cons,
+        Attr::Cons: Attributes,
+        <Attr::Cons as Attributes>::Output: Uncons,
+        Self: Fields<Attr::Cons>,
+        Ctx::Cons: Context<State, <<Attr as Cons>::Cons as Attributes>::Input>,
+    {
+        let foo = ctx.cons();
+        self.fields_context(&foo).uncons()
     }
 }
