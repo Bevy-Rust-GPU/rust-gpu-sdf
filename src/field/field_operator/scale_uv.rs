@@ -21,11 +21,11 @@ impl Default for ScaleUvOp {
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Uv<Dim>> for ScaleUvOp
+impl<Sdf, Input> FieldOperator<Sdf, Uv<Input>> for ScaleUvOp
 where
-    Sdf: Field<Uv<Dim>>,
+    Sdf: Field<Uv<Input>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> <Uv<Dim> as crate::prelude::Attribute>::Output {
+    fn operator(&self, sdf: &Sdf, p: &Input) -> <Uv<Input> as crate::prelude::Attribute>::Output {
         let uv = sdf.field(p);
         uv * self.scale
     }

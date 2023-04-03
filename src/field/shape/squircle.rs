@@ -16,9 +16,9 @@ use crate::prelude::{Distance, Field};
 pub struct Squircle;
 
 impl Field<Distance<Vec2>> for Squircle {
-    fn field(&self, mut p: Vec2) -> f32 {
+    fn field(&self, mut p: &Vec2) -> f32 {
         // Axial reflection
-        p = p.abs();
+        let mut p = p.abs();
 
         // Cheap diagonal mirror
         if p.y > p.x {

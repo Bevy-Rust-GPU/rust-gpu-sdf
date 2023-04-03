@@ -31,7 +31,7 @@ where
     fn operator(
         &self,
         sdf: &Sdf,
-        input: RaycastInput,
+        input: &RaycastInput,
     ) -> <Raycast as crate::prelude::Attribute>::Output {
         let mut out = RaycastOutput::default();
 

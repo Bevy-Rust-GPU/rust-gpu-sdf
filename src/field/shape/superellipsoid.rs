@@ -20,7 +20,7 @@ impl Default for Superellipsoid {
 }
 
 impl Field<Distance<Vec3>> for Superellipsoid {
-    fn field(&self, p: Vec3) -> f32 {
+    fn field(&self, p: &Vec3) -> f32 {
         let d = (p.x.abs().pow(self.e1) + p.y.abs().pow(self.e2)).pow(self.e2 / self.e1)
             + p.z.abs().pow(self.e1);
 
@@ -29,7 +29,7 @@ impl Field<Distance<Vec3>> for Superellipsoid {
 }
 
 impl Field<Normal<Vec3>> for Superellipsoid {
-    fn field(&self, p: Vec3) -> Vec3 {
+    fn field(&self, p: &Vec3) -> Vec3 {
         let pa = p.abs();
         let pp = pa.pow(Vec3::new(self.e1, self.e2, self.e1));
         pp.normalize() * p.sign()

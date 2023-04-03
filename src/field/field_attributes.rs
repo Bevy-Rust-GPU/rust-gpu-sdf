@@ -12,7 +12,7 @@ use crate::prelude::{Attributes, Context, Fields, FieldsContext};
 pub trait FieldAttributes {
     fn attributes<Attr>(
         &self,
-        p: <Attr::Cons as Attributes>::Input,
+        input: &<Attr::Cons as Attributes>::Input,
     ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
     where
         Self: Fields<Attr::Cons>,
@@ -24,7 +24,7 @@ pub trait FieldAttributes {
 impl<T> FieldAttributes for T {
     fn attributes<Attr>(
         &self,
-        p: <Attr::Cons as Attributes>::Input,
+        input: &<Attr::Cons as Attributes>::Input,
     ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
     where
         Self: Fields<Attr::Cons>,
@@ -32,7 +32,7 @@ impl<T> FieldAttributes for T {
         Attr::Cons: Attributes,
         <Attr::Cons as Attributes>::Output: Uncons,
     {
-        self.fields(p).uncons()
+        self.fields(input).uncons()
     }
 }
 

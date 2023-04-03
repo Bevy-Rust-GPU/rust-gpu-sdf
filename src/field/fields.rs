@@ -11,7 +11,7 @@ pub trait Fields<Attr>
 where
     Attr: Attributes,
 {
-    fn fields(&self, p: Attr::Input) -> Attr::Output;
+    fn fields(&self, input: &Attr::Input) -> Attr::Output;
 }
 
 impl<T, LHS, RHS> Fields<(LHS, RHS)> for T
@@ -21,8 +21,8 @@ where
     LHS::Input: Clone,
     RHS: Attributes<Input = LHS::Input>,
 {
-    fn fields(&self, p: <(LHS, RHS) as Attributes>::Input) -> <(LHS, RHS) as Attributes>::Output {
-        (self.field(p.clone()), self.fields(p))
+    fn fields(&self, input: &<(LHS, RHS) as Attributes>::Input) -> <(LHS, RHS) as Attributes>::Output {
+        (self.field(input), self.fields(input))
     }
 }
 
@@ -32,8 +32,8 @@ where
     LHS: Attribute,
     LHS::Input: Clone,
 {
-    fn fields(&self, p: <(LHS, ()) as Attributes>::Input) -> <(LHS, ()) as Attributes>::Output {
-        (self.field(p), ())
+    fn fields(&self, input: &<(LHS, ()) as Attributes>::Input) -> <(LHS, ()) as Attributes>::Output {
+        (self.field(input), ())
     }
 }
 
@@ -56,9 +56,9 @@ impl<'a, T, Ctx, State> FieldsContext<'a, Ctx, State> for T {
     where
         Self: Fields<Attr>,
         Attr: Attributes,
-        Attr::Input: Clone + 'a,
+        Attr::Input: 'a,
         Ctx: Context<'a, State, Attr::Input>,
     {
-        self.fields(ctx.context().clone())
+        self.fields(ctx.context())
     }
 }

@@ -34,23 +34,23 @@ impl Default for RepeatInfiniteOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Attr> FieldOperator<Sdf, Attr> for RepeatInfiniteOp<Dim>
+impl<Sdf, Input, Attr> FieldOperator<Sdf, Attr> for RepeatInfiniteOp<Input>
 where
-    Attr: Attribute<Input = Dim>,
+    Attr: Attribute<Input = Input>,
     Sdf: Field<Attr>,
-    Dim: Add<Dim, Output = Dim>
-        + Add<f32, Output = Dim>
-        + Sub<Dim, Output = Dim>
-        + Mul<Dim, Output = Dim>
-        + Mul<f32, Output = Dim>
+    Input: Add<Input, Output = Input>
+        + Add<f32, Output = Input>
+        + Sub<Input, Output = Input>
+        + Mul<Input, Output = Input>
+        + Mul<f32, Output = Input>
         + Mod
         + Clone,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Attr::Output {
-        let q = (p.add(0.5).mul(self.period.clone()))
+    fn operator(&self, sdf: &Sdf, p: &Input) -> Attr::Output {
+        let q = (p.clone().add(0.5).mul(self.period.clone()))
             .modulo(self.period.clone())
             .sub(self.period.clone().mul(0.5));
-        sdf.field(q)
+        sdf.field(&q)
     }
 }
 

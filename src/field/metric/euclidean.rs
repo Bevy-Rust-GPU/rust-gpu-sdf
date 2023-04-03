@@ -15,43 +15,43 @@ use crate::prelude::{Distance, Field, Normal, Uv};
 #[repr(C)]
 pub struct EuclideanMetric;
 
-impl<Dim> Field<Distance<Dim>> for EuclideanMetric
+impl<Input> Field<Distance<Input>> for EuclideanMetric
 where
-    Dim: Length,
+    Input: Clone + Length,
 {
-    fn field(&self, p: Dim) -> f32 {
-        p.length()
+    fn field(&self, input: &Input) -> f32 {
+        input.clone().length()
     }
 }
 
-impl<Dim> Field<Normal<Dim>> for EuclideanMetric
+impl<Input> Field<Normal<Input>> for EuclideanMetric
 where
-    Dim: Default + PartialEq + Normalize,
+    Input: Default + Clone + PartialEq + Normalize,
 {
-    fn field(&self, p: Dim) -> Dim {
-        let d = Dim::default();
-        if p == d {
+    fn field(&self, input: &Input) -> Input {
+        let d = Input::default();
+        if *input == d {
             return d;
         }
 
-        p.normalize()
+        input.clone().normalize()
     }
 }
 
 impl Field<Uv<f32>> for EuclideanMetric {
-    fn field(&self, p: f32) -> Vec2 {
-        Vec2::new(p, 0.0)
+    fn field(&self, p: &f32) -> Vec2 {
+        Vec2::new(*p, 0.0)
     }
 }
 
 impl Field<Uv<Vec2>> for EuclideanMetric {
-    fn field(&self, p: Vec2) -> Vec2 {
+    fn field(&self, p: &Vec2) -> Vec2 {
         Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length())
     }
 }
 
 impl Field<Uv<Vec3>> for EuclideanMetric {
-    fn field(&self, p: Vec3) -> Vec2 {
+    fn field(&self, p: &Vec3) -> Vec2 {
         Vec2::new(
             (p.x.atan2(p.z) / core::f32::consts::TAU) + 0.5,
             (p.y.asin() / core::f32::consts::PI) + 0.5,

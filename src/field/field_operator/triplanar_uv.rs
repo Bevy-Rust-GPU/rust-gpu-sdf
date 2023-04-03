@@ -23,13 +23,13 @@ impl<Sdf> FieldOperator<Sdf, Uv<Vec3>> for TriplanarUvOp
 where
     Sdf: Field<Normal<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec3) -> <Uv<Vec3> as crate::prelude::Attribute>::Output {
-        let front = p.xy();
-        let side = p.zy();
-        let top = p.xz();
+    fn operator(&self, sdf: &Sdf, input: &Vec3) -> <Uv<Vec3> as crate::prelude::Attribute>::Output {
+        let front = input.xy();
+        let side = input.zy();
+        let top = input.xz();
 
         let weights = sdf
-            .field(p)
+            .field(input)
             .abs()
             .pow(Vec3::splat(self.k))
             .normalize();

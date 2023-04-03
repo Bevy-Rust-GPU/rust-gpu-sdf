@@ -13,14 +13,14 @@ use crate::{
 #[repr(C)]
 pub struct DisplaceProxyOp;
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Distance<Dim>> for DisplaceProxyOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Distance<Input>> for DisplaceProxyOp
 where
-    SdfA: Field<Distance<Dim>>,
-    SdfB: Field<Distance<Dim>>,
-    Dim: Clone,
+    SdfA: Field<Distance<Input>>,
+    SdfB: Field<Distance<Input>>,
+    Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
-        sdf_a.field(p.clone()) + sdf_b.field(p)
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Input) -> f32 {
+        sdf_a.field(input) + sdf_b.field(input)
     }
 }
 

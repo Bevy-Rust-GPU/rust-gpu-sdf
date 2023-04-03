@@ -15,10 +15,10 @@ where
     Sdf: Field<Attr>,
     Attr: Attribute<Input = Vec2>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> Attr::Output {
+    fn operator(&self, sdf: &Sdf, p: &Vec2) -> Attr::Output {
         let r = p.length();
         let a = p.x.atan2(p.y);
-        sdf.field(Vec2::new(a, r))
+        sdf.field(&Vec2::new(a, r))
     }
 }
 
@@ -34,11 +34,11 @@ where
     Sdf: Field<Attr>,
     Attr: Attribute<Input = Vec3>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec3) -> Attr::Output {
+    fn operator(&self, sdf: &Sdf, p: &Vec3) -> Attr::Output {
         let r = p.length();
         let i = (p.z / r).acos();
         let a = p.y.sign() * (p.x / p.xy().length()).acos();
-        sdf.field(Vec3::new(i, r, a))
+        sdf.field(&Vec3::new(i, r, a))
     }
 }
 

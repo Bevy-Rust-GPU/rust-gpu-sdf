@@ -4,8 +4,7 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Raycast, Tangent,
-        Uv,
+        Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Raycast, Tangent, Uv,
     },
 };
 
@@ -26,8 +25,12 @@ impl<Sdf> FieldOperator<Sdf, Normal<f32>> for GradientCentralDiffOp
 where
     Sdf: Field<Distance<f32>>,
 {
-    fn operator(&self, sdf: &Sdf, p: f32) -> <Normal<f32> as crate::prelude::Attribute>::Output {
-        sdf.field(p + self.epsilon) - sdf.field(p - self.epsilon)
+    fn operator(
+        &self,
+        sdf: &Sdf,
+        input: &f32,
+    ) -> <Normal<f32> as crate::prelude::Attribute>::Output {
+        sdf.field(&(input + self.epsilon)) - sdf.field(&(input - self.epsilon))
     }
 }
 
@@ -35,12 +38,16 @@ impl<Sdf> FieldOperator<Sdf, Normal<Vec2>> for GradientCentralDiffOp
 where
     Sdf: Field<Distance<Vec2>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> <Normal<Vec2> as crate::prelude::Attribute>::Output {
+    fn operator(
+        &self,
+        sdf: &Sdf,
+        input: &Vec2,
+    ) -> <Normal<Vec2> as crate::prelude::Attribute>::Output {
         Vec2::new(
-            sdf.field(Vec2::new(p.x + self.epsilon, p.y))
-                - sdf.field(Vec2::new(p.x - self.epsilon, p.y)),
-            sdf.field(Vec2::new(p.x, p.y + self.epsilon))
-                - sdf.field(Vec2::new(p.x, p.y - self.epsilon)),
+            sdf.field(&Vec2::new(input.x + self.epsilon, input.y))
+                - sdf.field(&Vec2::new(input.x - self.epsilon, input.y)),
+            sdf.field(&Vec2::new(input.x, input.y + self.epsilon))
+                - sdf.field(&Vec2::new(input.x, input.y - self.epsilon)),
         )
     }
 }
@@ -49,14 +56,14 @@ impl<Sdf> FieldOperator<Sdf, Normal<Vec3>> for GradientCentralDiffOp
 where
     Sdf: Field<Distance<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec3) -> <Normal<Vec3> as crate::prelude::Attribute>::Output {
+    fn operator(&self, sdf: &Sdf, p: &Vec3) -> <Normal<Vec3> as crate::prelude::Attribute>::Output {
         Vec3::new(
-            sdf.field(Vec3::new(p.x + self.epsilon, p.y, p.z))
-                - sdf.field(Vec3::new(p.x - self.epsilon, p.y, p.z)),
-            sdf.field(Vec3::new(p.x, p.y + self.epsilon, p.z))
-                - sdf.field(Vec3::new(p.x, p.y - self.epsilon, p.z)),
-            sdf.field(Vec3::new(p.x, p.y, p.z + self.epsilon))
-                - sdf.field(Vec3::new(p.x, p.y, p.z - self.epsilon)),
+            sdf.field(&Vec3::new(p.x + self.epsilon, p.y, p.z))
+                - sdf.field(&Vec3::new(p.x - self.epsilon, p.y, p.z)),
+            sdf.field(&Vec3::new(p.x, p.y + self.epsilon, p.z))
+                - sdf.field(&Vec3::new(p.x, p.y - self.epsilon, p.z)),
+            sdf.field(&Vec3::new(p.x, p.y, p.z + self.epsilon))
+                - sdf.field(&Vec3::new(p.x, p.y, p.z - self.epsilon)),
         )
     }
 }

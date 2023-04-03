@@ -4,7 +4,7 @@ use core::ops::Add;
 
 use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
-    Abs, Sign, Normalize
+    Abs, Normalize, Sign,
 };
 
 use crate::prelude::{Distance, Field, Normal};
@@ -16,29 +16,29 @@ use crate::prelude::{Distance, Field, Normal};
 pub struct TaxicabMetric;
 
 impl Field<Distance<f32>> for TaxicabMetric {
-    fn field(&self, p: f32) -> f32 {
+    fn field(&self, p: &f32) -> f32 {
         p.abs()
     }
 }
 
 impl Field<Distance<Vec2>> for TaxicabMetric {
-    fn field(&self, p: Vec2) -> f32 {
+    fn field(&self, p: &Vec2) -> f32 {
         p.x.abs().add(p.y.abs())
     }
 }
 
 impl Field<Distance<Vec3>> for TaxicabMetric {
-    fn field(&self, p: Vec3) -> f32 {
+    fn field(&self, p: &Vec3) -> f32 {
         p.x.abs().add(p.y.abs()).add(p.z.abs())
     }
 }
 
-impl<Dim> Field<Normal<Dim>> for TaxicabMetric
+impl<Input> Field<Normal<Input>> for TaxicabMetric
 where
-    Dim: Sign + Normalize,
+    Input: Clone + Sign + Normalize,
 {
-    fn field(&self, p: Dim) -> Dim {
-        p.sign().normalize()
+    fn field(&self, input: &Input) -> Input {
+        input.clone().sign().normalize()
     }
 }
 

@@ -58,18 +58,18 @@ where
 #[repr(C)]
 pub struct BoundErrorOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, ErrorTerm<Dim>> for BoundErrorOp
+impl<Sdf, Input> FieldOperator<Sdf, ErrorTerm<Input>> for BoundErrorOp
 where
-    Sdf: Field<Distance<Dim>> + Field<Support<Dim>>,
-    Dim: Default + Clone + Add<Dim, Output = Dim> + Mul<f32, Output = Dim>,
+    Sdf: Field<Distance<Input>> + Field<Support<Input>>,
+    Input: Default + Clone + Add<Input, Output = Input> + Mul<f32, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> <ErrorTerm<Dim> as Attribute>::Output {
+    fn operator(&self, sdf: &Sdf, p: &Input) -> <ErrorTerm<Input> as Attribute>::Output {
         let mut out = ErrorTerm::default();
 
-        let support = Field::<Support<Dim>>::field(sdf, p.clone());
+        let support = Field::<Support<Input>>::field(sdf, p);
         let sv = support.support_vector();
         out.support = support;
-        out.error = Field::<Distance<Dim>>::field(sdf, p.clone() + sv);
+        out.error = Field::<Distance<Input>>::field(sdf, &(p.clone() + sv));
         out
     }
 }

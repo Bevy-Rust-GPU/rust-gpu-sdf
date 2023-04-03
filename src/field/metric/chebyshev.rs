@@ -14,31 +14,31 @@ use crate::prelude::{Distance, Field, Normal};
 pub struct ChebyshevMetric;
 
 impl Field<Distance<f32>> for ChebyshevMetric {
-    fn field(&self, p: f32) -> f32 {
+    fn field(&self, p: &f32) -> f32 {
         p.abs()
     }
 }
 
 impl Field<Distance<Vec2>> for ChebyshevMetric {
-    fn field(&self, p: Vec2) -> f32 {
+    fn field(&self, p: &Vec2) -> f32 {
         p.x.abs().max(p.y.abs())
     }
 }
 
 impl Field<Distance<Vec3>> for ChebyshevMetric {
-    fn field(&self, p: Vec3) -> f32 {
+    fn field(&self, p: &Vec3) -> f32 {
         p.x.abs().max(p.y.abs()).max(p.z.abs())
     }
 }
 
 impl Field<Normal<f32>> for ChebyshevMetric {
-    fn field(&self, p: f32) -> f32 {
+    fn field(&self, p: &f32) -> f32 {
         p.sign()
     }
 }
 
 impl Field<Normal<Vec2>> for ChebyshevMetric {
-    fn field(&self, p: Vec2) -> Vec2 {
+    fn field(&self, p: &Vec2) -> Vec2 {
         let a = p.abs();
         let s = p.sign();
 
@@ -47,7 +47,7 @@ impl Field<Normal<Vec2>> for ChebyshevMetric {
 }
 
 impl Field<Normal<Vec3>> for ChebyshevMetric {
-    fn field(&self, p: Vec3) -> Vec3 {
+    fn field(&self, p: &Vec3) -> Vec3 {
         let a = p.abs();
         let s = p.sign();
 

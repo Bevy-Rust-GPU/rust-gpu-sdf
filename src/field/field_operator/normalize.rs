@@ -10,22 +10,22 @@ use super::{FieldOperator, Operator};
 #[repr(C)]
 pub struct NormalizeOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, Normal<Dim>> for NormalizeOp
+impl<Sdf, Input> FieldOperator<Sdf, Normal<Input>> for NormalizeOp
 where
-    Sdf: Field<Normal<Dim>>,
-    Dim: Clone + rust_gpu_bridge::Normalize,
+    Sdf: Field<Normal<Input>>,
+    Input: Clone + rust_gpu_bridge::Normalize,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Dim {
+    fn operator(&self, sdf: &Sdf, p: &Input) -> Input {
         sdf.field(p).clone().normalize()
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Tangent<Dim>> for NormalizeOp
+impl<Sdf, Input> FieldOperator<Sdf, Tangent<Input>> for NormalizeOp
 where
-    Sdf: Field<Tangent<Dim>>,
-    Dim: Clone + rust_gpu_bridge::Normalize,
+    Sdf: Field<Tangent<Input>>,
+    Input: Clone + rust_gpu_bridge::Normalize,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Dim {
+    fn operator(&self, sdf: &Sdf, p: &Input) -> Input {
         sdf.field(p).clone().normalize()
     }
 }

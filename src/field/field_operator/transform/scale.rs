@@ -18,11 +18,11 @@ impl<Sdf, Attr> FieldOperator<Sdf, Attr> for ScaleOp
 where
     Attr: Attribute,
     Sdf: Field<Attr>,
-    Attr::Input: Div<f32, Output = Attr::Input>,
+    Attr::Input: Clone + Div<f32, Output = Attr::Input>,
     Attr::Output: Mul<f32, Output = Attr::Output>,
 {
-    fn operator(&self, sdf: &Sdf, p: Attr::Input) -> Attr::Output {
-        sdf.field(p / self.scale).mul(self.scale)
+    fn operator(&self, sdf: &Sdf, input: &Attr::Input) -> Attr::Output {
+        sdf.field(&(input.clone() / self.scale)).mul(self.scale)
     }
 }
 
@@ -39,7 +39,10 @@ impl<Sdf> Scale<Sdf> {
 pub mod test {
     use type_fields::field::Field;
 
-    use crate::{prelude::{Cube, Scale, Point}, test_op_attrs};
+    use crate::{
+        prelude::{Cube, Point, Scale},
+        test_op_attrs,
+    };
 
     #[test]
     fn test_scale() {

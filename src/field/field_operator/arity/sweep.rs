@@ -21,10 +21,10 @@ where
     fn operator(
         &self,
         (core, shell): &(Core, Shell),
-        p: Vec2,
+        p: &Vec2,
     ) -> <Distance<Vec2> as crate::prelude::Attribute>::Output {
-        let q = core.field(p.x);
-        shell.field(q)
+        let q = core.field(&p.x);
+        shell.field(&q)
     }
 }
 
@@ -36,10 +36,10 @@ where
     fn operator(
         &self,
         (core, shell): &(Core, Shell),
-        p: Vec3,
+        p: &Vec3,
     ) -> <Distance<Vec3> as crate::prelude::Attribute>::Output {
-        let q = Vec2::new(core.field(p.truncate()), p.z);
-        shell.field(q)
+        let q = Vec2::new(core.field(&p.truncate()), p.z);
+        shell.field(&q)
     }
 }
 
@@ -48,10 +48,10 @@ where
     Core: Field<Distance<Vec2>>,
     Shell: Field<Normal<Vec2>>,
 {
-    fn operator(&self, (core, shell): &(Core, Shell), p: Vec3) -> Vec3 {
-        let q = Vec2::new(core.field(p.truncate()), p.z);
-        let n = shell.field(q);
-        let w = p.xy().normalize() * n.x;
+    fn operator(&self, (core, shell): &(Core, Shell), input: &Vec3) -> Vec3 {
+        let q = Vec2::new(core.field(&input.truncate()), input.z);
+        let n = shell.field(&q);
+        let w = input.xy().normalize() * n.x;
         Vec3::new(w.x, w.y, n.y).into()
     }
 }
@@ -61,11 +61,11 @@ where
     Core: Field<Distance<Vec2>> + Field<Uv<Vec2>>,
     Shell: Field<Uv<Vec2>>,
 {
-    fn operator(&self, (core, shell): &(Core, Shell), p: Vec3) -> Vec2 {
-        let dist_core = Field::<Distance<Vec2>>::field(core, p.truncate());
-        let uv_core = Field::<Uv<Vec2>>::field(core, p.truncate());
-        let q = Vec2::new(dist_core, p.z);
-        let uv_shell = shell.field(q);
+    fn operator(&self, (core, shell): &(Core, Shell), input: &Vec3) -> Vec2 {
+        let dist_core = Field::<Distance<Vec2>>::field(core, &input.truncate());
+        let uv_core = Field::<Uv<Vec2>>::field(core, &input.truncate());
+        let q = Vec2::new(dist_core, input.z);
+        let uv_shell = shell.field(&q);
         Vec2::new(uv_core.x, uv_shell.x + uv_shell.y)
     }
 }

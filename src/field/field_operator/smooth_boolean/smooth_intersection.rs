@@ -15,42 +15,42 @@ pub struct SmoothIntersectionOp {
     pub k: f32,
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Distance<Dim>> for SmoothIntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Distance<Input>> for SmoothIntersectionOp
 where
-    SdfA: Field<Distance<Dim>>,
-    SdfB: Field<Distance<Dim>>,
-    Dim: Clone,
+    SdfA: Field<Distance<Input>>,
+    SdfB: Field<Distance<Input>>,
+    Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
-        let d1 = sdf_a.field(p.clone());
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> f32 {
+        let d1 = sdf_a.field(p);
         let d2 = sdf_b.field(p);
         let h = (0.5 - 0.5 * (d2 - d1) / self.k).clamp(0.0, 1.0);
         d2.mix(d1, h).add(self.k.mul(h).mul(1.0 - h)).into()
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Normal<Dim>> for SmoothIntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Normal<Input>> for SmoothIntersectionOp
 where
-    SdfA: Field<Distance<Dim>>,
-    SdfA: Field<Normal<Dim>>,
-    SdfB: Field<Distance<Dim>>,
-    SdfB: Field<Normal<Dim>>,
-    Dim: Clone
-        + Sub<Dim, Output = Dim>
-        + Div<f32, Output = Dim>
-        + Mul<f32, Output = Dim>
-        + Mul<Dim, Output = Dim>
-        + Add<f32, Output = Dim>
-        + Add<Dim, Output = Dim>
+    SdfA: Field<Distance<Input>>,
+    SdfA: Field<Normal<Input>>,
+    SdfB: Field<Distance<Input>>,
+    SdfB: Field<Normal<Input>>,
+    Input: Clone
+        + Sub<Input, Output = Input>
+        + Div<f32, Output = Input>
+        + Mul<f32, Output = Input>
+        + Mul<Input, Output = Input>
+        + Add<f32, Output = Input>
+        + Add<Input, Output = Input>
         + Clamp
         + Mix
         + Saturate
         + Normalize
         + Splat,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
-        let d1 = Field::<Distance<Dim>>::field(sdf_a, p.clone());
-        let d2 = Field::<Distance<Dim>>::field(sdf_b, p.clone());
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> Input {
+        let d1 = Field::<Distance<Input>>::field(sdf_a, p);
+        let d2 = Field::<Distance<Input>>::field(sdf_b, p);
 
         let h = (d2.clone() - d1.clone())
             .div(self.k)
@@ -58,35 +58,35 @@ where
             .sub(0.5)
             .saturate();
 
-        let n1 = Field::<Normal<Dim>>::field(sdf_a, p.clone());
-        let n2 = Field::<Normal<Dim>>::field(sdf_b, p.clone());
+        let n1 = Field::<Normal<Input>>::field(sdf_a, p);
+        let n2 = Field::<Normal<Input>>::field(sdf_b, p);
 
-        n2.mix(n1, Dim::splat(h.clone())).normalize()
+        n2.mix(n1, Input::splat(h.clone())).normalize()
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Tangent<Dim>> for SmoothIntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Tangent<Input>> for SmoothIntersectionOp
 where
-    SdfA: Field<Distance<Dim>>,
-    SdfA: Field<Tangent<Dim>>,
-    SdfB: Field<Distance<Dim>>,
-    SdfB: Field<Tangent<Dim>>,
-    Dim: Clone
-        + Sub<Dim, Output = Dim>
-        + Div<f32, Output = Dim>
-        + Mul<f32, Output = Dim>
-        + Mul<Dim, Output = Dim>
-        + Add<Dim, Output = Dim>
-        + Add<f32, Output = Dim>
+    SdfA: Field<Distance<Input>>,
+    SdfA: Field<Tangent<Input>>,
+    SdfB: Field<Distance<Input>>,
+    SdfB: Field<Tangent<Input>>,
+    Input: Clone
+        + Sub<Input, Output = Input>
+        + Div<f32, Output = Input>
+        + Mul<f32, Output = Input>
+        + Mul<Input, Output = Input>
+        + Add<Input, Output = Input>
+        + Add<f32, Output = Input>
         + Clamp
         + Mix
         + Saturate
         + Normalize
         + Splat,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
-        let d1 = Field::<Distance<Dim>>::field(sdf_a, p.clone());
-        let d2 = Field::<Distance<Dim>>::field(sdf_b, p.clone());
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> Input {
+        let d1 = Field::<Distance<Input>>::field(sdf_a, p);
+        let d2 = Field::<Distance<Input>>::field(sdf_b, p);
 
         let h = (d2.clone() - d1.clone())
             .div(self.k)
@@ -94,35 +94,35 @@ where
             .sub(0.5)
             .saturate();
 
-        let n1 = Field::<Tangent<Dim>>::field(sdf_a, p.clone());
-        let n2 = Field::<Tangent<Dim>>::field(sdf_b, p.clone());
+        let n1 = Field::<Tangent<Input>>::field(sdf_a, p);
+        let n2 = Field::<Tangent<Input>>::field(sdf_b, p);
 
-        n2.mix(n1, Dim::splat(h.clone())).normalize()
+        n2.mix(n1, Input::splat(h.clone())).normalize()
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Uv<Dim>> for SmoothIntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Uv<Input>> for SmoothIntersectionOp
 where
-    SdfA: Field<Distance<Dim>>,
-    SdfA: Field<Uv<Dim>>,
-    SdfB: Field<Distance<Dim>>,
-    SdfB: Field<Uv<Dim>>,
-    Dim: Clone
-        + Sub<Dim, Output = Dim>
-        + Div<f32, Output = Dim>
-        + Mul<f32, Output = Dim>
-        + Mul<Dim, Output = Dim>
-        + Add<Dim, Output = Dim>
-        + Add<f32, Output = Dim>
+    SdfA: Field<Distance<Input>>,
+    SdfA: Field<Uv<Input>>,
+    SdfB: Field<Distance<Input>>,
+    SdfB: Field<Uv<Input>>,
+    Input: Clone
+        + Sub<Input, Output = Input>
+        + Div<f32, Output = Input>
+        + Mul<f32, Output = Input>
+        + Mul<Input, Output = Input>
+        + Add<Input, Output = Input>
+        + Add<f32, Output = Input>
         + Clamp
         + Mix
         + Saturate
         + Normalize
         + Splat,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Vec2 {
-        let d1 = Field::<Distance<Dim>>::field(sdf_a, p.clone());
-        let d2 = Field::<Distance<Dim>>::field(sdf_b, p.clone());
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> Vec2 {
+        let d1 = Field::<Distance<Input>>::field(sdf_a, p);
+        let d2 = Field::<Distance<Input>>::field(sdf_b, p);
 
         let h = (d2.clone() - d1.clone())
             .div(self.k)
@@ -130,8 +130,8 @@ where
             .sub(0.5)
             .saturate();
 
-        let uv1 = Field::<Uv<Dim>>::field(sdf_a, p.clone());
-        let uv2 = Field::<Uv<Dim>>::field(sdf_b, p.clone());
+        let uv1 = Field::<Uv<Input>>::field(sdf_a, p);
+        let uv2 = Field::<Uv<Input>>::field(sdf_b, p);
 
         uv2.mix(uv1, Vec2::splat(h.step(0.5)))
     }

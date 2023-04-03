@@ -11,55 +11,55 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 #[repr(C)]
 pub struct IntersectionOp;
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Distance<Dim>> for IntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Distance<Input>> for IntersectionOp
 where
-    SdfA: Field<Distance<Dim>>,
-    SdfB: Field<Distance<Dim>>,
-    Dim: Clone,
+    SdfA: Field<Distance<Input>>,
+    SdfB: Field<Distance<Input>>,
+    Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
-        sdf_a.field(p.clone()).max(sdf_b.field(p))
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> f32 {
+        sdf_a.field(p).max(sdf_b.field(p))
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Normal<Dim>> for IntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Normal<Input>> for IntersectionOp
 where
-    SdfA: Field<Distance<Dim>>,
-    SdfA: Field<Normal<Dim>>,
-    SdfB: Field<Distance<Dim>>,
-    SdfB: Field<Normal<Dim>>,
-    Dim: Clone,
+    SdfA: Field<Distance<Input>>,
+    SdfA: Field<Normal<Input>>,
+    SdfB: Field<Distance<Input>>,
+    SdfB: Field<Normal<Input>>,
+    Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
-        let dist_a = Field::<Distance<Dim>>::field(sdf_a, p.clone());
-        let dist_b = Field::<Distance<Dim>>::field(sdf_b, p.clone());
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> Input {
+        let dist_a = Field::<Distance<Input>>::field(sdf_a, p);
+        let dist_b = Field::<Distance<Input>>::field(sdf_b, p);
 
         let n = if dist_a > dist_b {
-            Field::<Normal<Dim>>::field(sdf_a, p.clone())
+            Field::<Normal<Input>>::field(sdf_a, p)
         } else {
-            Field::<Normal<Dim>>::field(sdf_b, p.clone())
+            Field::<Normal<Input>>::field(sdf_b, p)
         };
 
         n.into()
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Uv<Dim>> for IntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Uv<Input>> for IntersectionOp
 where
-    SdfA: Field<Distance<Dim>>,
-    SdfA: Field<Uv<Dim>>,
-    SdfB: Field<Distance<Dim>>,
-    SdfB: Field<Uv<Dim>>,
-    Dim: Clone,
+    SdfA: Field<Distance<Input>>,
+    SdfA: Field<Uv<Input>>,
+    SdfB: Field<Distance<Input>>,
+    SdfB: Field<Uv<Input>>,
+    Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Vec2 {
-        let dist_a = Field::<Distance<Dim>>::field(sdf_a, p.clone());
-        let dist_b = Field::<Distance<Dim>>::field(sdf_b, p.clone());
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Input) -> Vec2 {
+        let dist_a = Field::<Distance<Input>>::field(sdf_a, input);
+        let dist_b = Field::<Distance<Input>>::field(sdf_b, input);
 
         if dist_a > dist_b {
-            Field::<Uv<Dim>>::field(sdf_a, p.clone())
+            Field::<Uv<Input>>::field(sdf_a, input)
         } else {
-            Field::<Uv<Dim>>::field(sdf_b, p.clone())
+            Field::<Uv<Input>>::field(sdf_b, input)
         }
     }
 }

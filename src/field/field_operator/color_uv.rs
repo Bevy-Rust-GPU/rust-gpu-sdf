@@ -13,12 +13,12 @@ use super::{FieldOperator, Operator};
 #[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 pub struct ColorUvOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, Color<Dim>> for ColorUvOp
+impl<Sdf, Input> FieldOperator<Sdf, Color<Input>> for ColorUvOp
 where
-    Sdf: Field<Uv<Dim>>,
-    Dim: Add<Dim, Output = Dim> + Mul<Dim, Output = Dim> + Splat + ToVec<Vec4>,
+    Sdf: Field<Uv<Input>>,
+    Input: Add<Input, Output = Input> + Mul<Input, Output = Input> + Splat + ToVec<Vec4>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Vec4 {
+    fn operator(&self, sdf: &Sdf, p: &Input) -> Vec4 {
         let uv = sdf.field(p);
         uv.extend(0.0).extend(1.0)
     }

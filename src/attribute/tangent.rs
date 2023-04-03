@@ -29,19 +29,19 @@ impl<Dim> Attribute for Tangent<Dim> {
 }
 
 impl Field<Tangent<f32>> for f32 {
-    fn field(&self, _: f32) -> f32 {
+    fn field(&self, _: &f32) -> f32 {
         *self
     }
 }
 
 impl Field<Tangent<Vec2>> for Vec2 {
-    fn field(&self, _: Vec2) -> Vec2 {
+    fn field(&self, _: &Vec2) -> Vec2 {
         *self
     }
 }
 
 impl Field<Tangent<Vec3>> for Vec3 {
-    fn field(&self, _: Vec3) -> Vec3 {
+    fn field(&self, _: &Vec3) -> Vec3 {
         *self
     }
 }

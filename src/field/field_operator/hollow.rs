@@ -16,51 +16,51 @@ use crate::{
 #[repr(C)]
 pub struct HollowOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, Distance<Dim>> for HollowOp
+impl<Sdf, Input> FieldOperator<Sdf, Distance<Input>> for HollowOp
 where
-    Sdf: Field<Distance<Dim>>,
+    Sdf: Field<Distance<Input>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> f32 {
-        sdf.field(p).abs()
+    fn operator(&self, sdf: &Sdf, input: &Input) -> f32 {
+        sdf.field(input).abs()
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Normal<Dim>> for HollowOp
+impl<Sdf, Input> FieldOperator<Sdf, Normal<Input>> for HollowOp
 where
-    Sdf: Field<Distance<Dim>>,
-    Sdf: Field<Normal<Dim>>,
-    Dim: Clone + Mul<f32, Output = Dim>,
+    Sdf: Field<Distance<Input>>,
+    Sdf: Field<Normal<Input>>,
+    Input: Clone + Mul<f32, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Dim {
-        let d = <Sdf as Field<Distance<Dim>>>::field(sdf, p.clone());
+    fn operator(&self, sdf: &Sdf, input: &Input) -> Input {
+        let d = <Sdf as Field<Distance<Input>>>::field(sdf, input);
         let s = d.sign();
-        <Sdf as Field<Normal<Dim>>>::field(sdf, p.clone() * s)
+        <Sdf as Field<Normal<Input>>>::field(sdf, &(input.clone() * s))
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Tangent<Dim>> for HollowOp
+impl<Sdf, Input> FieldOperator<Sdf, Tangent<Input>> for HollowOp
 where
-    Sdf: Field<Distance<Dim>>,
-    Sdf: Field<Tangent<Dim>>,
-    Dim: Clone + Mul<f32, Output = Dim>,
+    Sdf: Field<Distance<Input>>,
+    Sdf: Field<Tangent<Input>>,
+    Input: Clone + Mul<f32, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Dim {
-        let d = <Sdf as Field<Distance<Dim>>>::field(sdf, p.clone());
+    fn operator(&self, sdf: &Sdf, input: &Input) -> Input {
+        let d = <Sdf as Field<Distance<Input>>>::field(sdf, input);
         let s = d.sign();
-        <Sdf as Field<Tangent<Dim>>>::field(sdf, p.clone() * s)
+        <Sdf as Field<Tangent<Input>>>::field(sdf, &(input.clone() * s))
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Uv<Dim>> for HollowOp
+impl<Sdf, Input> FieldOperator<Sdf, Uv<Input>> for HollowOp
 where
-    Sdf: Field<Distance<Dim>>,
-    Sdf: Field<Uv<Dim>>,
-    Dim: Clone + Mul<f32, Output = Dim>,
+    Sdf: Field<Distance<Input>>,
+    Sdf: Field<Uv<Input>>,
+    Input: Clone + Mul<f32, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Vec2 {
-        let d = <Sdf as Field<Distance<Dim>>>::field(sdf, p.clone());
+    fn operator(&self, sdf: &Sdf, input: &Input) -> Vec2 {
+        let d = <Sdf as Field<Distance<Input>>>::field(sdf, input);
         let s = d.sign();
-        <Sdf as Field<Uv<Dim>>>::field(sdf, p.clone() * s)
+        <Sdf as Field<Uv<Input>>>::field(sdf, &(input.clone() * s))
     }
 }
 

@@ -15,13 +15,13 @@ pub struct DisplaceOp {
     pub delta: f32,
 }
 
-impl<SdfA, Dim> FieldOperator<SdfA, Distance<Dim>> for DisplaceOp
+impl<SdfA, Input> FieldOperator<SdfA, Distance<Input>> for DisplaceOp
 where
-    SdfA: Field<Distance<Dim>>,
-    Dim: Clone,
+    SdfA: Field<Distance<Input>>,
+    Input: Clone,
 {
-    fn operator(&self, sdf_a: &SdfA, p: Dim) -> f32 {
-        sdf_a.field(p.clone()) + self.delta
+    fn operator(&self, sdf_a: &SdfA, input: &Input) -> f32 {
+        sdf_a.field(input) + self.delta
     }
 }
 

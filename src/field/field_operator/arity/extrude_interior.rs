@@ -25,9 +25,9 @@ where
     fn operator(
         &self,
         sdf: &Sdf,
-        p: Vec2,
+        p: &Vec2,
     ) -> <Distance<Vec2> as crate::prelude::Attribute>::Output {
-        let d = sdf.field(p.x);
+        let d = sdf.field(&p.x);
         let w = Vec2::new(d, p.y.abs() + d.min(0.0) * self.depth);
         let exterior = w.max(Vec2::ZERO).length();
         let interior = w.x.max(w.y).min(0.0);
@@ -42,9 +42,9 @@ where
     fn operator(
         &self,
         sdf: &Sdf,
-        p: Vec3,
+        p: &Vec3,
     ) -> <Distance<Vec3> as crate::prelude::Attribute>::Output {
-        let d = sdf.field(p.truncate());
+        let d = sdf.field(&p.truncate());
         let w = Vec2::new(d, p.z.abs() + d.min(0.0) * self.depth);
         let exterior = w.max(Vec2::ZERO).length();
         let interior = w.x.max(w.y).min(0.0);
@@ -59,9 +59,9 @@ where
     fn operator(
         &self,
         sdf: &Sdf,
-        p: Vec2,
+        p: &Vec2,
     ) -> <Normal<Vec2> as crate::prelude::Attribute>::Output {
-        let d = sdf.field(p.x);
+        let d = sdf.field(&p.x);
         Vec2::new(d, 1.0).normalize()
     }
 }
@@ -73,9 +73,9 @@ where
     fn operator(
         &self,
         sdf: &Sdf,
-        p: Vec3,
+        p: &Vec3,
     ) -> <Normal<Vec3> as crate::prelude::Attribute>::Output {
-        let d = sdf.field(p.truncate());
+        let d = sdf.field(&p.truncate());
         d.extend(1.0).normalize()
     }
 }
@@ -87,9 +87,9 @@ where
     fn operator(
         &self,
         sdf: &Sdf,
-        p: Vec3,
+        p: &Vec3,
     ) -> <Uv<Vec3> as crate::prelude::Attribute>::Output {
-        sdf.field(p.truncate())
+        sdf.field(&p.truncate())
     }
 }
 

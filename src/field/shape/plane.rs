@@ -36,31 +36,31 @@ impl Default for Plane<Vec3> {
 }
 
 impl Field<Distance<f32>> for Plane<f32> {
-    fn field(&self, p: f32) -> f32 {
+    fn field(&self, p: &f32) -> f32 {
         assert!(self.dir.abs() == 1.0, "Plane dir must be normalized");
         p * -self.dir
     }
 }
 
 impl Field<Distance<Vec2>> for Plane<Vec2> {
-    fn field(&self, p: Vec2) -> f32 {
+    fn field(&self, p: &Vec2) -> f32 {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
         p.dot(-self.dir)
     }
 }
 
 impl Field<Distance<Vec3>> for Plane<Vec3> {
-    fn field(&self, p: Vec3) -> f32 {
+    fn field(&self, p: &Vec3) -> f32 {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
         p.dot(-self.dir)
     }
 }
 
-impl<Dim> Field<Normal<Dim>> for Plane<Dim>
+impl<Input> Field<Normal<Input>> for Plane<Input>
 where
-    Dim: Clone + Neg<Output = Dim>,
+    Input: Clone + Neg<Output = Input>,
 {
-    fn field(&self, p: Dim) -> Dim {
+    fn field(&self, p: &Input) -> Input {
         -self.dir.clone()
     }
 }

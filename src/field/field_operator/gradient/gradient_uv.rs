@@ -4,8 +4,7 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Raycast, Tangent,
-        Uv,
+        Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Raycast, Tangent, Uv,
     },
 };
 
@@ -31,12 +30,16 @@ impl<Sdf> FieldOperator<Sdf, Tangent<Vec3>> for UvGradientOp
 where
     Sdf: Field<Uv<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec3) -> <Tangent<Vec3> as crate::prelude::Attribute>::Output {
+    fn operator(
+        &self,
+        sdf: &Sdf,
+        input: &Vec3,
+    ) -> <Tangent<Vec3> as crate::prelude::Attribute>::Output {
         let k = Vec2::new(1.0, -1.0);
-        k.xyy() * sdf.field(p + k.xyy() * self.epsilon).dot(self.axis)
-            + k.yyx() * sdf.field(p + k.yyx() * self.epsilon).dot(self.axis)
-            + k.yxy() * sdf.field(p + k.yxy() * self.epsilon).dot(self.axis)
-            + k.xxx() * sdf.field(p + k.xxx() * self.epsilon).dot(self.axis)
+        k.xyy() * sdf.field(&(*input + k.xyy() * self.epsilon)).dot(self.axis)
+            + k.yyx() * sdf.field(&(*input + k.yyx() * self.epsilon)).dot(self.axis)
+            + k.yxy() * sdf.field(&(*input + k.yxy() * self.epsilon)).dot(self.axis)
+            + k.xxx() * sdf.field(&(*input + k.xxx() * self.epsilon)).dot(self.axis)
     }
 }
 

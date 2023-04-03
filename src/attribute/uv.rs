@@ -34,8 +34,8 @@ impl<Dim> Attribute for Uv<Dim> {
     type Output = Vec2;
 }
 
-impl<Dim> Field<Uv<Dim>> for Vec2 {
-    fn field(&self, _: Dim) -> Vec2 {
+impl<Input> Field<Uv<Input>> for Vec2 {
+    fn field(&self, _: &Input) -> Vec2 {
         *self
     }
 }

@@ -29,19 +29,19 @@ impl<Dim> Attribute for Normal<Dim> {
 }
 
 impl Field<Normal<f32>> for f32 {
-    fn field(&self, _: f32) -> f32 {
+    fn field(&self, _: &f32) -> f32 {
         *self
     }
 }
 
 impl Field<Normal<Vec2>> for Vec2 {
-    fn field(&self, _: Vec2) -> Vec2 {
+    fn field(&self, _: &Vec2) -> Vec2 {
         *self
     }
 }
 
 impl Field<Normal<Vec3>> for Vec3 {
-    fn field(&self, _: Vec3) -> Vec3 {
+    fn field(&self, _: &Vec3) -> Vec3 {
         *self
     }
 }

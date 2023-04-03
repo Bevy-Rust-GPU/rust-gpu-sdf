@@ -30,10 +30,10 @@ impl<Sdf> FieldOperator<Sdf, Distance<Vec2>> for SliceOp
 where
     Sdf: Field<Distance<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> f32 {
+    fn operator(&self, sdf: &Sdf, p: &Vec2) -> f32 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        sdf.field(u + v)
+        sdf.field(&(u + v))
     }
 }
 
@@ -41,10 +41,10 @@ impl<Sdf> FieldOperator<Sdf, Normal<Vec2>> for SliceOp
 where
     Sdf: Field<Normal<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: &Vec2) -> Vec2 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        let n = sdf.field(u + v);
+        let n = sdf.field(&(u + v));
         Vec2::new(n.dot(self.u), n.dot(self.v)).normalize()
     }
 }
@@ -53,10 +53,10 @@ impl<Sdf> FieldOperator<Sdf, Tangent<Vec2>> for SliceOp
 where
     Sdf: Field<Tangent<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: &Vec2) -> Vec2 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        let n = sdf.field(u + v);
+        let n = sdf.field(&(u + v));
         Vec2::new(n.dot(self.u), n.dot(self.v)).normalize()
     }
 }
@@ -65,10 +65,10 @@ impl<Sdf> FieldOperator<Sdf, Uv<Vec2>> for SliceOp
 where
     Sdf: Field<Uv<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: &Vec2) -> Vec2 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        sdf.field(u + v)
+        sdf.field(&(u + v))
     }
 }
 

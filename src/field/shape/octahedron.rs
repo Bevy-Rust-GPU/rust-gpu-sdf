@@ -20,7 +20,7 @@ impl Default for Octahedron {
 }
 
 impl Field<Distance<Vec3>> for Octahedron {
-    fn field(&self, p: Vec3) -> f32 {
+    fn field(&self, p: &Vec3) -> f32 {
         // Axial reflection
         let p = p.abs();
 
@@ -46,12 +46,12 @@ impl Field<Distance<Vec3>> for Octahedron {
     }
 }
 
-impl<Dim> Field<Normal<Dim>> for Octahedron
+impl<Input> Field<Normal<Input>> for Octahedron
 where
-    Dim: Sign + Normalize,
+    Input: Clone + Sign + Normalize,
 {
-    fn field(&self, p: Dim) -> Dim {
-        p.sign().normalize()
+    fn field(&self, p: &Input) -> Input {
+        p.clone().sign().normalize()
     }
 }
 

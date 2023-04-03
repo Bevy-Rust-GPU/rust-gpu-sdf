@@ -24,10 +24,10 @@ where
     fn operator(
         &self,
         sdf: &Sdf,
-        p: Vec2,
+        input: &Vec2,
     ) -> <Distance<f32> as crate::prelude::Attribute>::Output {
-        let d = sdf.field(p.x);
-        let w = Vec2::new(d, p.y.abs() - self.depth);
+        let d = sdf.field(&input.x);
+        let w = Vec2::new(d, input.y.abs() - self.depth);
         w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()
     }
 }
@@ -39,10 +39,10 @@ where
     fn operator(
         &self,
         sdf: &Sdf,
-        p: Vec3,
+        input: &Vec3,
     ) -> <Distance<Vec2> as crate::prelude::Attribute>::Output {
-        let d = sdf.field(p.truncate());
-        let w = Vec2::new(d, p.z.abs() - self.depth);
+        let d = sdf.field(&input.truncate());
+        let w = Vec2::new(d, input.z.abs() - self.depth);
         w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()
     }
 }
@@ -51,8 +51,8 @@ impl<Sdf> FieldOperator<Sdf, Normal<Vec2>> for ExtrudeOp
 where
     Sdf: Field<Normal<f32>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> Vec2 {
-        let d = sdf.field(p.x);
+    fn operator(&self, sdf: &Sdf, p: &Vec2) -> Vec2 {
+        let d = sdf.field(&p.x);
         let w = Vec2::new(d, p.y.abs() - self.depth);
         let s = p.y.sign();
 
@@ -79,8 +79,8 @@ impl<Sdf> FieldOperator<Sdf, Normal<Vec3>> for ExtrudeOp
 where
     Sdf: Field<Normal<Vec2>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec3) -> Vec3 {
-        let d = sdf.field(p.xy());
+    fn operator(&self, sdf: &Sdf, p: &Vec3) -> Vec3 {
+        let d = sdf.field(&p.xy());
         if p.z.abs() > p.xy().length() * 0.5 {
             Vec3::new(0.0, 0.0, p.z.sign())
         } else {
@@ -94,12 +94,8 @@ impl<Sdf> FieldOperator<Sdf, Uv<Vec2>> for ExtrudeOp
 where
     Sdf: crate::prelude::Field<Uv<f32>>,
 {
-    fn operator(
-        &self,
-        sdf: &Sdf,
-        p: Vec2,
-    ) -> <Uv<Vec2> as crate::prelude::Attribute>::Output {
-        sdf.field(p.x) + Vec2::new(0.0, p.y.abs())
+    fn operator(&self, sdf: &Sdf, p: &Vec2) -> <Uv<Vec2> as crate::prelude::Attribute>::Output {
+        sdf.field(&p.x) + Vec2::new(0.0, p.y.abs())
     }
 }
 
@@ -107,12 +103,8 @@ impl<Sdf> FieldOperator<Sdf, Uv<Vec3>> for ExtrudeOp
 where
     Sdf: crate::prelude::Field<Uv<Vec2>>,
 {
-    fn operator(
-        &self,
-        sdf: &Sdf,
-        p: Vec3,
-    ) -> <Uv<Vec3> as crate::prelude::Attribute>::Output {
-        sdf.field(p.truncate()) + Vec2::new(0.0, p.z.abs())
+    fn operator(&self, sdf: &Sdf, p: &Vec3) -> <Uv<Vec3> as crate::prelude::Attribute>::Output {
+        sdf.field(&p.truncate()) + Vec2::new(0.0, p.z.abs())
     }
 }
 

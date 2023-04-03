@@ -32,8 +32,8 @@ impl<Dim> Attribute for Distance<Dim> {
     type Output = f32;
 }
 
-impl<Dim> Field<Distance<Dim>> for f32 {
-    fn field(&self, _: Dim) -> f32 {
+impl<Input> Field<Distance<Input>> for f32 {
+    fn field(&self, _: &Input) -> f32 {
         *self
     }
 }

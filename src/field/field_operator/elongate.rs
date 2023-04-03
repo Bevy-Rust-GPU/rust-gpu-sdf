@@ -45,9 +45,9 @@ impl<Sdf> FieldOperator<Sdf, Distance<f32>> for ElongateOp<f32>
 where
     Sdf: Field<Distance<f32>>,
 {
-    fn operator(&self, sdf: &Sdf, p: f32) -> f32 {
-        let q = p.abs() - self.extent;
-        sdf.field(q.max(0.0)).add(q.min(0.0))
+    fn operator(&self, sdf: &Sdf, input: &f32) -> f32 {
+        let q = input.abs() - self.extent;
+        sdf.field(&q.max(0.0)).add(q.min(0.0))
     }
 }
 
@@ -55,9 +55,9 @@ impl<Sdf> FieldOperator<Sdf, Distance<Vec2>> for ElongateOp<Vec2>
 where
     Sdf: Field<Distance<Vec2>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> f32 {
-        let q = p.abs() - self.extent;
-        sdf.field(q.max(Vec2::ZERO))
+    fn operator(&self, sdf: &Sdf, input: &Vec2) -> f32 {
+        let q = input.abs() - self.extent;
+        sdf.field(&q.max(Vec2::ZERO))
             .add(q.x.max(q.y).min(0.0))
     }
 }
@@ -66,9 +66,9 @@ impl<Sdf> FieldOperator<Sdf, Distance<Vec3>> for ElongateOp<Vec3>
 where
     Sdf: Field<Distance<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec3) -> f32 {
-        let q = p.abs() - self.extent;
-        sdf.field(q.max(Vec3::ZERO))
+    fn operator(&self, sdf: &Sdf, input: &Vec3) -> f32 {
+        let q = input.abs() - self.extent;
+        sdf.field(&q.max(Vec3::ZERO))
             .add(q.x.max(q.y.max(q.z)).min(0.0))
     }
 }
@@ -77,8 +77,8 @@ impl<Sdf> FieldOperator<Sdf, Normal<f32>> for ElongateOp<f32>
 where
     Sdf: Field<Normal<f32>>,
 {
-    fn operator(&self, _sdf: &Sdf, p: f32) -> f32 {
-        p.sign()
+    fn operator(&self, _sdf: &Sdf, input: &f32) -> f32 {
+        input.sign()
     }
 }
 
@@ -86,9 +86,9 @@ impl<Sdf> FieldOperator<Sdf, Normal<Vec2>> for ElongateOp<Vec2>
 where
     Sdf: Field<Normal<Vec2>>,
 {
-    fn operator(&self, _sdf: &Sdf, p: Vec2) -> Vec2 {
-        let w = p.abs() - self.extent;
-        let s = p.sign();
+    fn operator(&self, _sdf: &Sdf, input: &Vec2) -> Vec2 {
+        let w = input.abs() - self.extent;
+        let s = input.sign();
 
         let g = w.x.max(w.y);
         let q = w.max(Vec2::ZERO);
@@ -113,9 +113,9 @@ impl<Sdf> FieldOperator<Sdf, Normal<Vec3>> for ElongateOp<Vec3>
 where
     Sdf: Field<Normal<Vec3>>,
 {
-    fn operator(&self, _sdf: &Sdf, p: Vec3) -> Vec3 {
-        let w = p.abs() - self.extent;
-        let s = p.sign();
+    fn operator(&self, _sdf: &Sdf, input: &Vec3) -> Vec3 {
+        let w = input.abs() - self.extent;
+        let s = input.sign();
 
         let g = w.x.max(w.y).max(w.z);
         let q = w.max(Vec3::ZERO);
@@ -148,8 +148,8 @@ impl<Sdf> FieldOperator<Sdf, Uv<f32>> for ElongateOp<f32>
 where
     Sdf: Field<Uv<f32>>,
 {
-    fn operator(&self, _sdf: &Sdf, p: f32) -> Vec2 {
-        Vec2::new((p + self.extent) * (0.5 / self.extent), 0.0)
+    fn operator(&self, _sdf: &Sdf, input: &f32) -> Vec2 {
+        Vec2::new((input + self.extent) * (0.5 / self.extent), 0.0)
     }
 }
 
@@ -157,8 +157,8 @@ impl<Sdf> FieldOperator<Sdf, Uv<Vec2>> for ElongateOp<Vec2>
 where
     Sdf: Field<Uv<Vec2>>,
 {
-    fn operator(&self, _sdf: &Sdf, p: Vec2) -> Vec2 {
-        (p + self.extent) * (0.5 / self.extent)
+    fn operator(&self, _sdf: &Sdf, input: &Vec2) -> Vec2 {
+        (*input + self.extent) * (0.5 / self.extent)
     }
 }
 
@@ -166,20 +166,20 @@ impl<Sdf> FieldOperator<Sdf, Uv<Vec3>> for ElongateOp<Vec3>
 where
     Sdf: Field<Uv<Vec3>>,
 {
-    fn operator(&self, _sdf: &Sdf, p: Vec3) -> Vec2 {
-        let w = p.abs();
+    fn operator(&self, _sdf: &Sdf, input: &Vec3) -> Vec2 {
+        let w = input.abs();
 
         let m = if w.x > w.y {
             if w.x > w.z {
-                (p.zy() + self.extent.zy()) * (0.5 / self.extent.zy())
+                (input.zy() + self.extent.zy()) * (0.5 / self.extent.zy())
             } else {
-                (p.xy() + self.extent.xy()) * (0.5 / self.extent.xy())
+                (input.xy() + self.extent.xy()) * (0.5 / self.extent.xy())
             }
         } else {
             if w.y > w.z {
-                (p.xz() + self.extent.xz()) * (0.5 / self.extent.xz())
+                (input.xz() + self.extent.xz()) * (0.5 / self.extent.xz())
             } else {
-                (p.xy() + self.extent.xy()) * (0.5 / self.extent.xy())
+                (input.xy() + self.extent.xy()) * (0.5 / self.extent.xy())
             }
         };
 

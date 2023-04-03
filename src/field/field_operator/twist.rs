@@ -42,9 +42,9 @@ where
     Attr: Attribute<Input = Vec2>,
     Sdf: Field<Attr>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec2) -> Attr::Output {
-        let q = Vec2::from_angle(self.k * self.axis_pos.dot(p)).rotate(p);
-        sdf.field(q)
+    fn operator(&self, sdf: &Sdf, input: &Vec2) -> Attr::Output {
+        let q = Vec2::from_angle(self.k * self.axis_pos.dot(*input)).rotate(*input);
+        sdf.field(&q)
     }
 }
 
@@ -53,9 +53,9 @@ where
     Attr: Attribute<Input = Vec3>,
     Sdf: Field<Attr>,
 {
-    fn operator(&self, sdf: &Sdf, p: Vec3) -> Attr::Output {
-        let q = Quat::from_axis_angle(self.axis_rot, self.k * self.axis_pos.dot(p)) * p;
-        sdf.field(q)
+    fn operator(&self, sdf: &Sdf, p: &Vec3) -> Attr::Output {
+        let q = Quat::from_axis_angle(self.axis_rot, self.k * self.axis_pos.dot(*p)) * *p;
+        sdf.field(&q)
     }
 }
 

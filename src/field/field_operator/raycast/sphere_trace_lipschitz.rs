@@ -48,13 +48,13 @@ impl<const MAX_STEPS: u32, Sdf> FieldOperator<Sdf, Raycast> for SphereTraceLipsc
 where
     Sdf: Field<Distance<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, input: RaycastInput) -> RaycastOutput {
+    fn operator(&self, sdf: &Sdf, input: &RaycastInput) -> RaycastOutput {
         let mut out = RaycastOutput::default();
 
         let mut t = input.start;
         for i in 0..MAX_STEPS {
             let pos = input.eye + input.dir * t;
-            let dist = sdf.field(pos);
+            let dist = sdf.field(&pos);
 
             out.march_step(t, dist);
 

@@ -58,7 +58,7 @@ where
                     },
                     ..Default::default()
                 }
-                .attribute::<ErrorTerm<Vec2>>(pos);
+                .attribute::<ErrorTerm<Vec2>>(&pos);
 
                 // Skip samples with no valid support function
                 if error_term.support.normal == Vec2::ZERO {
@@ -106,7 +106,7 @@ where
                         },
                         ..Default::default()
                     }
-                    .attribute::<ErrorTerm<Vec3>>(pos);
+                    .attribute::<ErrorTerm<Vec3>>(&pos);
 
                     // Skip samples with no valid support function
                     if error_term.support.normal == Vec3::ZERO {

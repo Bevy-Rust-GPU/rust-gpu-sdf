@@ -10,12 +10,12 @@ use super::{FieldOperator, Operator};
 #[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 pub struct CheckerOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, Color<Dim>> for CheckerOp
+impl<Sdf, Input> FieldOperator<Sdf, Color<Input>> for CheckerOp
 where
-    Sdf: Field<Uv<Dim>>,
-    Dim: Mod,
+    Sdf: Field<Uv<Input>>,
+    Input: Mod,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> <Color<Dim> as crate::prelude::Attribute>::Output {
+    fn operator(&self, sdf: &Sdf, p: &Input) -> <Color<Input> as crate::prelude::Attribute>::Output {
         let uv = sdf.field(p);
         let checker = uv.round();
         let checker = (checker.x + checker.y).modulo(2.0) / 2.0;

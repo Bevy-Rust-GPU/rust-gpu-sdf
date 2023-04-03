@@ -17,7 +17,7 @@ pub trait Field<Attr>
 where
     Attr: Attribute,
 {
-    fn field(&self, input: Attr::Input) -> Attr::Output;
+    fn field(&self, input: &Attr::Input) -> Attr::Output;
 }
 
 #[cfg(feature = "glam")]
@@ -31,8 +31,8 @@ pub mod boxed {
     where
         Attr: Attribute,
     {
-        fn field(&self, p: <Attr as Attribute>::Input) -> <Attr as Attribute>::Output {
-            self.as_ref().field(p)
+        fn field(&self, input: &<Attr as Attribute>::Input) -> <Attr as Attribute>::Output {
+            self.as_ref().field(input)
         }
     }
 }

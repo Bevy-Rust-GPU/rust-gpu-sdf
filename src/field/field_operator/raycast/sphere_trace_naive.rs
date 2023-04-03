@@ -34,7 +34,7 @@ where
     fn operator(
         &self,
         sdf: &Sdf,
-        input: RaycastInput,
+        input: &RaycastInput,
     ) -> <Raycast as crate::prelude::Attribute>::Output {
         let mut out = RaycastOutput::default();
 
@@ -42,7 +42,7 @@ where
 
         for step in 0..MAX_STEPS {
             let pos = input.eye + input.dir * t;
-            let dist = sdf.field(pos);
+            let dist = sdf.field(&pos);
 
             out.march_step(t, dist);
 

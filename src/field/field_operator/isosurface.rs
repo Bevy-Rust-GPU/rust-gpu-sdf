@@ -25,27 +25,27 @@ impl Default for IsosurfaceOp {
     }
 }
 
-impl<SdfA, Dim> FieldOperator<SdfA, Distance<Dim>> for IsosurfaceOp
+impl<SdfA, Input> FieldOperator<SdfA, Distance<Input>> for IsosurfaceOp
 where
-    SdfA: Field<Distance<Dim>>,
-    Dim: Clone,
+    SdfA: Field<Distance<Input>>,
+    Input: Clone,
 {
-    fn operator(&self, sdf_a: &SdfA, p: Dim) -> f32 {
-        sdf_a.field(p.clone()) - self.delta
+    fn operator(&self, sdf_a: &SdfA, input: &Input) -> f32 {
+        sdf_a.field(input) - self.delta
     }
 }
 
 impl_passthrough_op_1!(IsosurfaceOp, Normal<Dim>, Dim);
 impl_passthrough_op_1!(IsosurfaceOp, Tangent<Dim>, Dim);
 
-impl<SdfA, Dim> FieldOperator<SdfA, Uv<Dim>> for IsosurfaceOp
+impl<SdfA, Input> FieldOperator<SdfA, Uv<Input>> for IsosurfaceOp
 where
-    SdfA: crate::prelude::Field<Uv<Dim>>,
-    Dim: Clone + Div<f32, Output = Dim>,
+    SdfA: crate::prelude::Field<Uv<Input>>,
+    Input: Clone + Div<f32, Output = Input>,
 {
-    fn operator(&self, sdf_a: &SdfA, p: Dim) -> <Uv<Dim> as crate::prelude::Attribute>::Output {
-        let p = p.clone() / self.delta;
-        sdf_a.field(p)
+    fn operator(&self, sdf_a: &SdfA, input: &Input) -> <Uv<Input> as crate::prelude::Attribute>::Output {
+        let p = input.clone() / self.delta;
+        sdf_a.field(&p)
     }
 }
 

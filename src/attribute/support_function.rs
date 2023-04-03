@@ -39,16 +39,16 @@ where
 #[repr(C)]
 pub struct SupportFunctionOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, Support<Dim>> for SupportFunctionOp
+impl<Sdf, Input> FieldOperator<Sdf, Support<Input>> for SupportFunctionOp
 where
-    Sdf: Field<Distance<Dim>> + Field<Normal<Dim>>,
-    Dim: Default + Clone + Mul<f32, Output = Dim> + IsNormalized,
+    Sdf: Field<Distance<Input>> + Field<Normal<Input>>,
+    Input: Default + Clone + Mul<f32, Output = Input> + IsNormalized,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> <Support<Dim> as Attribute>::Output {
+    fn operator(&self, sdf: &Sdf, p: &Input) -> <Support<Input> as Attribute>::Output {
         let mut out = Support::default();
 
         // Calculate normal
-        let n = Field::<Normal<Dim>>::field(sdf, p.clone());
+        let n = Field::<Normal<Input>>::field(sdf, p);
 
         // Skip samples where normal is not valid
         // (ex. the center of a sphere)
@@ -57,7 +57,7 @@ where
         }
 
         // Calculate distance
-        let d = Field::<Distance<Dim>>::field(sdf, p);
+        let d = Field::<Distance<Input>>::field(sdf, p);
 
         // Write into output
         out.normal = n;

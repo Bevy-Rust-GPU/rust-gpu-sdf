@@ -13,14 +13,14 @@ use super::{FieldOperator, Operator};
 #[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 pub struct ColorNormalOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, Color<Dim>> for ColorNormalOp
+impl<Sdf, Input> FieldOperator<Sdf, Color<Input>> for ColorNormalOp
 where
-    Sdf: Field<Normal<Dim>>,
-    Dim: Add<Dim, Output = Dim> + Mul<Dim, Output = Dim> + Splat + ToVec<Vec4>,
+    Sdf: Field<Normal<Input>>,
+    Input: Add<Input, Output = Input> + Mul<Input, Output = Input> + Splat + ToVec<Vec4>,
 {
-    fn operator(&self, sdf: &Sdf, p: Dim) -> Vec4 {
+    fn operator(&self, sdf: &Sdf, p: &Input) -> Vec4 {
         let normal = sdf.field(p);
-        let normal = normal * Dim::splat(0.5) + Dim::splat(0.5);
+        let normal = normal * Input::splat(0.5) + Input::splat(0.5);
         let mut color = normal.to_vec();
         color.w = 1.0;
         color

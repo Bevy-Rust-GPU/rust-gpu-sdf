@@ -17,13 +17,13 @@ impl Default for Superellipse {
 }
 
 impl Field<Distance<Vec2>> for Superellipse {
-    fn field(&self, p: Vec2) -> f32 {
+    fn field(&self, p: &Vec2) -> f32 {
         (p.x.abs().pow(self.n) + p.y.abs().pow(self.n)).pow(1.0 / self.n)
     }
 }
 
 impl Field<Normal<Vec2>> for Superellipse {
-    fn field(&self, p: Vec2) -> Vec2 {
+    fn field(&self, p: &Vec2) -> Vec2 {
         p.abs().pow(Vec2::splat(self.n)).normalize() * p.sign()
     }
 }

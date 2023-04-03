@@ -33,12 +33,12 @@ impl_passthrough_op_1!(WhiteOp, Normal<Dim>, Dim);
 impl_passthrough_op_1!(WhiteOp, Tangent<Dim>, Dim);
 impl_passthrough_op_1!(WhiteOp, Uv<Dim>, Dim);
 
-impl<Sdf, Dim> crate::prelude::FieldOperator<Sdf, Color<Dim>> for WhiteOp {
+impl<Sdf, Input> crate::prelude::FieldOperator<Sdf, Color<Input>> for WhiteOp {
     fn operator(
         &self,
         _: &Sdf,
-        _: Dim,
-    ) -> <Color<Dim> as crate::prelude::Attribute>::Output {
+        _: &Input,
+    ) -> <Color<Input> as crate::prelude::Attribute>::Output {
         Vec4::ONE
     }
 }

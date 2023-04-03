@@ -36,7 +36,7 @@ pub trait FieldOperator<Sdf, Attr>
 where
     Attr: Attribute,
 {
-    fn operator(&self, sdf: &Sdf, p: Attr::Input) -> Attr::Output;
+    fn operator(&self, sdf: &Sdf, input: &Attr::Input) -> Attr::Output;
 }
 
 /// Applies a [`FieldOperator`] to a [`FieldAttribute`].
@@ -55,7 +55,7 @@ where
     Op: FieldOperator<Sdf, Attr>,
     Attr: Attribute,
 {
-    fn field(&self, p: Attr::Input) -> Attr::Output {
+    fn field(&self, p: &Attr::Input) -> Attr::Output {
         self.op.operator(&self.target, p)
     }
 }
@@ -74,9 +74,9 @@ pub mod boxed {
         fn operator(
             &self,
             sdf: &Sdf,
-            p: <Attr as Attribute>::Input,
+            input: &<Attr as Attribute>::Input,
         ) -> <Attr as Attribute>::Output {
-            self.as_ref().operator(sdf, p)
+            self.as_ref().operator(sdf, input)
         }
     }
 }
@@ -105,9 +105,9 @@ macro_rules! impl_passthrough_op_1 {
             fn operator(
                 &self,
                 sdf: &Sdf,
-                p: <$attr as crate::prelude::Attribute>::Input,
+                input: &<$attr as crate::prelude::Attribute>::Input,
             ) -> <$attr as crate::prelude::Attribute>::Output {
-                sdf.field(p)
+                sdf.field(input)
             }
         }
     };
@@ -123,9 +123,9 @@ macro_rules! impl_passthrough_op_2 {
             fn operator(
                 &self,
                 sdf: &(SdfA, SdfB),
-                p: <$attr as crate::prelude::Attribute>::Input,
+                input: &<$attr as crate::prelude::Attribute>::Input,
             ) -> <$attr as crate::prelude::Attribute>::Output {
-                sdf.$field.field(p)
+                sdf.$field.field(input)
             }
         }
     };
@@ -168,7 +168,7 @@ macro_rules! test_op_attrs_impl {
         fn $ident() {
             let f = <$ty>::default();
             $(
-                let _ = crate::prelude::Field::<$attrs>::field(&f, <$pos>::default());
+                let _ = crate::prelude::Field::<$attrs>::field(&f, &<$pos>::default());
             )*
         }
     };
