@@ -1,5 +1,4 @@
-use crate::prelude::ContextQuery;
-use type_fields::cons::{Cons, Uncons};
+use type_fields::cons::Cons;
 
 use super::context_plural::ContextPlural;
 
@@ -11,8 +10,7 @@ pub trait ContextItems<State>: Sized {
     fn context_items<'a, Items>(&'a self) -> <Self as ContextPlural<'a, State, Items>>::Plural
     where
         Items: Cons,
-        Self: ContextPlural<'a, State, Items>,
-        <Self as ContextQuery<'a, State, Items::Cons>>::Type: Uncons;
+        Self: ContextPlural<'a, State, Items>;
 }
 
 impl<T, State> ContextItems<State> for T {
@@ -20,7 +18,6 @@ impl<T, State> ContextItems<State> for T {
     where
         Items: Cons,
         Self: ContextPlural<'a, State, Items>,
-        <Self as ContextQuery<'a, State, Items::Cons>>::Type: Uncons,
     {
         self.context_plural()
     }

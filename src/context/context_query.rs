@@ -1,4 +1,4 @@
-use crate::prelude::{Context, ContextPath};
+use crate::prelude::Context;
 
 /// Type-level data access to multiple fields
 ///
@@ -16,28 +16,23 @@ pub trait ContextQuery<'a, State, T> {
 
 impl<'a, T, LHS, RHS, State, Inner> ContextQuery<'a, (State, Inner), (LHS, RHS)> for T
 where
-    State: ContextPath,
-    Inner: ContextPath,
     T: Context<'a, State, LHS> + ContextQuery<'a, Inner, RHS>,
+    LHS: Clone + 'a,
 {
     type Type = (
-        &'a <T as Context<'a, State, LHS>>::Type,
+        LHS,
         <T as ContextQuery<'a, Inner, RHS>>::Type,
     );
 
     fn context_query(&'a self) -> Self::Type {
-        (self.context(), self.context_query())
+        (self.context().clone(), self.context_query())
     }
 }
 
-impl<'a, T, State, LHS> ContextQuery<'a, (State, ()), (LHS, ())> for T
-where
-    T: Context<'a, State, LHS>,
-    State: ContextPath,
-{
-    type Type = (&'a <T as Context<'a, State, LHS>>::Type, ());
+impl<'a, T> ContextQuery<'a, (), ()> for T {
+    type Type = ();
 
     fn context_query(&'a self) -> Self::Type {
-        (self.context(), ())
+        ()
     }
 }

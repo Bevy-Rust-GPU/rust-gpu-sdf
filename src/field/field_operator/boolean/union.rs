@@ -11,53 +11,53 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 #[repr(C)]
 pub struct UnionOp;
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Distance> for UnionOp
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Distance<Dim>> for UnionOp
 where
-    SdfA: Field<Dim, Distance>,
-    SdfB: Field<Dim, Distance>,
+    SdfA: Field<Distance<Dim>>,
+    SdfB: Field<Distance<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Distance, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
-        sdf_a.field(attr, p.clone()).min(sdf_b.field(attr, p))
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
+        sdf_a.field(p.clone()).min(sdf_b.field(p))
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Normal<Dim>> for UnionOp
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Normal<Dim>> for UnionOp
 where
-    SdfA: Field<Dim, Distance>,
-    SdfA: Field<Dim, Normal<Dim>>,
-    SdfB: Field<Dim, Distance>,
-    SdfB: Field<Dim, Normal<Dim>>,
+    SdfA: Field<Distance<Dim>>,
+    SdfA: Field<Normal<Dim>>,
+    SdfB: Field<Distance<Dim>>,
+    SdfB: Field<Normal<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Normal<Dim>, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
-        let dist_a = sdf_a.field(Distance, p.clone());
-        let dist_b = sdf_b.field(Distance, p.clone());
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Dim {
+        let dist_a = Field::<Distance<Dim>>::field(sdf_a, p.clone());
+        let dist_b = Field::<Distance<Dim>>::field(sdf_b, p.clone());
 
         if dist_a < dist_b {
-            sdf_a.field(attr, p)
+            Field::<Normal<Dim>>::field(sdf_a, p)
         } else {
-            sdf_b.field(attr, p)
+            Field::<Normal<Dim>>::field(sdf_b, p)
         }
     }
 }
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Uv> for UnionOp
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Uv<Dim>> for UnionOp
 where
-    SdfA: Field<Dim, Distance>,
-    SdfA: Field<Dim, Uv>,
-    SdfB: Field<Dim, Distance>,
-    SdfB: Field<Dim, Uv>,
+    SdfA: Field<Distance<Dim>>,
+    SdfA: Field<Uv<Dim>>,
+    SdfB: Field<Distance<Dim>>,
+    SdfB: Field<Uv<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Uv, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Vec2 {
-        let dist_a = sdf_a.field(Distance, p.clone());
-        let dist_b = sdf_b.field(Distance, p.clone());
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> Vec2 {
+        let dist_a = Field::<Distance<Dim>>::field(sdf_a, p.clone());
+        let dist_b = Field::<Distance<Dim>>::field(sdf_b, p.clone());
 
         if dist_a < dist_b {
-            sdf_a.field(attr, p)
+            Field::<Uv<Dim>>::field(sdf_a, p)
         } else {
-            sdf_b.field(attr, p)
+            Field::<Uv<Dim>>::field(sdf_a, p)
         }
     }
 }

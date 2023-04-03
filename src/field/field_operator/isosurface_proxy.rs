@@ -17,15 +17,15 @@ use crate::{
 #[repr(C)]
 pub struct IsosurfaceProxyOp;
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Distance> for IsosurfaceProxyOp
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Distance<Dim>> for IsosurfaceProxyOp
 where
-    SdfA: Field<Dim, Distance>,
-    SdfB: Field<Dim, Distance>,
+    SdfA: Field<Distance<Dim>>,
+    SdfB: Field<Distance<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Distance, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
-        let d1 = sdf_a.field(attr, p.clone());
-        let d2 = sdf_b.field(attr, p);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
+        let d1 = sdf_a.field(p.clone());
+        let d2 = sdf_b.field(p);
         d1 - d2
     }
 }
@@ -33,25 +33,23 @@ where
 impl_passthrough_op_2!(IsosurfaceProxyOp, Normal<Dim>, 0, SdfA, Dim);
 impl_passthrough_op_2!(IsosurfaceProxyOp, Tangent<Dim>, 0, SdfA, Dim);
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Uv> for IsosurfaceProxyOp
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Uv<Dim>> for IsosurfaceProxyOp
 where
-    Uv: crate::prelude::Attribute,
-    SdfA: crate::prelude::Field<Dim, Uv>,
-    SdfB: crate::prelude::Field<Dim, Distance>,
+    SdfA: crate::prelude::Field<Uv<Dim>>,
+    SdfB: crate::prelude::Field<Distance<Dim>>,
     Dim: Clone + Div<f32, Output = Dim>,
 {
     fn operator(
         &self,
-        attr: Uv,
         (sdf_a, sdf_b): &(SdfA, SdfB),
         p: Dim,
-    ) -> <Uv as crate::prelude::Attribute>::Type {
-        let p = p.clone() / sdf_b.field(Distance, p);
-        sdf_a.field(attr, p)
+    ) -> <Uv<Dim> as crate::prelude::Attribute>::Output {
+        let p = p.clone() / sdf_b.field(p);
+        sdf_a.field(p)
     }
 }
 
-impl_passthrough_op_2!(IsosurfaceProxyOp, Color, 0, SdfA, Dim);
+impl_passthrough_op_2!(IsosurfaceProxyOp, Color<Dim>, 0, SdfA, Dim);
 
 /// Add an arbitrary radius to a distance field.
 pub type IsosurfaceProxy<SdfA, SdfB> = Operator<DisplaceProxyOp, (SdfA, SdfB)>;

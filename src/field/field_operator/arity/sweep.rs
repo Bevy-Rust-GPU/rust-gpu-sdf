@@ -13,61 +13,59 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 #[repr(C)]
 pub struct SweepOp;
 
-impl<Core, Shell> FieldOperator<(Core, Shell), Vec2, Distance> for SweepOp
+impl<Core, Shell> FieldOperator<(Core, Shell), Distance<Vec2>> for SweepOp
 where
-    Core: Field<f32, Distance>,
-    Shell: Field<f32, Distance>,
+    Core: Field<Distance<f32>>,
+    Shell: Field<Distance<f32>>,
 {
     fn operator(
         &self,
-        attr: Distance,
         (core, shell): &(Core, Shell),
         p: Vec2,
-    ) -> <Distance as crate::prelude::Attribute>::Type {
-        let q = core.field(attr, p.x);
-        shell.field(attr, q)
+    ) -> <Distance<Vec2> as crate::prelude::Attribute>::Output {
+        let q = core.field(p.x);
+        shell.field(q)
     }
 }
 
-impl<Core, Shell> FieldOperator<(Core, Shell), Vec3, Distance> for SweepOp
+impl<Core, Shell> FieldOperator<(Core, Shell), Distance<Vec3>> for SweepOp
 where
-    Core: Field<Vec2, Distance>,
-    Shell: Field<Vec2, Distance>,
+    Core: Field<Distance<Vec2>>,
+    Shell: Field<Distance<Vec2>>,
 {
     fn operator(
         &self,
-        attr: Distance,
         (core, shell): &(Core, Shell),
         p: Vec3,
-    ) -> <Distance as crate::prelude::Attribute>::Type {
-        let q = Vec2::new(core.field(attr, p.truncate()), p.z);
-        shell.field(attr, q)
+    ) -> <Distance<Vec3> as crate::prelude::Attribute>::Output {
+        let q = Vec2::new(core.field(p.truncate()), p.z);
+        shell.field(q)
     }
 }
 
-impl<Core, Shell> FieldOperator<(Core, Shell), Vec3, Normal<Vec3>> for SweepOp
+impl<Core, Shell> FieldOperator<(Core, Shell), Normal<Vec3>> for SweepOp
 where
-    Core: Field<Vec2, Distance>,
-    Shell: Field<Vec2, Normal<Vec2>>,
+    Core: Field<Distance<Vec2>>,
+    Shell: Field<Normal<Vec2>>,
 {
-    fn operator(&self, _: Normal<Vec3>, (core, shell): &(Core, Shell), p: Vec3) -> Vec3 {
-        let q = Vec2::new(core.field(Distance, p.truncate()), p.z);
-        let n = shell.field(Normal::<Vec2>::default(), q);
+    fn operator(&self, (core, shell): &(Core, Shell), p: Vec3) -> Vec3 {
+        let q = Vec2::new(core.field(p.truncate()), p.z);
+        let n = shell.field(q);
         let w = p.xy().normalize() * n.x;
         Vec3::new(w.x, w.y, n.y).into()
     }
 }
 
-impl<Core, Shell> FieldOperator<(Core, Shell), Vec3, Uv> for SweepOp
+impl<Core, Shell> FieldOperator<(Core, Shell), Uv<Vec3>> for SweepOp
 where
-    Core: Field<Vec2, Distance> + Field<Vec2, Uv>,
-    Shell: Field<Vec2, Uv>,
+    Core: Field<Distance<Vec2>> + Field<Uv<Vec2>>,
+    Shell: Field<Uv<Vec2>>,
 {
-    fn operator(&self, attr: Uv, (core, shell): &(Core, Shell), p: Vec3) -> Vec2 {
-        let dist_core = core.field(Distance, p.truncate());
-        let uv_core = core.field(attr, p.truncate());
+    fn operator(&self, (core, shell): &(Core, Shell), p: Vec3) -> Vec2 {
+        let dist_core = Field::<Distance<Vec2>>::field(core, p.truncate());
+        let uv_core = Field::<Uv<Vec2>>::field(core, p.truncate());
         let q = Vec2::new(dist_core, p.z);
-        let uv_shell = shell.field(attr, q);
+        let uv_shell = shell.field(q);
         Vec2::new(uv_core.x, uv_shell.x + uv_shell.y)
     }
 }
@@ -87,8 +85,6 @@ impl<Core, Shell> Sweep<Core, Shell> {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod tests {
-    use rust_gpu_bridge::glam::Vec3;
-
     use crate::{
         prelude::{BoundTester, Circle, Point, Sweep},
         test_op_attrs_3d,
@@ -96,7 +92,7 @@ pub mod tests {
 
     #[test]
     fn test_sweep() {
-        assert!(BoundTester::<Vec3, Sweep::<Circle, Circle>>::default().is_field());
+        assert!(BoundTester::<Sweep::<Circle, Circle>>::default().is_field_3d());
     }
 
     test_op_attrs_3d!(Sweep::<Point, Point>);

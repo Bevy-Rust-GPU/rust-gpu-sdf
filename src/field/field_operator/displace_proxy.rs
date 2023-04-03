@@ -13,21 +13,21 @@ use crate::{
 #[repr(C)]
 pub struct DisplaceProxyOp;
 
-impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Dim, Distance> for DisplaceProxyOp
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), Distance<Dim>> for DisplaceProxyOp
 where
-    SdfA: Field<Dim, Distance>,
-    SdfB: Field<Dim, Distance>,
+    SdfA: Field<Distance<Dim>>,
+    SdfB: Field<Distance<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Distance, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
-        sdf_a.field(attr, p.clone()) + sdf_b.field(attr, p)
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: Dim) -> f32 {
+        sdf_a.field(p.clone()) + sdf_b.field(p)
     }
 }
 
 impl_passthrough_op_2!(DisplaceProxyOp, Normal<Dim>, 0, SdfA, Dim);
 impl_passthrough_op_2!(DisplaceProxyOp, Tangent<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(DisplaceProxyOp, Uv, 0, SdfA, Dim);
-impl_passthrough_op_2!(DisplaceProxyOp, Color, 0, SdfA, Dim);
+impl_passthrough_op_2!(DisplaceProxyOp, Uv<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(DisplaceProxyOp, Color<Dim>, 0, SdfA, Dim);
 
 /// Displace the output of a distance field using the output of another distance field.
 pub type DisplaceProxy<SdfA, SdfB> = Operator<DisplaceProxyOp, (SdfA, SdfB)>;

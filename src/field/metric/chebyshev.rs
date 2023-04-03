@@ -13,32 +13,32 @@ use crate::prelude::{Distance, Field, Normal};
 #[repr(C)]
 pub struct ChebyshevMetric;
 
-impl Field<f32, Distance> for ChebyshevMetric {
-    fn field(&self, _attr: Distance, p: f32) -> f32 {
+impl Field<Distance<f32>> for ChebyshevMetric {
+    fn field(&self, p: f32) -> f32 {
         p.abs()
     }
 }
 
-impl Field<Vec2, Distance> for ChebyshevMetric {
-    fn field(&self, _attr: Distance, p: Vec2) -> f32 {
+impl Field<Distance<Vec2>> for ChebyshevMetric {
+    fn field(&self, p: Vec2) -> f32 {
         p.x.abs().max(p.y.abs())
     }
 }
 
-impl Field<Vec3, Distance> for ChebyshevMetric {
-    fn field(&self, _attr: Distance, p: Vec3) -> f32 {
+impl Field<Distance<Vec3>> for ChebyshevMetric {
+    fn field(&self, p: Vec3) -> f32 {
         p.x.abs().max(p.y.abs()).max(p.z.abs())
     }
 }
 
-impl Field<f32, Normal<f32>> for ChebyshevMetric {
-    fn field(&self, _attr: Normal<f32>, p: f32) -> f32 {
+impl Field<Normal<f32>> for ChebyshevMetric {
+    fn field(&self, p: f32) -> f32 {
         p.sign()
     }
 }
 
-impl Field<Vec2, Normal<Vec2>> for ChebyshevMetric {
-    fn field(&self, _attr: Normal<Vec2>, p: Vec2) -> Vec2 {
+impl Field<Normal<Vec2>> for ChebyshevMetric {
+    fn field(&self, p: Vec2) -> Vec2 {
         let a = p.abs();
         let s = p.sign();
 
@@ -46,8 +46,8 @@ impl Field<Vec2, Normal<Vec2>> for ChebyshevMetric {
     }
 }
 
-impl Field<Vec3, Normal<Vec3>> for ChebyshevMetric {
-    fn field(&self, _attr: Normal<Vec3>, p: Vec3) -> Vec3 {
+impl Field<Normal<Vec3>> for ChebyshevMetric {
+    fn field(&self, p: Vec3) -> Vec3 {
         let a = p.abs();
         let s = p.sign();
 
@@ -70,12 +70,12 @@ pub mod test {
     #[test]
     #[should_panic]
     pub fn test_chebyshev_metric_2d() {
-        assert!(BoundTester::<Vec2, ChebyshevMetric>::default().is_field());
+        assert!(BoundTester::<ChebyshevMetric>::default().is_field_2d());
     }
 
     #[test]
     #[should_panic]
     pub fn test_chebyshev_metric_3d() {
-        assert!(BoundTester::<Vec3, ChebyshevMetric>::default().is_field());
+        assert!(BoundTester::<ChebyshevMetric>::default().is_field_3d());
     }
 }

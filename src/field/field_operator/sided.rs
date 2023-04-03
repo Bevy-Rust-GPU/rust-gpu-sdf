@@ -40,33 +40,33 @@ impl Default for SidedOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for SidedOp<Dim>
+impl<Sdf, Dim> FieldOperator<Sdf, Distance<Dim>> for SidedOp<Dim>
 where
-    Sdf: Field<Dim, Distance>,
+    Sdf: Field<Distance<Dim>>,
     Dim: Clone + Mul<Dim, Output = Dim> + Sign + Dot,
 {
-    fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
-        sdf.field(attr, p.clone()) * p.clone().dot(self.axis.clone()).sign()
+    fn operator(&self, sdf: &Sdf, p: Dim) -> f32 {
+        sdf.field(p.clone()) * p.clone().dot(self.axis.clone()).sign()
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Normal<Dim>> for SidedOp<Dim>
+impl<Sdf, Dim> FieldOperator<Sdf, Normal<Dim>> for SidedOp<Dim>
 where
-    Sdf: Field<Dim, Normal<Dim>>,
+    Sdf: Field<Normal<Dim>>,
     Dim: Clone + Dot + Mul<f32, Output = Dim>,
 {
-    fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
-        (sdf.field(attr, p.clone())).clone() * p.dot(self.axis.clone()).sign()
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Dim {
+        (sdf.field(p.clone())).clone() * p.dot(self.axis.clone()).sign()
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Uv> for SidedOp<Dim>
+impl<Sdf, Dim> FieldOperator<Sdf, Uv<Dim>> for SidedOp<Dim>
 where
-    Sdf: Field<Dim, Uv>,
+    Sdf: Field<Uv<Dim>>,
     Dim: Clone + Dot + Mul<f32, Output = Dim>,
 {
-    fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> Vec2 {
-        (sdf.field(attr, p.clone())).clone() * p.dot(self.axis.clone()).sign()
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Vec2 {
+        (sdf.field(p.clone())).clone() * p.dot(self.axis.clone()).sign()
     }
 }
 

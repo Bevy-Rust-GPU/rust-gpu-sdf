@@ -34,10 +34,10 @@ impl Default for RepeatInfiniteOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Attr> FieldOperator<Sdf, Dim, Attr> for RepeatInfiniteOp<Dim>
+impl<Sdf, Dim, Attr> FieldOperator<Sdf, Attr> for RepeatInfiniteOp<Dim>
 where
-    Attr: Attribute,
-    Sdf: Field<Dim, Attr>,
+    Attr: Attribute<Input = Dim>,
+    Sdf: Field<Attr>,
     Dim: Add<Dim, Output = Dim>
         + Add<f32, Output = Dim>
         + Sub<Dim, Output = Dim>
@@ -46,11 +46,11 @@ where
         + Mod
         + Clone,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Attr::Output {
         let q = (p.add(0.5).mul(self.period.clone()))
             .modulo(self.period.clone())
             .sub(self.period.clone().mul(0.5));
-        sdf.field(attr, q)
+        sdf.field(q)
     }
 }
 

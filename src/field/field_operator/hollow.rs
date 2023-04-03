@@ -2,7 +2,7 @@
 
 use core::ops::Mul;
 
-use rust_gpu_bridge::{glam::Vec2, Sign, Abs};
+use rust_gpu_bridge::{glam::Vec2, Abs, Sign};
 use type_fields::Field;
 
 use crate::{
@@ -16,55 +16,55 @@ use crate::{
 #[repr(C)]
 pub struct HollowOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for HollowOp
+impl<Sdf, Dim> FieldOperator<Sdf, Distance<Dim>> for HollowOp
 where
-    Sdf: Field<Dim, Distance>,
+    Sdf: Field<Distance<Dim>>,
 {
-    fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
-        sdf.field(attr, p).abs()
+    fn operator(&self, sdf: &Sdf, p: Dim) -> f32 {
+        sdf.field(p).abs()
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Normal<Dim>> for HollowOp
+impl<Sdf, Dim> FieldOperator<Sdf, Normal<Dim>> for HollowOp
 where
-    Sdf: Field<Dim, Distance>,
-    Sdf: Field<Dim, Normal<Dim>>,
+    Sdf: Field<Distance<Dim>>,
+    Sdf: Field<Normal<Dim>>,
     Dim: Clone + Mul<f32, Output = Dim>,
 {
-    fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
-        let d = sdf.field(Distance, p.clone());
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Dim {
+        let d = <Sdf as Field<Distance<Dim>>>::field(sdf, p.clone());
         let s = d.sign();
-        sdf.field(attr, p.clone() * s)
+        <Sdf as Field<Normal<Dim>>>::field(sdf, p.clone() * s)
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Tangent<Dim>> for HollowOp
+impl<Sdf, Dim> FieldOperator<Sdf, Tangent<Dim>> for HollowOp
 where
-    Sdf: Field<Dim, Distance>,
-    Sdf: Field<Dim, Tangent<Dim>>,
+    Sdf: Field<Distance<Dim>>,
+    Sdf: Field<Tangent<Dim>>,
     Dim: Clone + Mul<f32, Output = Dim>,
 {
-    fn operator(&self, attr: Tangent<Dim>, sdf: &Sdf, p: Dim) -> Dim {
-        let d = sdf.field(Distance, p.clone());
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Dim {
+        let d = <Sdf as Field<Distance<Dim>>>::field(sdf, p.clone());
         let s = d.sign();
-        sdf.field(attr, p.clone() * s)
+        <Sdf as Field<Tangent<Dim>>>::field(sdf, p.clone() * s)
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Uv> for HollowOp
+impl<Sdf, Dim> FieldOperator<Sdf, Uv<Dim>> for HollowOp
 where
-    Sdf: Field<Dim, Distance>,
-    Sdf: Field<Dim, Uv>,
+    Sdf: Field<Distance<Dim>>,
+    Sdf: Field<Uv<Dim>>,
     Dim: Clone + Mul<f32, Output = Dim>,
 {
-    fn operator(&self, attr: Uv, sdf: &Sdf, p: Dim) -> Vec2 {
-        let d = sdf.field(Distance, p.clone());
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Vec2 {
+        let d = <Sdf as Field<Distance<Dim>>>::field(sdf, p.clone());
         let s = d.sign();
-        sdf.field(attr, p.clone() * s)
+        <Sdf as Field<Uv<Dim>>>::field(sdf, p.clone() * s)
     }
 }
 
-impl_passthrough_op_1!(HollowOp, Color, Dim);
+impl_passthrough_op_1!(HollowOp, Color<Dim>, Dim);
 
 /// Convert a solid shape into a hollow one with an infinitely thin surface.
 pub type Hollow<Sdf> = Operator<HollowOp, Sdf>;

@@ -4,7 +4,8 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Color, Distance, Field, FieldOperator, Normal, Operator, RaycastOutput, Tangent, Uv,
+        Color, Distance, Field, FieldOperator, Normal, Operator, Raycast, RaycastOutput, Tangent,
+        Uv,
     },
 };
 
@@ -43,16 +44,17 @@ impl<const MAX_STEPS: u32> SphereTraceLipschitzOp<MAX_STEPS> {
     }
 }
 
-impl<const MAX_STEPS: u32, Sdf> FieldOperator<Sdf, RaycastInput, RaycastOutput>
-    for SphereTraceLipschitzOp<MAX_STEPS>
+impl<const MAX_STEPS: u32, Sdf> FieldOperator<Sdf, Raycast> for SphereTraceLipschitzOp<MAX_STEPS>
 where
-    Sdf: Field<Vec3, Distance>,
+    Sdf: Field<Distance<Vec3>>,
 {
-    fn operator(&self, mut out: RaycastOutput, sdf: &Sdf, input: RaycastInput) -> RaycastOutput {
+    fn operator(&self, sdf: &Sdf, input: RaycastInput) -> RaycastOutput {
+        let mut out = RaycastOutput::default();
+
         let mut t = input.start;
         for i in 0..MAX_STEPS {
             let pos = input.eye + input.dir * t;
-            let dist = sdf.field(Distance, pos);
+            let dist = sdf.field(pos);
 
             out.march_step(t, dist);
 
@@ -73,11 +75,11 @@ where
     }
 }
 
-impl_passthrough_op_1!(SphereTraceLipschitzOp<MAX_STEPS>, Distance, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceLipschitzOp<MAX_STEPS>, Distance<Pos>, Pos, const MAX_STEPS: u32);
 impl_passthrough_op_1!(SphereTraceLipschitzOp<MAX_STEPS>, Normal<Pos>, Pos, const MAX_STEPS: u32);
 impl_passthrough_op_1!(SphereTraceLipschitzOp<MAX_STEPS>, Tangent<Pos>, Pos, const MAX_STEPS: u32);
-impl_passthrough_op_1!(SphereTraceLipschitzOp<MAX_STEPS>, Uv, Pos, const MAX_STEPS: u32);
-impl_passthrough_op_1!(SphereTraceLipschitzOp<MAX_STEPS>, Color, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceLipschitzOp<MAX_STEPS>, Uv<Pos>, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceLipschitzOp<MAX_STEPS>, Color<Pos>, Pos, const MAX_STEPS: u32);
 
 pub type SphereTraceLipschitz<const MAX_STEPS: u32, Sdf> =
     Operator<SphereTraceLipschitzOp<MAX_STEPS>, Sdf>;

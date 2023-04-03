@@ -15,8 +15,8 @@ use crate::prelude::{Distance, Field};
 #[repr(C)]
 pub struct Squircle;
 
-impl Field<Vec2, Distance> for Squircle {
-    fn field(&self, _attr: Distance, mut p: Vec2) -> f32 {
+impl Field<Distance<Vec2>> for Squircle {
+    fn field(&self, mut p: Vec2) -> f32 {
         // Axial reflection
         p = p.abs();
 
@@ -64,14 +64,12 @@ impl Field<Vec2, Distance> for Squircle {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::glam::Vec2;
-
     use crate::prelude::{BoundTester, NormalTetrahedron};
 
     use super::Squircle;
 
     #[test]
     pub fn test_squircle() {
-        assert!(BoundTester::<Vec2, NormalTetrahedron::<Squircle>>::default().is_field())
+        assert!(BoundTester::<NormalTetrahedron::<Squircle>>::default().is_field_2d())
     }
 }

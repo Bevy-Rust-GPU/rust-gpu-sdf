@@ -46,10 +46,10 @@ impl Default for RepeatCountOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Attr> FieldOperator<Sdf, Dim, Attr> for RepeatCountOp<Dim>
+impl<Sdf, Dim, Attr> FieldOperator<Sdf, Attr> for RepeatCountOp<Dim>
 where
-    Attr: Attribute,
-    Sdf: Field<Dim, Attr>,
+    Attr: Attribute<Input = Dim>,
+    Sdf: Field<Attr>,
     Dim: Clone
         + Div<Dim, Output = Dim>
         + Neg<Output = Dim>
@@ -58,13 +58,13 @@ where
         + Round
         + Clamp,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Attr::Output {
         let q = p.clone()
             - self.period.clone()
                 * (p / self.period.clone())
                     .round()
                     .clamp(-self.count.clone(), self.count.clone());
-        sdf.field(attr, q)
+        sdf.field(q)
     }
 }
 

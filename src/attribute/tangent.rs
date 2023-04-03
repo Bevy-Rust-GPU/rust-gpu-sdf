@@ -24,23 +24,24 @@ impl<Dim> Clone for Tangent<Dim> {
 impl<Dim> Copy for Tangent<Dim> {}
 
 impl<Dim> Attribute for Tangent<Dim> {
-    type Type = Dim;
+    type Input = Dim;
+    type Output = Dim;
 }
 
-impl<Dim> Field<Dim, Tangent<f32>> for f32 {
-    fn field(&self, _: Tangent<f32>, _: Dim) -> f32 {
+impl Field<Tangent<f32>> for f32 {
+    fn field(&self, _: f32) -> f32 {
         *self
     }
 }
 
-impl<Dim> Field<Dim, Tangent<Vec2>> for Vec2 {
-    fn field(&self, _: Tangent<Vec2>, _: Dim) -> Vec2 {
+impl Field<Tangent<Vec2>> for Vec2 {
+    fn field(&self, _: Vec2) -> Vec2 {
         *self
     }
 }
 
-impl<Dim> Field<Dim, Tangent<Vec3>> for Vec3 {
-    fn field(&self, _: Tangent<Vec3>, _: Dim) -> Vec3 {
+impl Field<Tangent<Vec3>> for Vec3 {
+    fn field(&self, _: Vec3) -> Vec3 {
         *self
     }
 }

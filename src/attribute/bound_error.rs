@@ -49,7 +49,8 @@ impl<Dim> Attribute for ErrorTerm<Dim>
 where
     Dim: Default,
 {
-    type Type = Self;
+    type Input = Dim;
+    type Output = Self;
 }
 
 /// Bound error wrapper operator
@@ -57,30 +58,27 @@ where
 #[repr(C)]
 pub struct BoundErrorOp;
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, ErrorTerm<Dim>> for BoundErrorOp
+impl<Sdf, Dim> FieldOperator<Sdf, ErrorTerm<Dim>> for BoundErrorOp
 where
-    Sdf: Field<Dim, Distance> + Field<Dim, Support<Dim>>,
+    Sdf: Field<Distance<Dim>> + Field<Support<Dim>>,
     Dim: Default + Clone + Add<Dim, Output = Dim> + Mul<f32, Output = Dim>,
 {
-    fn operator(
-        &self,
-        mut out: ErrorTerm<Dim>,
-        sdf: &Sdf,
-        p: Dim,
-    ) -> <ErrorTerm<Dim> as Attribute>::Type {
-        let support = sdf.field(Support::default(), p.clone());
+    fn operator(&self, sdf: &Sdf, p: Dim) -> <ErrorTerm<Dim> as Attribute>::Output {
+        let mut out = ErrorTerm::default();
+
+        let support = Field::<Support<Dim>>::field(sdf, p.clone());
         let sv = support.support_vector();
         out.support = support;
-        out.error = sdf.field(Distance, p.clone() + sv);
+        out.error = Field::<Distance<Dim>>::field(sdf, p.clone() + sv);
         out
     }
 }
 
-impl_passthrough_op_1!(BoundErrorOp, Distance, Dim);
+impl_passthrough_op_1!(BoundErrorOp, Distance<Dim>, Dim);
 impl_passthrough_op_1!(BoundErrorOp, Normal<Dim>, Dim);
 impl_passthrough_op_1!(BoundErrorOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(BoundErrorOp, Uv, Dim);
-impl_passthrough_op_1!(BoundErrorOp, Color, Dim);
+impl_passthrough_op_1!(BoundErrorOp, Uv<Dim>, Dim);
+impl_passthrough_op_1!(BoundErrorOp, Color<Dim>, Dim);
 
 /// Bound error wrapper
 pub type BoundError<Sdf> = Operator<BoundErrorOp, SupportFunction<Sdf>>;

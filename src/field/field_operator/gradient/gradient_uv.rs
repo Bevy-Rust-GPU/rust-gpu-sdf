@@ -3,7 +3,10 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Tangent, Uv, RaycastOutput},
+    prelude::{
+        Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Raycast, Tangent,
+        Uv,
+    },
 };
 
 /// Calculate a 3D gradient given a 2D UV
@@ -24,29 +27,24 @@ impl Default for UvGradientOp {
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec3, Tangent<Vec3>> for UvGradientOp
+impl<Sdf> FieldOperator<Sdf, Tangent<Vec3>> for UvGradientOp
 where
-    Sdf: Field<Vec3, Uv>,
+    Sdf: Field<Uv<Vec3>>,
 {
-    fn operator(
-        &self,
-        _: Tangent<Vec3>,
-        sdf: &Sdf,
-        p: Vec3,
-    ) -> <Tangent<Vec3> as crate::prelude::Attribute>::Type {
+    fn operator(&self, sdf: &Sdf, p: Vec3) -> <Tangent<Vec3> as crate::prelude::Attribute>::Output {
         let k = Vec2::new(1.0, -1.0);
-        k.xyy() * sdf.field(Uv, p + k.xyy() * self.epsilon).dot(self.axis)
-            + k.yyx() * sdf.field(Uv, p + k.yyx() * self.epsilon).dot(self.axis)
-            + k.yxy() * sdf.field(Uv, p + k.yxy() * self.epsilon).dot(self.axis)
-            + k.xxx() * sdf.field(Uv, p + k.xxx() * self.epsilon).dot(self.axis)
+        k.xyy() * sdf.field(p + k.xyy() * self.epsilon).dot(self.axis)
+            + k.yyx() * sdf.field(p + k.yyx() * self.epsilon).dot(self.axis)
+            + k.yxy() * sdf.field(p + k.yxy() * self.epsilon).dot(self.axis)
+            + k.xxx() * sdf.field(p + k.xxx() * self.epsilon).dot(self.axis)
     }
 }
 
-impl_passthrough_op_1!(UvGradientOp, Distance, Dim);
+impl_passthrough_op_1!(UvGradientOp, Distance<Dim>, Dim);
 impl_passthrough_op_1!(UvGradientOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(UvGradientOp, Uv, Dim);
-impl_passthrough_op_1!(UvGradientOp, Color, Dim);
-impl_passthrough_op_1!(UvGradientOp, RaycastOutput, Dim);
+impl_passthrough_op_1!(UvGradientOp, Uv<Dim>, Dim);
+impl_passthrough_op_1!(UvGradientOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(UvGradientOp, Raycast,);
 
 pub type UvGradient<Sdf> = Operator<UvGradientOp, Sdf>;
 

@@ -8,30 +8,37 @@ use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[repr(C)]
-pub struct CartesianToSphericalOp;
+pub struct CartesianToPolarOp;
 
-impl<Sdf, Attr> FieldOperator<Sdf, Vec2, Attr> for CartesianToSphericalOp
+impl<Sdf, Attr> FieldOperator<Sdf, Attr> for CartesianToPolarOp
 where
-    Sdf: Field<Vec2, Attr>,
-    Attr: Attribute,
+    Sdf: Field<Attr>,
+    Attr: Attribute<Input = Vec2>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
+    fn operator(&self, sdf: &Sdf, p: Vec2) -> Attr::Output {
         let r = p.length();
         let a = p.x.atan2(p.y);
-        sdf.field(attr, Vec2::new(a, r))
+        sdf.field(Vec2::new(a, r))
     }
 }
 
-impl<Sdf, Attr> FieldOperator<Sdf, Vec3, Attr> for CartesianToSphericalOp
+pub type CartesianToPolar<Sdf> = Operator<CartesianToPolarOp, Sdf>;
+
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
+#[repr(C)]
+pub struct CartesianToSphericalOp;
+
+impl<Sdf, Attr> FieldOperator<Sdf, Attr> for CartesianToSphericalOp
 where
-    Sdf: Field<Vec3, Attr>,
-    Attr: Attribute,
+    Sdf: Field<Attr>,
+    Attr: Attribute<Input = Vec3>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec3) -> Attr::Type {
+    fn operator(&self, sdf: &Sdf, p: Vec3) -> Attr::Output {
         let r = p.length();
         let i = (p.z / r).acos();
         let a = p.y.sign() * (p.x / p.xy().length()).acos();
-        sdf.field(attr, Vec3::new(i, r, a))
+        sdf.field(Vec3::new(i, r, a))
     }
 }
 
@@ -44,11 +51,18 @@ pub mod test {
         test_op_attrs_2d, test_op_attrs_3d,
     };
 
+    use super::CartesianToPolar;
+
+    #[test]
+    fn test_cartesian_to_polar() {
+        CartesianToPolar::<Point>::default();
+    }
+
     #[test]
     fn test_cartesian_to_spherical() {
         CartesianToSpherical::<Point>::default();
     }
 
-    test_op_attrs_2d!(CartesianToSpherical::<Point>);
+    test_op_attrs_2d!(CartesianToPolar::<Point>);
     test_op_attrs_3d!(CartesianToSpherical::<Point>);
 }

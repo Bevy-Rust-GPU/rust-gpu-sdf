@@ -374,96 +374,96 @@ pub mod tests {
 
     #[test]
     fn test_point_2d() {
-        assert!(BoundTester::<Vec2, Point>::default().is_field());
+        assert!(BoundTester::<Point>::default().is_field_2d());
     }
 
     #[test]
     fn test_line_2d() {
-        assert!(BoundTester::<Vec2, Line<_>>::default().is_field());
+        assert!(BoundTester::<Line<Vec2>>::default().is_field_2d());
     }
 
     #[test]
     fn test_point_3d() {
-        assert!(BoundTester::<Vec3, Point>::default().is_field());
+        assert!(BoundTester::<Point>::default().is_field_3d());
     }
 
     #[test]
     fn test_line_3d() {
-        assert!(BoundTester::<Vec3, Line<_>>::default().is_field());
+        assert!(BoundTester::<Line<Vec3>>::default().is_field_3d());
     }
 
     #[test]
     fn test_circle() {
-        assert!(BoundTester::<Vec2, Circle>::default().is_field());
+        assert!(BoundTester::<Circle>::default().is_field_3d());
     }
 
     #[test]
     fn test_sphere() {
-        assert!(BoundTester::<Vec3, Sphere>::default().is_field());
+        assert!(BoundTester::<Sphere>::default().is_field_3d());
     }
 
     #[test]
     fn test_capsule_2d() {
-        assert!(BoundTester::<Vec2, Capsule<_>>::default().is_field());
+        assert!(BoundTester::<Capsule<Vec2>>::default().is_field_2d());
     }
 
     #[test]
     fn test_capsule_3d() {
-        assert!(BoundTester::<Vec3, Capsule<_>>::default().is_field());
+        assert!(BoundTester::<Capsule<Vec3>>::default().is_field_3d());
     }
 
     #[test]
     fn test_square() {
-        assert!(BoundTester::<Vec2, Square>::default().is_field());
+        assert!(BoundTester::<Square>::default().is_field_2d());
     }
 
     #[test]
     fn test_cube() {
-        assert!(BoundTester::<Vec3, Cube>::default().is_field());
+        assert!(BoundTester::<Cube>::default().is_field_3d());
     }
 
     #[test]
     fn test_torus() {
-        assert!(BoundTester::<Vec3, Torus>::default().is_field());
+        assert!(BoundTester::<Torus>::default().is_field_3d());
     }
 
     #[test]
     fn test_triangle() {
-        assert!(BoundTester::<Vec2, Triangle>::default().is_field());
+        assert!(BoundTester::<Triangle>::default().is_field_2d());
     }
 
     #[test]
     fn test_quadrilateral() {
-        assert!(BoundTester::<Vec2, Quadrilateral>::default().is_field());
+        assert!(BoundTester::<Quadrilateral>::default().is_field_2d());
     }
 
     #[test]
     fn test_pentagon() {
-        assert!(BoundTester::<Vec2, Pentagon>::default().is_field());
+        assert!(BoundTester::<Pentagon>::default().is_field_2d());
     }
 
     #[test]
     fn test_hexagon() {
-        assert!(BoundTester::<Vec2, Hexagon>::default().is_field());
+        assert!(BoundTester::<Hexagon>::default().is_field_2d());
     }
 
     #[test]
     fn test_septagon() {
-        assert!(BoundTester::<Vec2, Septagon>::default().is_field());
+        assert!(BoundTester::<Septagon>::default().is_field_2d());
     }
 
     #[test]
     fn test_octagon() {
-        assert!(BoundTester::<Vec2, Octagon>::default().is_field());
+        assert!(BoundTester::<Octagon>::default().is_field_2d());
     }
 
     #[test]
     fn test_nonagon() {
-        assert!(BoundTester::<Vec2, Nonagon>::default().is_field());
+        assert!(BoundTester::<Nonagon>::default().is_field_2d());
     }
 
     #[test]
     fn test_decagon() {
-        assert!(BoundTester::<Vec2, Decagon>::default().is_field());
+        assert!(BoundTester::<Decagon>::default().is_field_2d());
     }
 }

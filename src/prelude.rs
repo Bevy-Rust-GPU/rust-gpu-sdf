@@ -3,7 +3,9 @@ pub use crate::{
         bound_error::*, color::*, distance::*, normal::*, support_function::*, tangent::*, uv::*, *,
     },
     bound_tester::*,
-    context::{context_item::*, context_items::*, context_path::*, context_query::*, *},
+    context::{
+        context_item::*, context_items::*, context_path::*, context_plural::*, context_query::*, *,
+    },
     field::{
         field_attribute::*,
         field_attributes::*,

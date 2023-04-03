@@ -24,23 +24,24 @@ impl<Dim> Clone for Normal<Dim> {
 impl<Dim> Copy for Normal<Dim> {}
 
 impl<Dim> Attribute for Normal<Dim> {
-    type Type = Dim;
+    type Input = Dim;
+    type Output = Dim;
 }
 
-impl<Dim> Field<Dim, Normal<f32>> for f32 {
-    fn field(&self, _: Normal<f32>, _: Dim) -> f32 {
+impl Field<Normal<f32>> for f32 {
+    fn field(&self, _: f32) -> f32 {
         *self
     }
 }
 
-impl<Dim> Field<Dim, Normal<Vec2>> for Vec2 {
-    fn field(&self, _: Normal<Vec2>, _: Dim) -> Vec2 {
+impl Field<Normal<Vec2>> for Vec2 {
+    fn field(&self, _: Vec2) -> Vec2 {
         *self
     }
 }
 
-impl<Dim> Field<Dim, Normal<Vec3>> for Vec3 {
-    fn field(&self, _: Normal<Vec3>, _: Dim) -> Vec3 {
+impl Field<Normal<Vec3>> for Vec3 {
+    fn field(&self, _: Vec3) -> Vec3 {
         *self
     }
 }

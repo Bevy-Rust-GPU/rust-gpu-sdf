@@ -37,25 +37,25 @@ impl Default for TwistOp<Vec3> {
     }
 }
 
-impl<Sdf, Attr> FieldOperator<Sdf, Vec2, Attr> for TwistOp<Vec2>
+impl<Sdf, Attr> FieldOperator<Sdf, Attr> for TwistOp<Vec2>
 where
-    Attr: Attribute,
-    Sdf: Field<Vec2, Attr>,
+    Attr: Attribute<Input = Vec2>,
+    Sdf: Field<Attr>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
+    fn operator(&self, sdf: &Sdf, p: Vec2) -> Attr::Output {
         let q = Vec2::from_angle(self.k * self.axis_pos.dot(p)).rotate(p);
-        sdf.field(attr, q)
+        sdf.field(q)
     }
 }
 
-impl<Sdf, Attr> FieldOperator<Sdf, Vec3, Attr> for TwistOp<Vec3>
+impl<Sdf, Attr> FieldOperator<Sdf, Attr> for TwistOp<Vec3>
 where
-    Attr: Attribute,
-    Sdf: Field<Vec3, Attr>,
+    Attr: Attribute<Input = Vec3>,
+    Sdf: Field<Attr>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec3) -> Attr::Type {
+    fn operator(&self, sdf: &Sdf, p: Vec3) -> Attr::Output {
         let q = Quat::from_axis_angle(self.axis_rot, self.k * self.axis_pos.dot(p)) * p;
-        sdf.field(attr, q)
+        sdf.field(q)
     }
 }
 

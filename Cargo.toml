@@ -15,6 +15,7 @@ bevy = ["dep:bevy"]
 #type-fields = { git = "https://github.com/bevy-rust-gpu/type-fields" }
 
 rust-gpu-bridge = { path = "../rust-gpu-bridge" }
+rust-gpu-bridge-macros = { path = "../rust-gpu-bridge-macros" }
 type-fields = { path = "../type-fields" }
 type-fields-macros = { path = "../type-fields-macros" }
 

@@ -25,32 +25,31 @@ impl Default for IsosurfaceOp {
     }
 }
 
-impl<SdfA, Dim> FieldOperator<SdfA, Dim, Distance> for IsosurfaceOp
+impl<SdfA, Dim> FieldOperator<SdfA, Distance<Dim>> for IsosurfaceOp
 where
-    SdfA: Field<Dim, Distance>,
+    SdfA: Field<Distance<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Distance, sdf_a: &SdfA, p: Dim) -> f32 {
-        sdf_a.field(attr, p.clone()) - self.delta
+    fn operator(&self, sdf_a: &SdfA, p: Dim) -> f32 {
+        sdf_a.field(p.clone()) - self.delta
     }
 }
 
 impl_passthrough_op_1!(IsosurfaceOp, Normal<Dim>, Dim);
 impl_passthrough_op_1!(IsosurfaceOp, Tangent<Dim>, Dim);
 
-impl<SdfA, Dim> FieldOperator<SdfA, Dim, Uv> for IsosurfaceOp
+impl<SdfA, Dim> FieldOperator<SdfA, Uv<Dim>> for IsosurfaceOp
 where
-    Uv: crate::prelude::Attribute,
-    SdfA: crate::prelude::Field<Dim, Uv>,
+    SdfA: crate::prelude::Field<Uv<Dim>>,
     Dim: Clone + Div<f32, Output = Dim>,
 {
-    fn operator(&self, attr: Uv, sdf_a: &SdfA, p: Dim) -> <Uv as crate::prelude::Attribute>::Type {
+    fn operator(&self, sdf_a: &SdfA, p: Dim) -> <Uv<Dim> as crate::prelude::Attribute>::Output {
         let p = p.clone() / self.delta;
-        sdf_a.field(attr, p)
+        sdf_a.field(p)
     }
 }
 
-impl_passthrough_op_1!(IsosurfaceOp, Color, Dim);
+impl_passthrough_op_1!(IsosurfaceOp, Color<Dim>, Dim);
 
 /// Add an arbitrary radius to a distance field.
 pub type Isosurface<SdfA> = Operator<IsosurfaceOp, SdfA>;

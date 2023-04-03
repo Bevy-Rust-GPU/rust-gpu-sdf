@@ -14,15 +14,15 @@ pub struct ScaleOp {
     pub scale: f32,
 }
 
-impl<Sdf, Dim, Attr> FieldOperator<Sdf, Dim, Attr> for ScaleOp
+impl<Sdf, Attr> FieldOperator<Sdf, Attr> for ScaleOp
 where
     Attr: Attribute,
-    Sdf: Field<Dim, Attr>,
-    Dim: Div<f32, Output = Dim>,
-    Attr::Type: Mul<f32, Output = Attr::Type>,
+    Sdf: Field<Attr>,
+    Attr::Input: Div<f32, Output = Attr::Input>,
+    Attr::Output: Mul<f32, Output = Attr::Output>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
-        sdf.field(attr, p / self.scale).mul(self.scale)
+    fn operator(&self, sdf: &Sdf, p: Attr::Input) -> Attr::Output {
+        sdf.field(p / self.scale).mul(self.scale)
     }
 }
 

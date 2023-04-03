@@ -14,13 +14,13 @@ pub struct Rotate2dOp {
     pub angle: f32,
 }
 
-impl<Sdf, Attr> FieldOperator<Sdf, Vec2, Attr> for Rotate2dOp
+impl<Sdf, Attr> FieldOperator<Sdf, Attr> for Rotate2dOp
 where
-    Attr: Attribute,
-    Sdf: Field<Vec2, Attr>,
+    Attr: Attribute<Input = Vec2>,
+    Sdf: Field<Attr>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec2) -> Attr::Type {
-        sdf.field(attr, Vec2::from_angle(-self.angle).rotate(p))
+    fn operator(&self, sdf: &Sdf, p: Vec2) -> Attr::Output {
+        sdf.field(Vec2::from_angle(-self.angle).rotate(p))
     }
 }
 
@@ -47,13 +47,13 @@ impl Debug for Rotate3dOp {
     }
 }
 
-impl<Sdf, Attr> FieldOperator<Sdf, Vec3, Attr> for Rotate3dOp
+impl<Sdf, Attr> FieldOperator<Sdf, Attr> for Rotate3dOp
 where
-    Attr: Attribute,
-    Sdf: Field<Vec3, Attr>,
+    Attr: Attribute<Input = Vec3>,
+    Sdf: Field<Attr>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Vec3) -> Attr::Type {
-        sdf.field(attr, self.rotation.inverse() * p)
+    fn operator(&self, sdf: &Sdf, p: Vec3) -> Attr::Output {
+        sdf.field(self.rotation.inverse() * p)
     }
 }
 

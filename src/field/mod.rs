@@ -13,11 +13,11 @@ pub mod fields;
 use crate::prelude::Attribute;
 
 /// Function associating an attribute value with a point in space.
-pub trait Field<Pos, Attr>
+pub trait Field<Attr>
 where
     Attr: Attribute,
 {
-    fn field(&self, attr: Attr, p: Pos) -> Attr::Type;
+    fn field(&self, input: Attr::Input) -> Attr::Output;
 }
 
 #[cfg(feature = "glam")]
@@ -27,12 +27,12 @@ pub mod boxed {
 
     use crate::prelude::{Attribute, Field};
 
-    impl<In, Attr> Field<In, Attr> for Box<dyn Field<In, Attr>>
+    impl<Attr> Field<Attr> for Box<dyn Field<Attr>>
     where
         Attr: Attribute,
     {
-        fn field(&self, attr: Attr, p: In) -> <Attr as Attribute>::Type {
-            self.as_ref().field(attr, p)
+        fn field(&self, p: <Attr as Attribute>::Input) -> <Attr as Attribute>::Output {
+            self.as_ref().field(p)
         }
     }
 }

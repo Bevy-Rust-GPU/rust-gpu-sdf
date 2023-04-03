@@ -8,6 +8,14 @@ use rust_gpu_bridge::glam::Vec3;
 
 use crate::{default, prelude::Attribute};
 
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Raycast;
+
+impl Attribute for Raycast {
+    type Input = RaycastInput;
+    type Output = RaycastOutput;
+}
+
 #[derive(Copy, Clone, PartialEq)]
 #[repr(C)]
 pub struct RaycastInput {
@@ -72,8 +80,4 @@ impl RaycastOutput {
     pub fn hit(&self) -> bool {
         self.closest_dist <= 0.0
     }
-}
-
-impl Attribute for RaycastOutput {
-    type Type = RaycastOutput;
 }

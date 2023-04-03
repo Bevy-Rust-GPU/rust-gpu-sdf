@@ -4,7 +4,7 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Color, Distance, Field, FieldOperator, Normal, Operator, RaycastInput,
+        Color, Distance, Field, FieldOperator, Normal, Operator, RaycastInput, Raycast,
         RaycastOutput, Tangent, Uv,
     },
 };
@@ -26,22 +26,23 @@ impl<const MAX_STEPS: u32> Default for SphereTraceNaiveOp<MAX_STEPS> {
     }
 }
 
-impl<const MAX_STEPS: u32, Sdf> FieldOperator<Sdf, RaycastInput, RaycastOutput>
+impl<const MAX_STEPS: u32, Sdf> FieldOperator<Sdf, Raycast>
     for SphereTraceNaiveOp<MAX_STEPS>
 where
-    Sdf: Field<Vec3, Distance>,
+    Sdf: Field<Distance<Vec3>>,
 {
     fn operator(
         &self,
-        mut out: RaycastOutput,
         sdf: &Sdf,
         input: RaycastInput,
-    ) -> <RaycastOutput as crate::prelude::Attribute>::Type {
+    ) -> <Raycast as crate::prelude::Attribute>::Output {
+        let mut out = RaycastOutput::default();
+
         let mut t = input.start;
 
         for step in 0..MAX_STEPS {
             let pos = input.eye + input.dir * t;
-            let dist = sdf.field(Distance, pos);
+            let dist = sdf.field(pos);
 
             out.march_step(t, dist);
 
@@ -62,11 +63,11 @@ where
     }
 }
 
-impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Distance, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Distance<Pos>, Pos, const MAX_STEPS: u32);
 impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Normal<Pos>, Pos, const MAX_STEPS: u32);
 impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Tangent<Pos>, Pos, const MAX_STEPS: u32);
-impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Uv, Pos, const MAX_STEPS: u32);
-impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Color, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Uv<Pos>, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Color<Pos>, Pos, const MAX_STEPS: u32);
 
 pub type SphereTraceNaive<const MAX_STEPS: u32, Sdf> = Operator<SphereTraceNaiveOp<MAX_STEPS>, Sdf>;
 

@@ -1,23 +1,17 @@
-use crate::prelude::{Context, ContextPath};
+use crate::prelude::Context;
 
 /// Type-level data access
 ///
 /// Extension API trait over `Context`;
 /// moves T into the function position.
-pub trait ContextItem<'a, State>
-where
-    State: ContextPath,
-{
-    fn item<T>(&'a self) -> &'a Self::Type
+pub trait ContextItem<'a, State>: Sized {
+    fn item<Item>(&'a self) -> &'a Item
     where
-        Self: Context<'a, State, T>;
+        Self: Context<'a, State, Item>;
 }
 
-impl<'a, T, State> ContextItem<'a, State> for T
-where
-    State: ContextPath,
-{
-    fn item<Item>(&'a self) -> &'a T::Type
+impl<'a, T, State> ContextItem<'a, State> for T {
+    fn item<Item>(&'a self) -> &'a Item
     where
         T: Context<'a, State, Item>,
     {

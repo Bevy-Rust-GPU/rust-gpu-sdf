@@ -19,17 +19,17 @@ pub struct TriplanarUvOp {
     pub k: f32,
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec3, Uv> for TriplanarUvOp
+impl<Sdf> FieldOperator<Sdf, Uv<Vec3>> for TriplanarUvOp
 where
-    Sdf: Field<Vec3, Normal<Vec3>>,
+    Sdf: Field<Normal<Vec3>>,
 {
-    fn operator(&self, _: Uv, sdf: &Sdf, p: Vec3) -> <Uv as crate::prelude::Attribute>::Type {
+    fn operator(&self, sdf: &Sdf, p: Vec3) -> <Uv<Vec3> as crate::prelude::Attribute>::Output {
         let front = p.xy();
         let side = p.zy();
         let top = p.xz();
 
         let weights = sdf
-            .field(Normal::<Vec3>::default(), p)
+            .field(p)
             .abs()
             .pow(Vec3::splat(self.k))
             .normalize();
@@ -38,10 +38,10 @@ where
     }
 }
 
-impl_passthrough_op_1!(TriplanarUvOp, Distance, Dim);
+impl_passthrough_op_1!(TriplanarUvOp, Distance<Dim>, Dim);
 impl_passthrough_op_1!(TriplanarUvOp, Normal<Dim>, Dim);
 impl_passthrough_op_1!(TriplanarUvOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(TriplanarUvOp, Color, Dim);
+impl_passthrough_op_1!(TriplanarUvOp, Color<Dim>, Dim);
 
 pub type TriplanarUv<Sdf> = Operator<TriplanarUvOp, Sdf>;
 

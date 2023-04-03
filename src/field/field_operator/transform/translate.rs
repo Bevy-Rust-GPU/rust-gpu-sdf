@@ -14,14 +14,14 @@ pub struct TranslateOp<Dim> {
     pub translation: Dim,
 }
 
-impl<Sdf, Dim, Attr> FieldOperator<Sdf, Dim, Attr> for TranslateOp<Dim>
+impl<Sdf, Dim, Attr> FieldOperator<Sdf, Attr> for TranslateOp<Dim>
 where
-    Attr: Attribute,
-    Sdf: Field<Dim, Attr>,
+    Attr: Attribute<Input = Dim>,
+    Sdf: Field<Attr>,
     Dim: Clone + Sub<Dim, Output = Dim>,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
-        sdf.field(attr, p - self.translation.clone())
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Attr::Output {
+        sdf.field(p - self.translation.clone())
     }
 }
 

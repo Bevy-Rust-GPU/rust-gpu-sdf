@@ -1,7 +1,8 @@
 //! Attributes whose corresponding data type can be evaluated via field function
 
 pub trait Attribute: Default {
-    type Type;
+    type Input;
+    type Output;
 }
 
 /// A list of `Attribute`s
@@ -10,22 +11,25 @@ pub trait Attribute: Default {
 /// applied over `(LHS, RHS)` and `(LHS, ())` to recurse
 /// through arbitrarly-long cons list impls.
 pub trait Attributes {
-    type Type;
+    type Input;
+    type Output;
 }
 
 impl<LHS, RHS> Attributes for (LHS, RHS)
 where
     LHS: Attribute,
-    RHS: Attributes,
+    RHS: Attributes<Input = LHS::Input>,
 {
-    type Type = (LHS::Type, RHS::Type);
+    type Input = LHS::Input;
+    type Output = (LHS::Output, RHS::Output);
 }
 
 impl<LHS> Attributes for (LHS, ())
 where
     LHS: Attribute,
 {
-    type Type = (LHS::Type, ());
+    type Input = LHS::Input;
+    type Output = (LHS::Output, ());
 }
 
 pub mod color;

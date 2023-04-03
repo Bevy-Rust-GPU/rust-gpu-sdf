@@ -1,28 +1,33 @@
+use super::Context;
+
 pub enum Car {}
 pub enum Cdr {}
-pub enum This {}
+//pub enum This {}
 
 /// Type-level path component for traversing a Context
 ///
 /// impls over `(LHS, RHS)` and `(LHS, ())`
 /// to allow traversing arbitrary lengths of list
-pub trait ContextPath {}
-
-impl<LHS, RHS> ContextPath for (LHS, RHS)
-where
-    LHS: ContextPath,
-    RHS: ContextPath,
-{
+pub trait ContextPath<'a, Ctx, In> {
+    type Type;
 }
 
-impl<LHS> ContextPath for (LHS, ()) where LHS: ContextPath {}
+//impl Sealed for This {}
 
-/// The target value lies in the left hand side of the current cell
-impl ContextPath for Car {}
+impl<'a, RHS, Ctx, In> ContextPath<'a, Ctx, In> for (Cdr, RHS)
+where
+    RHS: ContextPath<'a, Ctx, In>,
+    Ctx: Context<'a, RHS, In>,
+{
+    type Type = In;
+}
 
-/// The target value lies in the right hand side of the current cell
-impl ContextPath for Cdr {}
+impl<'a, Ctx, In, RHS> ContextPath<'a, Ctx, In> for (Car, RHS)
+where
+    Ctx: Context<'a, (Car, RHS), In>,
+{
+    type Type = In;
+}
 
-/// The target value is `Self`
-impl ContextPath for This {}
-
+// The target value is `Self`
+//impl<'a, Ctx> ContextPath<Ctx, Ctx> for This where Ctx: Context<'a, This, Ctx> {}

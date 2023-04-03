@@ -26,53 +26,53 @@ impl Default for SliceOp {
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec2, Distance> for SliceOp
+impl<Sdf> FieldOperator<Sdf, Distance<Vec2>> for SliceOp
 where
-    Sdf: Field<Vec3, Distance>,
+    Sdf: Field<Distance<Vec3>>,
 {
-    fn operator(&self, attr: Distance, sdf: &Sdf, p: Vec2) -> f32 {
+    fn operator(&self, sdf: &Sdf, p: Vec2) -> f32 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        sdf.field(attr, u + v)
+        sdf.field(u + v)
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec2, Normal<Vec2>> for SliceOp
+impl<Sdf> FieldOperator<Sdf, Normal<Vec2>> for SliceOp
 where
-    Sdf: Field<Vec3, Normal<Vec3>>,
+    Sdf: Field<Normal<Vec3>>,
 {
-    fn operator(&self, _: Normal<Vec2>, sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: Vec2) -> Vec2 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        let n = sdf.field(Normal::<Vec3>::default(), u + v);
+        let n = sdf.field(u + v);
         Vec2::new(n.dot(self.u), n.dot(self.v)).normalize()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec2, Tangent<Vec2>> for SliceOp
+impl<Sdf> FieldOperator<Sdf, Tangent<Vec2>> for SliceOp
 where
-    Sdf: Field<Vec3, Tangent<Vec3>>,
+    Sdf: Field<Tangent<Vec3>>,
 {
-    fn operator(&self, _: Tangent<Vec2>, sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: Vec2) -> Vec2 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        let n = sdf.field(Tangent::<Vec3>::default(), u + v);
+        let n = sdf.field(u + v);
         Vec2::new(n.dot(self.u), n.dot(self.v)).normalize()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec2, Uv> for SliceOp
+impl<Sdf> FieldOperator<Sdf, Uv<Vec2>> for SliceOp
 where
-    Sdf: Field<Vec3, Uv>,
+    Sdf: Field<Uv<Vec3>>,
 {
-    fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: Vec2) -> Vec2 {
         let u = self.u * p.x;
         let v = self.v * p.y;
-        sdf.field(attr, u + v)
+        sdf.field(u + v)
     }
 }
 
-impl_passthrough_op_1!(SliceOp, Color, Dim);
+impl_passthrough_op_1!(SliceOp, Color<Dim>, Dim);
 
 /// Take a 2D slice of a 3D field
 pub type Slice<Sdf> = Operator<SliceOp, Sdf>;

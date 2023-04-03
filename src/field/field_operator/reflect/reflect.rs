@@ -36,12 +36,12 @@ impl Default for ReflectOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Distance> for ReflectOp<Dim>
+impl<Sdf, Dim> FieldOperator<Sdf, Distance<Dim>> for ReflectOp<Dim>
 where
-    Sdf: Field<Dim, Distance>,
+    Sdf: Field<Distance<Dim>>,
     Dim: Clone + Sub<Dim, Output = Dim> + Mul<f32, Output = Dim> + IsNormalized + Dot,
 {
-    fn operator(&self, attr: Distance, sdf: &Sdf, p: Dim) -> f32 {
+    fn operator(&self, sdf: &Sdf, p: Dim) -> f32 {
         assert!(
             self.axis.clone().is_normalized(),
             "ReflectOp axis must be normalized"
@@ -49,13 +49,13 @@ where
 
         let q = p.clone() - self.axis.clone() * p.clone().dot(self.axis.clone()).min(0.0) * 2.0;
 
-        sdf.field(attr, q)
+        sdf.field(q)
     }
 }
 
-impl<Sdf, Dim> FieldOperator<Sdf, Dim, Normal<Dim>> for ReflectOp<Dim>
+impl<Sdf, Dim> FieldOperator<Sdf, Normal<Dim>> for ReflectOp<Dim>
 where
-    Sdf: Field<Dim, Normal<Dim>>,
+    Sdf: Field<Normal<Dim>>,
     Dim: Clone
         + Sub<Dim, Output = Dim>
         + Mul<f32, Output = Dim>
@@ -65,7 +65,7 @@ where
         + Mix
         + Splat,
 {
-    fn operator(&self, attr: Normal<Dim>, sdf: &Sdf, p: Dim) -> Dim {
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Dim {
         assert!(
             self.axis.clone().is_normalized(),
             "ReflectOp axis must be normalized"
@@ -75,17 +75,17 @@ where
         let pc = self.axis.clone() * c.min(0.0) * 2.0;
         let q = p.clone() - pc;
 
-        let n = sdf.field(attr, q);
+        let n = sdf.field(q);
         n.clone()
             .mix(n.reflect(self.axis.clone()), Dim::splat(c.step(0.0)))
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, f32, Uv> for ReflectOp<f32>
+impl<Sdf> FieldOperator<Sdf, Uv<f32>> for ReflectOp<f32>
 where
-    Sdf: Field<f32, Uv>,
+    Sdf: Field<Uv<f32>>,
 {
-    fn operator(&self, attr: Uv, sdf: &Sdf, p: f32) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: f32) -> Vec2 {
         assert!(
             self.axis.is_normalized(),
             "ReflectOp axis must be normalized"
@@ -95,16 +95,16 @@ where
         let pc = c.min(0.0) * 2.0;
         let q = p - pc;
 
-        let n = sdf.field(attr, q);
+        let n = sdf.field(q);
         n.mix(n * Vec2::new(-1.0, 1.0), Vec2::splat(c.step(0.0)))
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec2, Uv> for ReflectOp<Vec2>
+impl<Sdf> FieldOperator<Sdf, Uv<Vec2>> for ReflectOp<Vec2>
 where
-    Sdf: Field<Vec2, Uv>,
+    Sdf: Field<Uv<Vec2>>,
 {
-    fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: Vec2) -> Vec2 {
         assert!(
             self.axis.is_normalized(),
             "ReflectOp axis must be normalized"
@@ -114,16 +114,16 @@ where
         let pc = self.axis * c.min(0.0) * 2.0;
         let q = p - pc;
 
-        let n = sdf.field(attr, q);
+        let n = sdf.field(q);
         n.mix(n.reflect(self.axis), Vec2::splat(c.step(0.0)))
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec3, Uv> for ReflectOp<Vec3>
+impl<Sdf> FieldOperator<Sdf, Uv<Vec3>> for ReflectOp<Vec3>
 where
-    Sdf: Field<Vec3, Uv>,
+    Sdf: Field<Uv<Vec3>>,
 {
-    fn operator(&self, attr: Uv, sdf: &Sdf, p: Vec3) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: Vec3) -> Vec2 {
         assert!(
             self.axis.is_normalized(),
             "ReflectOp axis must be normalized"
@@ -133,7 +133,7 @@ where
         let pc = self.axis * c.min(0.0) * 2.0;
         let q = p - pc;
 
-        let n = sdf.field(attr, q);
+        let n = sdf.field(q);
         n.mix(n.reflect(self.axis.xy()), Vec2::splat(c.step(0.0)))
     }
 }

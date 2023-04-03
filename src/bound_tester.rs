@@ -14,15 +14,14 @@ use crate::prelude::{
 /// Asserts that the provided distance function is a field rather than a bound
 #[derive(Debug, Clone, PartialEq)]
 #[repr(C)]
-pub struct BoundTester<Dim, Sdf> {
+pub struct BoundTester<Sdf> {
     pub sdf: Sdf,
     pub samples: RangeInclusive<isize>,
     pub step: f32,
     pub epsilon: f32,
-    pub _phantom: PhantomData<Dim>,
 }
 
-impl<Dim, Sdf> Default for BoundTester<Dim, Sdf>
+impl<Sdf> Default for BoundTester<Sdf>
 where
     Sdf: Default,
 {
@@ -32,20 +31,19 @@ where
             samples: -20..=20,
             step: 10.0 / 20.0,
             epsilon: 0.00001,
-            _phantom: default(),
         }
     }
 }
 
-impl<Sdf> BoundTester<Vec2, Sdf>
+impl<Sdf> BoundTester<Sdf>
 where
-    Sdf: Field<Vec2, Distance> + Field<Vec2, Normal<Vec2>> + Default + Clone + 'static,
+    Sdf: Field<Distance<Vec2>> + Field<Normal<Vec2>> + Default + Clone + 'static,
 {
-    pub fn is_field(self) -> bool {
-        !self.is_bound()
+    pub fn is_field_2d(self) -> bool {
+        !self.is_bound_2d()
     }
 
-    pub fn is_bound(self) -> bool {
+    pub fn is_bound_2d(self) -> bool {
         // Iterate over a regular grid
         for x in self.samples.clone() {
             for y in self.samples.clone() {
@@ -84,15 +82,15 @@ where
     }
 }
 
-impl<Sdf> BoundTester<Vec3, Sdf>
+impl<Sdf> BoundTester<Sdf>
 where
-    Sdf: Field<Vec3, Distance> + Field<Vec3, Normal<Vec3>> + Default + Clone + 'static,
+    Sdf: Field<Distance<Vec3>> + Field<Normal<Vec3>> + Default + Clone + 'static,
 {
-    pub fn is_field(self) -> bool {
-        !self.is_bound()
+    pub fn is_field_3d(self) -> bool {
+        !self.is_bound_3d()
     }
 
-    pub fn is_bound(self) -> bool {
+    pub fn is_bound_3d(self) -> bool {
         // Iterate over a regular grid
         for x in self.samples.clone() {
             for y in self.samples.clone() {

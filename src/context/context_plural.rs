@@ -10,7 +10,6 @@ use crate::prelude::ContextQuery;
 pub trait ContextPlural<'a, State, Items>: ContextQuery<'a, State, Items::Cons>
 where
     Items: Cons,
-    <Self as ContextQuery<'a, State, Items::Cons>>::Type: Uncons,
 {
     type Plural: 'a;
 
@@ -20,10 +19,10 @@ where
 impl<'a, T, State, Items> ContextPlural<'a, State, Items> for T
 where
     Items: Cons,
-    T: ContextQuery<'a, State, Items::Cons>,
-    <T as ContextQuery<'a, State, Items::Cons>>::Type: Uncons,
+    T: ContextQuery<'a, State, Items::Cons, Type = Items::Cons>,
+    <Items::Cons as Uncons>::Uncons: 'a,
 {
-    type Plural = <<T as ContextQuery<'a, State, Items::Cons>>::Type as Uncons>::Uncons;
+    type Plural = <Items::Cons as Uncons>::Uncons;
 
     fn context_plural(&'a self) -> Self::Plural {
         self.context_query().uncons()

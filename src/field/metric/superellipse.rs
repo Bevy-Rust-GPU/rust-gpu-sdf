@@ -16,22 +16,20 @@ impl Default for Superellipse {
     }
 }
 
-impl Field<Vec2, Distance> for Superellipse {
-    fn field(&self, _attr: Distance, p: Vec2) -> f32 {
+impl Field<Distance<Vec2>> for Superellipse {
+    fn field(&self, p: Vec2) -> f32 {
         (p.x.abs().pow(self.n) + p.y.abs().pow(self.n)).pow(1.0 / self.n)
     }
 }
 
-impl Field<Vec2, Normal<Vec2>> for Superellipse {
-    fn field(&self, _attr: Normal<Vec2>, p: Vec2) -> Vec2 {
+impl Field<Normal<Vec2>> for Superellipse {
+    fn field(&self, p: Vec2) -> Vec2 {
         p.abs().pow(Vec2::splat(self.n)).normalize() * p.sign()
     }
 }
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::glam::Vec2;
-
     use crate::prelude::BoundTester;
 
     use super::Superellipse;
@@ -39,6 +37,6 @@ pub mod test {
     #[test]
     #[should_panic]
     fn test_lame_curve() {
-        assert!(BoundTester::<Vec2, Superellipse>::default().is_field())
+        assert!(BoundTester::<Superellipse>::default().is_field_2d())
     }
 }

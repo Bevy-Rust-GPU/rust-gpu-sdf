@@ -15,20 +15,20 @@ pub struct DisplaceOp {
     pub delta: f32,
 }
 
-impl<SdfA, Dim> FieldOperator<SdfA, Dim, Distance> for DisplaceOp
+impl<SdfA, Dim> FieldOperator<SdfA, Distance<Dim>> for DisplaceOp
 where
-    SdfA: Field<Dim, Distance>,
+    SdfA: Field<Distance<Dim>>,
     Dim: Clone,
 {
-    fn operator(&self, attr: Distance, sdf_a: &SdfA, p: Dim) -> f32 {
-        sdf_a.field(attr, p.clone()) + self.delta
+    fn operator(&self, sdf_a: &SdfA, p: Dim) -> f32 {
+        sdf_a.field(p.clone()) + self.delta
     }
 }
 
 impl_passthrough_op_2!(DisplaceOp, Normal<Dim>, 0, SdfA, Dim);
 impl_passthrough_op_2!(DisplaceOp, Tangent<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(DisplaceOp, Uv, 0, SdfA, Dim);
-impl_passthrough_op_2!(DisplaceOp, Color, 0, SdfA, Dim);
+impl_passthrough_op_2!(DisplaceOp, Uv<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(DisplaceOp, Color<Dim>, 0, SdfA, Dim);
 
 /// Displace the output of a distance field using the output of another distance field.
 pub type Displace<SdfA, SdfB> = Operator<DisplaceOp, (SdfA, SdfB)>;

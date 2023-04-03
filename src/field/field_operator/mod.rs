@@ -32,11 +32,11 @@ pub mod transform;
 use crate::prelude::{Attribute, Field};
 
 /// Modifies the input / output of a [`FieldAttribute`].
-pub trait FieldOperator<Sdf, Pos, Attr>
+pub trait FieldOperator<Sdf, Attr>
 where
     Attr: Attribute,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Pos) -> Attr::Type;
+    fn operator(&self, sdf: &Sdf, p: Attr::Input) -> Attr::Output;
 }
 
 /// Applies a [`FieldOperator`] to a [`FieldAttribute`].
@@ -50,13 +50,13 @@ pub struct Operator<Op, Sdf> {
     pub op: Op,
 }
 
-impl<Op, Sdf, Dim, Attr> Field<Dim, Attr> for Operator<Op, Sdf>
+impl<Op, Sdf, Attr> Field<Attr> for Operator<Op, Sdf>
 where
-    Op: FieldOperator<Sdf, Dim, Attr>,
+    Op: FieldOperator<Sdf, Attr>,
     Attr: Attribute,
 {
-    fn field(&self, attr: Attr, p: Dim) -> Attr::Type {
-        self.op.operator(attr, &self.target, p)
+    fn field(&self, p: Attr::Input) -> Attr::Output {
+        self.op.operator(&self.target, p)
     }
 }
 
@@ -67,12 +67,16 @@ pub mod boxed {
 
     use crate::prelude::{Attribute, FieldOperator};
 
-    impl<Sdf, Dim, Attr> FieldOperator<Sdf, Dim, Attr> for Box<dyn FieldOperator<Sdf, Dim, Attr>>
+    impl<Sdf, Attr> FieldOperator<Sdf, Attr> for Box<dyn FieldOperator<Sdf, Attr>>
     where
         Attr: Attribute,
     {
-        fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> <Attr as Attribute>::Type {
-            self.as_ref().operator(attr, sdf, p)
+        fn operator(
+            &self,
+            sdf: &Sdf,
+            p: <Attr as Attribute>::Input,
+        ) -> <Attr as Attribute>::Output {
+            self.as_ref().operator(sdf, p)
         }
     }
 }
@@ -93,18 +97,17 @@ pub mod test {
 
 #[macro_export]
 macro_rules! impl_passthrough_op_1 {
-    ($ty:ty, $attr:ty, $pos:ident $($gen:tt)*) => {
-        impl<Sdf, $pos $($gen)*> FieldOperator<Sdf, $pos, $attr> for $ty
+    ($ty:ty, $attr:ty, $($gen:tt)*) => {
+        impl<Sdf, $($gen)*> FieldOperator<Sdf, $attr> for $ty
         where
-            Sdf: crate::prelude::Field<$pos, $attr>,
+            Sdf: crate::prelude::Field<$attr>,
         {
             fn operator(
                 &self,
-                attr: $attr,
                 sdf: &Sdf,
-                p: $pos,
-            ) -> <$attr as crate::prelude::Attribute>::Type {
-                sdf.field(attr, p)
+                p: <$attr as crate::prelude::Attribute>::Input,
+            ) -> <$attr as crate::prelude::Attribute>::Output {
+                sdf.field(p)
             }
         }
     };
@@ -112,18 +115,17 @@ macro_rules! impl_passthrough_op_1 {
 
 #[macro_export]
 macro_rules! impl_passthrough_op_2 {
-    ($ty:ty, $attr:ty, $field:tt, $sdf:ident, $pos:ident $($gen:tt)*) => {
-        impl<SdfA, SdfB, $pos $($gen)*> FieldOperator<(SdfA, SdfB), $pos, $attr> for $ty
+    ($ty:ty, $attr:ty, $field:tt, $sdf:ident $($gen:tt)*) => {
+        impl<SdfA, SdfB $($gen)*> FieldOperator<(SdfA, SdfB), $attr> for $ty
         where
-            $sdf: crate::prelude::Field<$pos, $attr>,
+            $sdf: crate::prelude::Field<$attr>,
         {
             fn operator(
                 &self,
-                attr: $attr,
                 sdf: &(SdfA, SdfB),
-                p: $pos,
-            ) -> <$attr as crate::prelude::Attribute>::Type {
-                sdf.$field.field(attr, p)
+                p: <$attr as crate::prelude::Attribute>::Input,
+            ) -> <$attr as crate::prelude::Attribute>::Output {
+                sdf.$field.field(p)
             }
         }
     };
@@ -141,21 +143,21 @@ macro_rules! test_op_attrs {
 #[macro_export]
 macro_rules! test_op_attrs_1d {
     ($ty:ty) => {
-        crate::test_op_attrs_impl!($ty, test_attrs_1d, f32, [crate::prelude::Distance, crate::prelude::Normal<f32>, crate::prelude::Uv]);
+        crate::test_op_attrs_impl!($ty, test_attrs_1d, f32, [crate::prelude::Distance<f32>, crate::prelude::Normal<f32>, crate::prelude::Uv<f32>]);
     };
 }
 
 #[macro_export]
 macro_rules! test_op_attrs_2d {
     ($ty:ty) => {
-        crate::test_op_attrs_impl!($ty, test_attrs_2d, rust_gpu_bridge::glam::Vec2, [crate::prelude::Distance, crate::prelude::Normal<rust_gpu_bridge::glam::Vec2>, crate::prelude::Uv]);
+        crate::test_op_attrs_impl!($ty, test_attrs_2d, rust_gpu_bridge::glam::Vec2, [crate::prelude::Distance<rust_gpu_bridge::glam::Vec2>, crate::prelude::Normal<rust_gpu_bridge::glam::Vec2>, crate::prelude::Uv<rust_gpu_bridge::glam::Vec2>]);
     };
 }
 
 #[macro_export]
 macro_rules! test_op_attrs_3d {
     ($ty:ty) => {
-        crate::test_op_attrs_impl!($ty, test_attrs_3d, rust_gpu_bridge::glam::Vec3, [crate::prelude::Distance, crate::prelude::Normal<rust_gpu_bridge::glam::Vec3>, crate::prelude::Uv]);
+        crate::test_op_attrs_impl!($ty, test_attrs_3d, rust_gpu_bridge::glam::Vec3, [crate::prelude::Distance<rust_gpu_bridge::glam::Vec3>, crate::prelude::Normal<rust_gpu_bridge::glam::Vec3>, crate::prelude::Uv<rust_gpu_bridge::glam::Vec3>]);
     };
 }
 
@@ -166,7 +168,7 @@ macro_rules! test_op_attrs_impl {
         fn $ident() {
             let f = <$ty>::default();
             $(
-                let _ = crate::prelude::Field::field(&f, <$attrs>::default(), <$pos>::default());
+                let _ = crate::prelude::Field::<$attrs>::field(&f, <$pos>::default());
             )*
         }
     };

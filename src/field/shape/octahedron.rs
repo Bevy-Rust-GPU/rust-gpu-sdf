@@ -19,8 +19,8 @@ impl Default for Octahedron {
     }
 }
 
-impl Field<Vec3, Distance> for Octahedron {
-    fn field(&self, _attr: Distance, p: Vec3) -> f32 {
+impl Field<Distance<Vec3>> for Octahedron {
+    fn field(&self, p: Vec3) -> f32 {
         // Axial reflection
         let p = p.abs();
 
@@ -46,25 +46,23 @@ impl Field<Vec3, Distance> for Octahedron {
     }
 }
 
-impl<Dim> Field<Dim, Normal<Dim>> for Octahedron
+impl<Dim> Field<Normal<Dim>> for Octahedron
 where
     Dim: Sign + Normalize,
 {
-    fn field(&self, _attr: Normal<Dim>, p: Dim) -> Dim {
+    fn field(&self, p: Dim) -> Dim {
         p.sign().normalize()
     }
 }
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 pub mod test {
-    use rust_gpu_bridge::glam::Vec3;
-
     use crate::prelude::BoundTester;
 
     use super::Octahedron;
 
     #[test]
     fn test_octahedron() {
-        assert!(BoundTester::<Vec3, Octahedron>::default().is_field())
+        assert!(BoundTester::<Octahedron>::default().is_field_3d())
     }
 }

@@ -2,7 +2,7 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_2,
-    prelude::{Color, Distance, FieldOperator, Normal, Operator, Tangent, Uv, RaycastOutput},
+    prelude::{Color, Distance, FieldOperator, Normal, Operator, Raycast, Tangent, Uv},
 };
 
 /// Override the tangents of an SDF with the tangents of another SDF
@@ -11,12 +11,12 @@ use crate::{
 #[repr(C)]
 pub struct ProxyTangentOp;
 
-impl_passthrough_op_2!(ProxyTangentOp, Distance, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyTangentOp, Distance<Dim>, 0, SdfA, Dim);
 impl_passthrough_op_2!(ProxyTangentOp, Normal<Dim>, 0, SdfA, Dim);
 impl_passthrough_op_2!(ProxyTangentOp, Tangent<Dim>, 1, SdfB, Dim);
-impl_passthrough_op_2!(ProxyTangentOp, Uv, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyTangentOp, Color, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyTangentOp, RaycastOutput, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyTangentOp, Uv<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyTangentOp, Color<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyTangentOp, Raycast, 0, SdfA);
 
 pub type ProxyTangent<SdfA, SdfB> = Operator<ProxyTangentOp, (SdfA, SdfB)>;
 

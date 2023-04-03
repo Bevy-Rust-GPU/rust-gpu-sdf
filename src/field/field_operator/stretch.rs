@@ -36,19 +36,19 @@ impl Default for StretchInfiniteOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Attr> FieldOperator<Sdf, Dim, Attr> for StretchInfiniteOp<Dim>
+impl<Sdf, Dim, Attr> FieldOperator<Sdf, Attr> for StretchInfiniteOp<Dim>
 where
-    Attr: Attribute,
-    Sdf: Field<Dim, Attr>,
+    Attr: Attribute<Input = Dim>,
+    Sdf: Field<Attr>,
     Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + IsNormalized + Dot,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Attr::Output {
         assert!(
             self.dir.clone().is_normalized(),
             "ExtrudeInfiniteOp dir must be normalized"
         );
         let q = p.clone() - self.dir.clone() * p.dot(self.dir.clone());
-        sdf.field(attr, q)
+        sdf.field(q)
     }
 }
 
@@ -97,16 +97,16 @@ impl Default for StretchDistOp<Vec3> {
     }
 }
 
-impl<Sdf, Dim, Attr> FieldOperator<Sdf, Dim, Attr> for StretchDistOp<Dim>
+impl<Sdf, Dim, Attr> FieldOperator<Sdf, Attr> for StretchDistOp<Dim>
 where
-    Attr: Attribute,
-    Sdf: Field<Dim, Attr>,
+    Attr: Attribute<Input = Dim>,
+    Sdf: Field<Attr>,
     Dim: Clone + Mul<f32, Output = Dim> + Sub<Dim, Output = Dim> + Dot,
 {
-    fn operator(&self, attr: Attr, sdf: &Sdf, p: Dim) -> Attr::Type {
+    fn operator(&self, sdf: &Sdf, p: Dim) -> Attr::Output {
         let q =
             p.clone() - (self.dir.clone() * p.dot(self.dir.clone()).clamp(-self.dist, self.dist));
-        sdf.field(attr, q)
+        sdf.field(q)
     }
 }
 

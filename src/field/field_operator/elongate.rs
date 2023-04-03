@@ -41,52 +41,52 @@ impl Default for ElongateOp<Vec3> {
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, f32, Distance> for ElongateOp<f32>
+impl<Sdf> FieldOperator<Sdf, Distance<f32>> for ElongateOp<f32>
 where
-    Sdf: Field<f32, Distance>,
+    Sdf: Field<Distance<f32>>,
 {
-    fn operator(&self, attr: Distance, sdf: &Sdf, p: f32) -> f32 {
+    fn operator(&self, sdf: &Sdf, p: f32) -> f32 {
         let q = p.abs() - self.extent;
-        sdf.field(attr, q.max(0.0)).add(q.min(0.0))
+        sdf.field(q.max(0.0)).add(q.min(0.0))
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec2, Distance> for ElongateOp<Vec2>
+impl<Sdf> FieldOperator<Sdf, Distance<Vec2>> for ElongateOp<Vec2>
 where
-    Sdf: Field<Vec2, Distance>,
+    Sdf: Field<Distance<Vec2>>,
 {
-    fn operator(&self, attr: Distance, sdf: &Sdf, p: Vec2) -> f32 {
+    fn operator(&self, sdf: &Sdf, p: Vec2) -> f32 {
         let q = p.abs() - self.extent;
-        sdf.field(attr, q.max(Vec2::ZERO))
+        sdf.field(q.max(Vec2::ZERO))
             .add(q.x.max(q.y).min(0.0))
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec3, Distance> for ElongateOp<Vec3>
+impl<Sdf> FieldOperator<Sdf, Distance<Vec3>> for ElongateOp<Vec3>
 where
-    Sdf: Field<Vec3, Distance>,
+    Sdf: Field<Distance<Vec3>>,
 {
-    fn operator(&self, attr: Distance, sdf: &Sdf, p: Vec3) -> f32 {
+    fn operator(&self, sdf: &Sdf, p: Vec3) -> f32 {
         let q = p.abs() - self.extent;
-        sdf.field(attr, q.max(Vec3::ZERO))
+        sdf.field(q.max(Vec3::ZERO))
             .add(q.x.max(q.y.max(q.z)).min(0.0))
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, f32, Normal<f32>> for ElongateOp<f32>
+impl<Sdf> FieldOperator<Sdf, Normal<f32>> for ElongateOp<f32>
 where
-    Sdf: Field<f32, Normal<f32>>,
+    Sdf: Field<Normal<f32>>,
 {
-    fn operator(&self, _attr: Normal<f32>, _sdf: &Sdf, p: f32) -> f32 {
+    fn operator(&self, _sdf: &Sdf, p: f32) -> f32 {
         p.sign()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec2, Normal<Vec2>> for ElongateOp<Vec2>
+impl<Sdf> FieldOperator<Sdf, Normal<Vec2>> for ElongateOp<Vec2>
 where
-    Sdf: Field<Vec2, Normal<Vec2>>,
+    Sdf: Field<Normal<Vec2>>,
 {
-    fn operator(&self, _attr: Normal<Vec2>, _sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, _sdf: &Sdf, p: Vec2) -> Vec2 {
         let w = p.abs() - self.extent;
         let s = p.sign();
 
@@ -109,11 +109,11 @@ where
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec3, Normal<Vec3>> for ElongateOp<Vec3>
+impl<Sdf> FieldOperator<Sdf, Normal<Vec3>> for ElongateOp<Vec3>
 where
-    Sdf: Field<Vec3, Normal<Vec3>>,
+    Sdf: Field<Normal<Vec3>>,
 {
-    fn operator(&self, _attr: Normal<Vec3>, _sdf: &Sdf, p: Vec3) -> Vec3 {
+    fn operator(&self, _sdf: &Sdf, p: Vec3) -> Vec3 {
         let w = p.abs() - self.extent;
         let s = p.sign();
 
@@ -144,29 +144,29 @@ where
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, f32, Uv> for ElongateOp<f32>
+impl<Sdf> FieldOperator<Sdf, Uv<f32>> for ElongateOp<f32>
 where
-    Sdf: Field<f32, Uv>,
+    Sdf: Field<Uv<f32>>,
 {
-    fn operator(&self, _attr: Uv, _sdf: &Sdf, p: f32) -> Vec2 {
+    fn operator(&self, _sdf: &Sdf, p: f32) -> Vec2 {
         Vec2::new((p + self.extent) * (0.5 / self.extent), 0.0)
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec2, Uv> for ElongateOp<Vec2>
+impl<Sdf> FieldOperator<Sdf, Uv<Vec2>> for ElongateOp<Vec2>
 where
-    Sdf: Field<Vec2, Uv>,
+    Sdf: Field<Uv<Vec2>>,
 {
-    fn operator(&self, _attr: Uv, _sdf: &Sdf, p: Vec2) -> Vec2 {
+    fn operator(&self, _sdf: &Sdf, p: Vec2) -> Vec2 {
         (p + self.extent) * (0.5 / self.extent)
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Vec3, Uv> for ElongateOp<Vec3>
+impl<Sdf> FieldOperator<Sdf, Uv<Vec3>> for ElongateOp<Vec3>
 where
-    Sdf: Field<Vec3, Uv>,
+    Sdf: Field<Uv<Vec3>>,
 {
-    fn operator(&self, _attr: Uv, _sdf: &Sdf, p: Vec3) -> Vec2 {
+    fn operator(&self, _sdf: &Sdf, p: Vec3) -> Vec2 {
         let w = p.abs();
 
         let m = if w.x > w.y {
