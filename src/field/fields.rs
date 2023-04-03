@@ -40,21 +40,23 @@ where
 /// API extension trait of `Field`;
 /// moves the `Attr` generic into the function position,
 /// and obscures the `attr` parameter using `Attribute`'s `Default` constraint
-pub trait FieldsContext<Ctx, State> {
-    fn fields_context<Attr>(&self, p: &Ctx) -> Attr::Output
+pub trait FieldsContext<'a, Ctx, State> {
+    fn fields_context<Attr>(&self, p: Ctx) -> Attr::Output
     where
         Self: Fields<Attr>,
         Attr: Attributes,
-        Ctx: Context<State, Attr::Input>;
+        Attr::Input: 'a,
+        Ctx: Context<State, &'a Attr::Input>;
 }
 
-impl<T, Ctx, State> FieldsContext<Ctx, State> for T {
-    fn fields_context<Attr>(&self, ctx: &Ctx) -> Attr::Output
+impl<'a, T, Ctx, State> FieldsContext<'a, Ctx, State> for T {
+    fn fields_context<Attr>(&self, ctx: Ctx) -> Attr::Output
     where
         Self: Fields<Attr>,
         Attr: Attributes,
-        Ctx: Context<State, Attr::Input>,
+        Attr::Input: 'a,
+        Ctx: Context<State, &'a Attr::Input>,
     {
-        self.fields(ctx.context())
+        self.fields(&ctx.context())
     }
 }

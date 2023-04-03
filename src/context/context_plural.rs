@@ -7,24 +7,24 @@ use crate::prelude::ContextQuery;
 /// Extension trait over `ContextQuery`;
 /// queries using the `Cons`ed version of `Self`,
 /// and `Uncons`es the result before return.
-pub trait ContextPlural<'a, State, Items>: ContextQuery<'a, State, Items::Cons>
+pub trait ContextPlural<State, Items>: ContextQuery<State, Items::Cons>
 where
     Items: Cons,
 {
     type Plural;
 
-    fn context_plural(&'a self) -> Self::Plural;
+    fn context_plural(self) -> Self::Plural;
 }
 
-impl<'a, T, State, Items> ContextPlural<'a, State, Items> for T
+impl<T, State, Items> ContextPlural<State, Items> for T
 where
-    Self: ContextQuery<'a, State, Items::Cons>,
+    Self: ContextQuery<State, Items::Cons>,
     Items: Cons,
     Self::Type: Uncons,
 {
     type Plural = <Self::Type as Uncons>::Uncons;
 
-    fn context_plural(&'a self) -> Self::Plural {
+    fn context_plural(self) -> Self::Plural {
         self.context_query().uncons()
     }
 }

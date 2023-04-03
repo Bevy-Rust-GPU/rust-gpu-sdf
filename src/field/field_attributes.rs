@@ -43,13 +43,13 @@ impl<T> FieldAttributes for T {
 /// then returns the `Uncons` of the result.
 pub trait FieldAttributesContext<'a, Ctx, State> {
     fn attributes_context<Attr>(
-        &'a self,
-        ctx: &'a Ctx,
+        &self,
+        ctx: Ctx,
     ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
     where
         Self: Fields<Attr::Cons>,
-        Self: FieldsContext<Ctx, State>,
-        Ctx: Context<State, <Attr::Cons as Attributes>::Input>,
+        Self: FieldsContext<'a, Ctx, State>,
+        Ctx: Context<State, &'a <Attr::Cons as Attributes>::Input>,
         Attr: Cons,
         Attr::Cons: Attributes,
         <Attr::Cons as Attributes>::Input: 'a,
@@ -58,13 +58,13 @@ pub trait FieldAttributesContext<'a, Ctx, State> {
 
 impl<'a, T, Ctx, State> FieldAttributesContext<'a, Ctx, State> for T {
     fn attributes_context<Attr>(
-        &'a self,
-        ctx: &'a Ctx,
+        &self,
+        ctx: Ctx,
     ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
     where
         Self: Fields<Attr::Cons>,
-        Self: FieldsContext<Ctx, State>,
-        Ctx: Context<State, <Attr::Cons as Attributes>::Input>,
+        Self: FieldsContext<'a, Ctx, State>,
+        Ctx: Context<State, &'a <Attr::Cons as Attributes>::Input>,
         Attr: Cons,
         Attr::Cons: Attributes,
         <Attr::Cons as Attributes>::Input: 'a,
@@ -74,38 +74,42 @@ impl<'a, T, Ctx, State> FieldAttributesContext<'a, Ctx, State> for T {
     }
 }
 
-pub trait FieldAttributeContextCons<'a, Ctx, State>
+pub trait FieldAttributesContextCons<'a, Ctx, State>
 where
-    Ctx: Cons,
+    Ctx: ConsRef<'a>,
 {
     fn attributes_context_cons<Attr>(
-        &'a self,
-        ctx: Ctx,
+        &self,
+        ctx: &'a Ctx,
     ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
     where
+        Self: Fields<Attr::Cons>,
+        Self: FieldsContext<'a, Ctx::ConsRef, State>,
+        Ctx::ConsRef: Context<State, &'a <<Attr as Cons>::Cons as Attributes>::Input>,
         Attr: Cons,
         Attr::Cons: Attributes,
+        <Attr::Cons as Attributes>::Input: 'a,
         <Attr::Cons as Attributes>::Output: Uncons,
-        Self: Fields<Attr::Cons>,
-        Ctx::Cons: Context<State, <<Attr as Cons>::Cons as Attributes>::Input>;
+        Self: Fields<Attr::Cons>;
 }
 
-impl<'a, T, Ctx, State> FieldAttributeContextCons<'a, Ctx, State> for T
+impl<'a, T, Ctx, State> FieldAttributesContextCons<'a, Ctx, State> for T
 where
-    Ctx: Cons,
+    Ctx: ConsRef<'a>,
 {
     fn attributes_context_cons<Attr>(
-        &'a self,
-        ctx: Ctx,
+        &self,
+        ctx: &'a Ctx,
     ) -> <<Attr::Cons as Attributes>::Output as Uncons>::Uncons
     where
+        Self: Fields<Attr::Cons>,
+        Self: FieldsContext<'a, Ctx::ConsRef, State>,
+        Ctx::ConsRef: Context<State, &'a <<Attr as Cons>::Cons as Attributes>::Input>,
         Attr: Cons,
         Attr::Cons: Attributes,
+        <Attr::Cons as Attributes>::Input: 'a,
         <Attr::Cons as Attributes>::Output: Uncons,
-        Self: Fields<Attr::Cons>,
-        Ctx::Cons: Context<State, <<Attr as Cons>::Cons as Attributes>::Input>,
     {
-        let foo = ctx.cons();
-        self.fields_context(&foo).uncons()
+        self.fields_context(ctx.cons_ref()).uncons()
     }
 }

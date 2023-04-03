@@ -8,31 +8,30 @@ use crate::prelude::Context;
 ///
 /// This allows traversing a context several times with
 /// distinct paths and returning a cons list of values
-pub trait ContextQuery<'a, State, T> {
-    type Type: 'a;
+pub trait ContextQuery<State, T> {
+    type Type;
 
-    fn context_query(&'a self) -> Self::Type;
+    fn context_query(self) -> Self::Type;
 }
 
-impl<'a, T, LHS, RHS, State, Inner> ContextQuery<'a, (State, Inner), (LHS, RHS)> for T
+impl<T, LHS, RHS, State, Inner> ContextQuery<(State, Inner), (LHS, RHS)> for T
 where
-    T: Context<State, LHS> + ContextQuery<'a, Inner, RHS>,
-    LHS: 'a,
+    T: Clone + Context<State, LHS> + ContextQuery<Inner, RHS>,
 {
     type Type = (
-        &'a LHS,
-        <T as ContextQuery<'a, Inner, RHS>>::Type,
+        LHS,
+        <T as ContextQuery<Inner, RHS>>::Type,
     );
 
-    fn context_query(&'a self) -> Self::Type {
-        (self.context(), self.context_query())
+    fn context_query(self) -> Self::Type {
+        (self.clone().context(), self.context_query())
     }
 }
 
-impl<'a, T> ContextQuery<'a, (), ()> for T {
+impl<T> ContextQuery<(), ()> for T {
     type Type = ();
 
-    fn context_query(&'a self) -> Self::Type {
+    fn context_query(self) -> Self::Type {
         ()
     }
 }

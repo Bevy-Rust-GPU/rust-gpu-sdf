@@ -1,6 +1,6 @@
 //! Attributes whose corresponding data type can be evaluated via field function
 
-pub trait Attribute: Default {
+pub trait Attribute {
     type Input;
     type Output;
 }

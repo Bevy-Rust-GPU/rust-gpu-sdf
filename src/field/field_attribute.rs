@@ -2,6 +2,8 @@
 
 use crate::prelude::{Attribute, Context, Field};
 
+use super::FieldContext;
+
 /// Function associating an attribute value with a point in space.
 ///
 /// API extension trait of `Field`;
@@ -29,21 +31,23 @@ impl<T> FieldAttribute for T {
 /// API extension trait of `Field`;
 /// moves the `Attr` generic into the function position,
 /// and obscures the `attr` parameter using `Attribute`'s `Default` constraint
-pub trait FieldAttributeContext<Ctx, State> {
-    fn attribute_context<Attr>(&self, p: &Ctx) -> Attr::Output
+pub trait FieldAttributeContext<'a, Ctx, State> {
+    fn attribute_context<Attr>(&self, p: Ctx) -> Attr::Output
     where
-        Self: Field<Attr>,
+        Self: FieldContext<'a, Attr, Ctx, State>,
         Attr: Attribute,
-        Ctx: Context<State, Attr::Input>;
+        Attr::Input: 'a,
+        Ctx: Context<State, &'a Attr::Input>;
 }
 
-impl<T, Ctx, State> FieldAttributeContext<Ctx, State> for T {
-    fn attribute_context<Attr>(&self, ctx: &Ctx) -> Attr::Output
+impl<'a, T, Ctx, State> FieldAttributeContext<'a, Ctx, State> for T {
+    fn attribute_context<Attr>(&self, ctx: Ctx) -> Attr::Output
     where
-        T: Field<Attr>,
+        T: FieldContext<'a, Attr, Ctx, State>,
         Attr: Attribute,
-        Ctx: Context<State, Attr::Input>,
+        Attr::Input: 'a,
+        Ctx: Context<State, &'a Attr::Input>,
     {
-        self.field(ctx.context())
+        self.field_context(ctx)
     }
 }

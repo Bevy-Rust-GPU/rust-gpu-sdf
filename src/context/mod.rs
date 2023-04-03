@@ -13,22 +13,21 @@ use crate::prelude::{Car, Cdr};
 /// impls over `(LHS, RHS)` for evaluation of
 /// arbitrary long cons lists.
 pub trait Context<State, T>: Sized {
-    fn context(&self) -> &T;
+    fn context(self) -> T;
 }
 
 impl<LHS, RHS, Inner, T> Context<(Cdr, Inner), T> for (LHS, RHS)
 where
     RHS: Context<Inner, T>,
 {
-    fn context(&self) -> &T {
+    fn context(self) -> T {
         self.1.context()
     }
 }
 
-impl<LHS, RHS> Context<(Car, ()), LHS> for (LHS, RHS)
-{
-    fn context(&self) -> &LHS {
-        &self.0
+impl<LHS, RHS> Context<(Car, ()), LHS> for (LHS, RHS) {
+    fn context(self) -> LHS {
+        self.0
     }
 }
 

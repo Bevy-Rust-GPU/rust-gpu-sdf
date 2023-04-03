@@ -8,21 +8,21 @@ pub enum Cdr {}
 ///
 /// impls over `(LHS, RHS)` and `(LHS, ())`
 /// to allow traversing arbitrary lengths of list
-pub trait ContextPath<'a, Ctx, In> {
+pub trait ContextPath<Ctx, In> {
     type Type;
 }
 
 //impl Sealed for This {}
 
-impl<'a, RHS, Ctx, In> ContextPath<'a, Ctx, In> for (Cdr, RHS)
+impl<RHS, Ctx, In> ContextPath<Ctx, In> for (Cdr, RHS)
 where
-    RHS: ContextPath<'a, Ctx, In>,
+    RHS: ContextPath<Ctx, In>,
     Ctx: Context<RHS, In>,
 {
     type Type = In;
 }
 
-impl<'a, Ctx, In, RHS> ContextPath<'a, Ctx, In> for (Car, RHS)
+impl<Ctx, In, RHS> ContextPath<Ctx, In> for (Car, RHS)
 where
     Ctx: Context<(Car, RHS), In>,
 {
