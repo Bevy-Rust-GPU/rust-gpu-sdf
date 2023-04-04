@@ -4,8 +4,8 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Color, Distance, Field, FieldOperator, Normal, Operator, RaycastInput, Raycast,
-        RaycastOutput, Tangent, Uv,
+        AttrColor, AttrDistance, Field, FieldOperator, AttrNormal, Operator, RaycastInput, Raycast,
+        RaycastOutput, AttrTangent, AttrUv,
     },
 };
 
@@ -29,7 +29,7 @@ impl<const MAX_STEPS: u32> Default for SphereTraceNaiveOp<MAX_STEPS> {
 impl<const MAX_STEPS: u32, Sdf> FieldOperator<Sdf, Raycast>
     for SphereTraceNaiveOp<MAX_STEPS>
 where
-    Sdf: Field<Distance<Vec3>>,
+    Sdf: Field<AttrDistance<Vec3>>,
 {
     fn operator(
         &self,
@@ -42,11 +42,11 @@ where
 
         for step in 0..MAX_STEPS {
             let pos = input.eye + input.dir * t;
-            let dist = sdf.field(&pos);
+            let dist = sdf.field(&pos.into());
 
-            out.march_step(t, dist);
+            out.march_step(t, *dist);
 
-            if dist < 0.0 {
+            if *dist < 0.0 {
                 out.march_hit(step);
                 break;
             }
@@ -63,11 +63,11 @@ where
     }
 }
 
-impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Distance<Pos>, Pos, const MAX_STEPS: u32);
-impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Normal<Pos>, Pos, const MAX_STEPS: u32);
-impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Tangent<Pos>, Pos, const MAX_STEPS: u32);
-impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Uv<Pos>, Pos, const MAX_STEPS: u32);
-impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, Color<Pos>, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, AttrDistance<Pos>, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, AttrNormal<Pos>, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, AttrTangent<Pos>, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, AttrUv<Pos>, Pos, const MAX_STEPS: u32);
+impl_passthrough_op_1!(SphereTraceNaiveOp<MAX_STEPS>, AttrColor<Pos>, Pos, const MAX_STEPS: u32);
 
 pub type SphereTraceNaive<const MAX_STEPS: u32, Sdf> = Operator<SphereTraceNaiveOp<MAX_STEPS>, Sdf>;
 

@@ -6,7 +6,10 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv},
+    prelude::{
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrTangent, AttrUv,
+        Distance, Field, FieldOperator, Operator,
+    },
 };
 
 /// Shift the isosurface of a distance field by a given amount.
@@ -25,31 +28,35 @@ impl Default for IsosurfaceOp {
     }
 }
 
-impl<SdfA, Input> FieldOperator<SdfA, Distance<Input>> for IsosurfaceOp
+impl<SdfA, Input> FieldOperator<SdfA, AttrDistance<Input>> for IsosurfaceOp
 where
-    SdfA: Field<Distance<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
     Input: Clone,
 {
-    fn operator(&self, sdf_a: &SdfA, input: &Input) -> f32 {
-        sdf_a.field(input) - self.delta
+    fn operator(&self, sdf_a: &SdfA, input: &Position<Input>) -> Distance {
+        (*sdf_a.field(input) - self.delta).into()
     }
 }
 
-impl_passthrough_op_1!(IsosurfaceOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(IsosurfaceOp, Tangent<Dim>, Dim);
+impl_passthrough_op_1!(IsosurfaceOp, AttrNormal<Dim>, Dim);
+impl_passthrough_op_1!(IsosurfaceOp, AttrTangent<Dim>, Dim);
 
-impl<SdfA, Input> FieldOperator<SdfA, Uv<Input>> for IsosurfaceOp
+impl<SdfA, Input> FieldOperator<SdfA, AttrUv<Input>> for IsosurfaceOp
 where
-    SdfA: crate::prelude::Field<Uv<Input>>,
+    SdfA: crate::prelude::Field<AttrUv<Input>>,
     Input: Clone + Div<f32, Output = Input>,
 {
-    fn operator(&self, sdf_a: &SdfA, input: &Input) -> <Uv<Input> as crate::prelude::Attribute>::Output {
-        let p = input.clone() / self.delta;
-        sdf_a.field(&p)
+    fn operator(
+        &self,
+        sdf_a: &SdfA,
+        input: &Position<Input>,
+    ) -> <AttrUv<Input> as crate::prelude::Attribute>::Output {
+        let p = (**input).clone() / self.delta;
+        sdf_a.field(&p.into())
     }
 }
 
-impl_passthrough_op_1!(IsosurfaceOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(IsosurfaceOp, AttrColor<Dim>, Dim);
 
 /// Add an arbitrary radius to a distance field.
 pub type Isosurface<SdfA> = Operator<IsosurfaceOp, SdfA>;

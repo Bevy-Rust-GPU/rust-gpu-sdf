@@ -4,7 +4,7 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_2,
-    prelude::{Color, Distance, FieldOperator, Normal, Operator, Raycast, Tangent, Uv},
+    prelude::{AttrColor, AttrDistance, FieldOperator, AttrNormal, Operator, Raycast, AttrTangent, AttrUv},
 };
 
 /// Override the UVs of an SDF with the UVs of another SDF
@@ -13,11 +13,11 @@ use crate::{
 #[repr(C)]
 pub struct ProxyUvOp;
 
-impl_passthrough_op_2!(ProxyUvOp, Distance<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyUvOp, Normal<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyUvOp, Tangent<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyUvOp, Uv<Dim>, 1, SdfB, Dim);
-impl_passthrough_op_2!(ProxyUvOp, Color<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyUvOp, AttrDistance<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyUvOp, AttrNormal<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyUvOp, AttrTangent<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyUvOp, AttrUv<Dim>, 1, SdfB, Dim);
+impl_passthrough_op_2!(ProxyUvOp, AttrColor<Dim>, 0, SdfA, Dim);
 impl_passthrough_op_2!(ProxyUvOp, Raycast, 0, SdfA);
 
 pub type ProxyUv<SdfA, SdfB> = Operator<ProxyUvOp, (SdfA, SdfB)>;

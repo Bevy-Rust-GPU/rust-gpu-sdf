@@ -5,7 +5,7 @@ use rust_gpu_bridge::{
     Abs, Mix, Sign, Step,
 };
 
-use crate::prelude::{Distance, Field, Normal};
+use crate::prelude::{AttrDistance, Field, AttrNormal, items::position::Position, Distance, Normal};
 
 /// Chebyshev distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -13,41 +13,41 @@ use crate::prelude::{Distance, Field, Normal};
 #[repr(C)]
 pub struct ChebyshevMetric;
 
-impl Field<Distance<f32>> for ChebyshevMetric {
-    fn field(&self, p: &f32) -> f32 {
-        p.abs()
+impl Field<AttrDistance<f32>> for ChebyshevMetric {
+    fn field(&self, p: &Position<f32>) -> Distance {
+        p.abs().into()
     }
 }
 
-impl Field<Distance<Vec2>> for ChebyshevMetric {
-    fn field(&self, p: &Vec2) -> f32 {
-        p.x.abs().max(p.y.abs())
+impl Field<AttrDistance<Vec2>> for ChebyshevMetric {
+    fn field(&self, p: &Position<Vec2>) -> Distance {
+        p.x.abs().max(p.y.abs()).into()
     }
 }
 
-impl Field<Distance<Vec3>> for ChebyshevMetric {
-    fn field(&self, p: &Vec3) -> f32 {
-        p.x.abs().max(p.y.abs()).max(p.z.abs())
+impl Field<AttrDistance<Vec3>> for ChebyshevMetric {
+    fn field(&self, p: &Position<Vec3>) -> Distance {
+        p.x.abs().max(p.y.abs()).max(p.z.abs()).into()
     }
 }
 
-impl Field<Normal<f32>> for ChebyshevMetric {
-    fn field(&self, p: &f32) -> f32 {
-        p.sign()
+impl Field<AttrNormal<f32>> for ChebyshevMetric {
+    fn field(&self, p: &Position<f32>) -> Normal<f32> {
+        p.sign().into()
     }
 }
 
-impl Field<Normal<Vec2>> for ChebyshevMetric {
-    fn field(&self, p: &Vec2) -> Vec2 {
+impl Field<AttrNormal<Vec2>> for ChebyshevMetric {
+    fn field(&self, p: &Position<Vec2>) -> Normal<Vec2> {
         let a = p.abs();
         let s = p.sign();
 
-        (Vec2::X * s.x).mix(Vec2::Y * s.y, Vec2::splat(a.x.step(a.y)))
+        (Vec2::X * s.x).mix(Vec2::Y * s.y, Vec2::splat(a.x.step(a.y))).into()
     }
 }
 
-impl Field<Normal<Vec3>> for ChebyshevMetric {
-    fn field(&self, p: &Vec3) -> Vec3 {
+impl Field<AttrNormal<Vec3>> for ChebyshevMetric {
+    fn field(&self, p: &Position<Vec3>) -> Normal<Vec3> {
         let a = p.abs();
         let s = p.sign();
 

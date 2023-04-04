@@ -3,7 +3,7 @@
 use rust_gpu_bridge::glam::Vec2;
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
+use crate::prelude::{AttrDistance, Field, FieldOperator, AttrNormal, Operator, AttrUv, items::position::Position, Distance, Normal, Uv};
 
 /// Compute the boolean union of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -11,53 +11,53 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 #[repr(C)]
 pub struct UnionOp;
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Distance<Input>> for UnionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrDistance<Input>> for UnionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfB: Field<Distance<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
     Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> f32 {
-        sdf_a.field(p).min(sdf_b.field(p))
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Distance {
+        sdf_a.field(p).min(*sdf_b.field(p)).into()
     }
 }
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Normal<Input>> for UnionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrNormal<Input>> for UnionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfA: Field<Normal<Input>>,
-    SdfB: Field<Distance<Input>>,
-    SdfB: Field<Normal<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfA: Field<AttrNormal<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrNormal<Input>>,
     Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Input) -> Input {
-        let dist_a = Field::<Distance<Input>>::field(sdf_a, input);
-        let dist_b = Field::<Distance<Input>>::field(sdf_b, input);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Normal<Input> {
+        let dist_a = Field::<AttrDistance<Input>>::field(sdf_a, input);
+        let dist_b = Field::<AttrDistance<Input>>::field(sdf_b, input);
 
         if dist_a < dist_b {
-            Field::<Normal<Input>>::field(sdf_a, input)
+            Field::<AttrNormal<Input>>::field(sdf_a, input)
         } else {
-            Field::<Normal<Input>>::field(sdf_b, input)
+            Field::<AttrNormal<Input>>::field(sdf_b, input)
         }
     }
 }
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Uv<Input>> for UnionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrUv<Input>> for UnionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfA: Field<Uv<Input>>,
-    SdfB: Field<Distance<Input>>,
-    SdfB: Field<Uv<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfA: Field<AttrUv<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrUv<Input>>,
     Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Input) -> Vec2 {
-        let dist_a = Field::<Distance<Input>>::field(sdf_a, input);
-        let dist_b = Field::<Distance<Input>>::field(sdf_b, input);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Uv {
+        let dist_a = Field::<AttrDistance<Input>>::field(sdf_a, input);
+        let dist_b = Field::<AttrDistance<Input>>::field(sdf_b, input);
 
         if dist_a < dist_b {
-            Field::<Uv<Input>>::field(sdf_a, input)
+            Field::<AttrUv<Input>>::field(sdf_a, input)
         } else {
-            Field::<Uv<Input>>::field(sdf_a, input)
+            Field::<AttrUv<Input>>::field(sdf_a, input)
         }
     }
 }

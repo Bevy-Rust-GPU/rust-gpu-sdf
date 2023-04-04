@@ -1,6 +1,9 @@
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Tangent, Uv, Raycast},
+    prelude::{
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrTangent, AttrUv, Field,
+        Normal, Raycast, Tangent,
+    },
 };
 
 use super::{FieldOperator, Operator};
@@ -10,29 +13,29 @@ use super::{FieldOperator, Operator};
 #[repr(C)]
 pub struct NormalizeOp;
 
-impl<Sdf, Input> FieldOperator<Sdf, Normal<Input>> for NormalizeOp
+impl<Sdf, Input> FieldOperator<Sdf, AttrNormal<Input>> for NormalizeOp
 where
-    Sdf: Field<Normal<Input>>,
+    Sdf: Field<AttrNormal<Input>>,
     Input: Clone + rust_gpu_bridge::Normalize,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> Input {
-        sdf.field(p).clone().normalize()
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> Normal<Input> {
+        (*sdf.field(p)).clone().normalize().into()
     }
 }
 
-impl<Sdf, Input> FieldOperator<Sdf, Tangent<Input>> for NormalizeOp
+impl<Sdf, Input> FieldOperator<Sdf, AttrTangent<Input>> for NormalizeOp
 where
-    Sdf: Field<Tangent<Input>>,
+    Sdf: Field<AttrTangent<Input>>,
     Input: Clone + rust_gpu_bridge::Normalize,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> Input {
-        sdf.field(p).clone().normalize()
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> Tangent<Input> {
+        (*sdf.field(p)).clone().normalize().into()
     }
 }
 
-impl_passthrough_op_1!(NormalizeOp, Distance<Dim>, Dim);
-impl_passthrough_op_1!(NormalizeOp, Uv<Dim>, Dim);
-impl_passthrough_op_1!(NormalizeOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(NormalizeOp, AttrDistance<Dim>, Dim);
+impl_passthrough_op_1!(NormalizeOp, AttrUv<Dim>, Dim);
+impl_passthrough_op_1!(NormalizeOp, AttrColor<Dim>, Dim);
 impl_passthrough_op_1!(NormalizeOp, Raycast,);
 
 pub type Normalize<Sdf> = Operator<NormalizeOp, Sdf>;

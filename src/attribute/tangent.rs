@@ -1,47 +1,71 @@
-use core::marker::PhantomData;
+use core::{marker::PhantomData, ops::{Deref, DerefMut}};
 
 use rust_gpu_bridge::glam::{Vec2, Vec3};
 
-use crate::{default, prelude::Field};
+use crate::{default, prelude::{Field, items::position::Position}};
 
 use super::Attribute;
 
 #[repr(C)]
-pub struct Tangent<Dim>(PhantomData<Dim>);
+pub struct AttrTangent<Dim>(PhantomData<Dim>);
 
-impl<Dim> Default for Tangent<Dim> {
+impl<Dim> Default for AttrTangent<Dim> {
     fn default() -> Self {
-        Tangent(default())
+        AttrTangent(default())
     }
 }
 
-impl<Dim> Clone for Tangent<Dim> {
+impl<Dim> Clone for AttrTangent<Dim> {
     fn clone(&self) -> Self {
-        Tangent(self.0.clone())
+        AttrTangent(self.0.clone())
     }
 }
 
-impl<Dim> Copy for Tangent<Dim> {}
+impl<Dim> Copy for AttrTangent<Dim> {}
 
-impl<Dim> Attribute for Tangent<Dim> {
-    type Input = Dim;
-    type Output = Dim;
+impl<Dim> Attribute for AttrTangent<Dim> {
+    type Input = Position<Dim>;
+    type Output = Tangent<Dim>;
 }
 
-impl Field<Tangent<f32>> for f32 {
-    fn field(&self, _: &f32) -> f32 {
-        *self
+impl Field<AttrTangent<f32>> for f32 {
+    fn field(&self, _: &Position<f32>) -> Tangent<f32> {
+        Tangent(*self)
     }
 }
 
-impl Field<Tangent<Vec2>> for Vec2 {
-    fn field(&self, _: &Vec2) -> Vec2 {
-        *self
+impl Field<AttrTangent<Vec2>> for Vec2 {
+    fn field(&self, _: &Position<Vec2>) -> Tangent<Vec2> {
+        Tangent(*self)
     }
 }
 
-impl Field<Tangent<Vec3>> for Vec3 {
-    fn field(&self, _: &Vec3) -> Vec3 {
-        *self
+impl Field<AttrTangent<Vec3>> for Vec3 {
+    fn field(&self, _: &Position<Vec3>) -> Tangent<Vec3> {
+        Tangent(*self)
     }
 }
+
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Tangent<Dim>(pub Dim);
+
+impl<Dim> Deref for Tangent<Dim> {
+    type Target = Dim;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<Dim> DerefMut for Tangent<Dim> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<Dim> From<Dim> for Tangent<Dim> {
+    fn from(value: Dim) -> Self {
+        Tangent(value)
+    }
+}
+

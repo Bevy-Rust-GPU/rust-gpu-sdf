@@ -57,6 +57,6 @@ impl<'a, T, Ctx, State> FieldsContext<'a, Ctx, State> for T {
         Attr::Input: 'a,
         Ctx: Context<State, &'a Attr::Input>,
     {
-        self.fields(&ctx.context())
+        self.fields(ctx.context())
     }
 }

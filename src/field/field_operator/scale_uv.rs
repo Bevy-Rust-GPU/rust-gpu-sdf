@@ -2,7 +2,7 @@ use rust_gpu_bridge::glam::Vec2;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Raycast, Tangent, Uv},
+    prelude::{AttrColor, AttrDistance, Field, AttrNormal, Raycast, AttrTangent, AttrUv, items::position::Position},
 };
 
 use super::{FieldOperator, Operator};
@@ -21,20 +21,20 @@ impl Default for ScaleUvOp {
     }
 }
 
-impl<Sdf, Input> FieldOperator<Sdf, Uv<Input>> for ScaleUvOp
+impl<Sdf, Input> FieldOperator<Sdf, AttrUv<Input>> for ScaleUvOp
 where
-    Sdf: Field<Uv<Input>>,
+    Sdf: Field<AttrUv<Input>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> <Uv<Input> as crate::prelude::Attribute>::Output {
-        let uv = sdf.field(p);
-        uv * self.scale
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> <AttrUv<Input> as crate::prelude::Attribute>::Output {
+        let uv = *sdf.field(p);
+        (uv * self.scale).into()
     }
 }
 
-impl_passthrough_op_1!(ScaleUvOp, Distance<Dim>, Dim);
-impl_passthrough_op_1!(ScaleUvOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(ScaleUvOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(ScaleUvOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(ScaleUvOp, AttrDistance<Dim>, Dim);
+impl_passthrough_op_1!(ScaleUvOp, AttrNormal<Dim>, Dim);
+impl_passthrough_op_1!(ScaleUvOp, AttrTangent<Dim>, Dim);
+impl_passthrough_op_1!(ScaleUvOp, AttrColor<Dim>, Dim);
 impl_passthrough_op_1!(ScaleUvOp, Raycast,);
 
 pub type ScaleUv<Sdf> = Operator<ScaleUvOp, Sdf>;

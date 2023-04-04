@@ -3,7 +3,9 @@
 use rust_gpu_bridge::{glam::Vec3, Normalize, Sign};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, Normal};
+use crate::prelude::{
+    items::position::Position, AttrDistance, AttrNormal, Distance, Field, Normal,
+};
 
 /// An octahedron.
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -19,8 +21,8 @@ impl Default for Octahedron {
     }
 }
 
-impl Field<Distance<Vec3>> for Octahedron {
-    fn field(&self, p: &Vec3) -> f32 {
+impl Field<AttrDistance<Vec3>> for Octahedron {
+    fn field(&self, p: &Position<Vec3>) -> Distance {
         // Axial reflection
         let p = p.abs();
 
@@ -46,12 +48,12 @@ impl Field<Distance<Vec3>> for Octahedron {
     }
 }
 
-impl<Input> Field<Normal<Input>> for Octahedron
+impl<Dim> Field<AttrNormal<Dim>> for Octahedron
 where
-    Input: Clone + Sign + Normalize,
+    Dim: Clone + Sign + Normalize,
 {
-    fn field(&self, p: &Input) -> Input {
-        p.clone().sign().normalize()
+    fn field(&self, p: &Position<Dim>) -> Normal<Dim> {
+        (**p).clone().sign().normalize().into()
     }
 }
 

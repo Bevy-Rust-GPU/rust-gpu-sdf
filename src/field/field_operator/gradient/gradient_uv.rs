@@ -4,7 +4,8 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Raycast, Tangent, Uv,
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrTangent, AttrUv, Field,
+        FieldOperator, Normalize, Operator, Raycast,
     },
 };
 
@@ -26,27 +27,40 @@ impl Default for UvGradientOp {
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Tangent<Vec3>> for UvGradientOp
+impl<Sdf> FieldOperator<Sdf, AttrTangent<Vec3>> for UvGradientOp
 where
-    Sdf: Field<Uv<Vec3>>,
+    Sdf: Field<AttrUv<Vec3>>,
 {
     fn operator(
         &self,
         sdf: &Sdf,
-        input: &Vec3,
-    ) -> <Tangent<Vec3> as crate::prelude::Attribute>::Output {
+        input: &Position<Vec3>,
+    ) -> <AttrTangent<Vec3> as crate::prelude::Attribute>::Output {
         let k = Vec2::new(1.0, -1.0);
-        k.xyy() * sdf.field(&(*input + k.xyy() * self.epsilon)).dot(self.axis)
-            + k.yyx() * sdf.field(&(*input + k.yyx() * self.epsilon)).dot(self.axis)
-            + k.yxy() * sdf.field(&(*input + k.yxy() * self.epsilon)).dot(self.axis)
-            + k.xxx() * sdf.field(&(*input + k.xxx() * self.epsilon)).dot(self.axis)
+        (k.xyy()
+            * sdf
+                .field(&(**input + k.xyy() * self.epsilon).into())
+                .dot(self.axis)
+            + k.yyx()
+                * sdf
+                    .field(&(**input + k.yyx() * self.epsilon).into())
+                    .dot(self.axis)
+            + k.yxy()
+                * sdf
+                    .field(&(**input + k.yxy() * self.epsilon).into())
+                    .dot(self.axis)
+            + k.xxx()
+                * sdf
+                    .field(&(**input + k.xxx() * self.epsilon).into())
+                    .dot(self.axis))
+        .into()
     }
 }
 
-impl_passthrough_op_1!(UvGradientOp, Distance<Dim>, Dim);
-impl_passthrough_op_1!(UvGradientOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(UvGradientOp, Uv<Dim>, Dim);
-impl_passthrough_op_1!(UvGradientOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(UvGradientOp, AttrDistance<Dim>, Dim);
+impl_passthrough_op_1!(UvGradientOp, AttrNormal<Dim>, Dim);
+impl_passthrough_op_1!(UvGradientOp, AttrUv<Dim>, Dim);
+impl_passthrough_op_1!(UvGradientOp, AttrColor<Dim>, Dim);
 impl_passthrough_op_1!(UvGradientOp, Raycast,);
 
 pub type UvGradient<Sdf> = Operator<UvGradientOp, Sdf>;

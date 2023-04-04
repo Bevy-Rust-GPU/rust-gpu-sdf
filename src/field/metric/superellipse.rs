@@ -1,7 +1,9 @@
 use rust_gpu_bridge::{glam::Vec2, Abs, Pow, Sign};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, Normal};
+use crate::prelude::{
+    items::position::Position, AttrDistance, AttrNormal, Distance, Field, Normal,
+};
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Field)]
 #[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
@@ -16,15 +18,17 @@ impl Default for Superellipse {
     }
 }
 
-impl Field<Distance<Vec2>> for Superellipse {
-    fn field(&self, p: &Vec2) -> f32 {
-        (p.x.abs().pow(self.n) + p.y.abs().pow(self.n)).pow(1.0 / self.n)
+impl Field<AttrDistance<Vec2>> for Superellipse {
+    fn field(&self, p: &Position<Vec2>) -> Distance {
+        (p.x.abs().pow(self.n) + p.y.abs().pow(self.n))
+            .pow(1.0 / self.n)
+            .into()
     }
 }
 
-impl Field<Normal<Vec2>> for Superellipse {
-    fn field(&self, p: &Vec2) -> Vec2 {
-        p.abs().pow(Vec2::splat(self.n)).normalize() * p.sign()
+impl Field<AttrNormal<Vec2>> for Superellipse {
+    fn field(&self, p: &Position<Vec2>) -> Normal<Vec2> {
+        (p.abs().pow(Vec2::splat(self.n)).normalize() * p.sign()).into()
     }
 }
 

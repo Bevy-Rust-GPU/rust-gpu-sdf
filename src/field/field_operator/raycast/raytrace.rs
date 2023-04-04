@@ -6,8 +6,8 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Color, Distance, FieldOperator, Normal, Operator, Raycast, RaycastInput, RaycastOutput,
-        Tangent, Uv,
+        AttrColor, AttrDistance, FieldOperator, AttrNormal, Operator, Raycast, RaycastInput, RaycastOutput,
+        AttrTangent, AttrUv,
     },
 };
 
@@ -46,10 +46,10 @@ where
     }
 }
 
-impl_passthrough_op_1!(RaytraceOp, Distance<Pos>, Pos,);
-impl_passthrough_op_1!(RaytraceOp, Normal<Pos>, Pos,);
-impl_passthrough_op_1!(RaytraceOp, Tangent<Pos>, Pos,);
-impl_passthrough_op_1!(RaytraceOp, Uv<Pos>, Pos,);
-impl_passthrough_op_1!(RaytraceOp, Color<Pos>, Pos,);
+impl_passthrough_op_1!(RaytraceOp, AttrDistance<Pos>, Pos,);
+impl_passthrough_op_1!(RaytraceOp, AttrNormal<Pos>, Pos,);
+impl_passthrough_op_1!(RaytraceOp, AttrTangent<Pos>, Pos,);
+impl_passthrough_op_1!(RaytraceOp, AttrUv<Pos>, Pos,);
+impl_passthrough_op_1!(RaytraceOp, AttrColor<Pos>, Pos,);
 
 pub type Raytrace<Sdf> = Operator<RaytraceOp, Sdf>;

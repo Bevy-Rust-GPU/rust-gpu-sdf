@@ -7,7 +7,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, Normal};
+use crate::prelude::{AttrDistance, Field, AttrNormal, items::position::Position, Distance, Normal};
 
 /// A plane.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -35,33 +35,33 @@ impl Default for Plane<Vec3> {
     }
 }
 
-impl Field<Distance<f32>> for Plane<f32> {
-    fn field(&self, p: &f32) -> f32 {
+impl Field<AttrDistance<f32>> for Plane<f32> {
+    fn field(&self, p: &Position<f32>) -> Distance {
         assert!(self.dir.abs() == 1.0, "Plane dir must be normalized");
-        p * -self.dir
+        (**p * -self.dir).into()
     }
 }
 
-impl Field<Distance<Vec2>> for Plane<Vec2> {
-    fn field(&self, p: &Vec2) -> f32 {
+impl Field<AttrDistance<Vec2>> for Plane<Vec2> {
+    fn field(&self, p: &Position<Vec2>) -> Distance {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
-        p.dot(-self.dir)
+        p.dot(-self.dir).into()
     }
 }
 
-impl Field<Distance<Vec3>> for Plane<Vec3> {
-    fn field(&self, p: &Vec3) -> f32 {
+impl Field<AttrDistance<Vec3>> for Plane<Vec3> {
+    fn field(&self, p: &Position<Vec3>) -> Distance {
         assert!(self.dir.is_normalized(), "Plane dir must be normalized");
-        p.dot(-self.dir)
+        p.dot(-self.dir).into()
     }
 }
 
-impl<Input> Field<Normal<Input>> for Plane<Input>
+impl<Dim> Field<AttrNormal<Dim>> for Plane<Dim>
 where
-    Input: Clone + Neg<Output = Input>,
+    Dim: Clone + Neg<Output = Dim>,
 {
-    fn field(&self, p: &Input) -> Input {
-        -self.dir.clone()
+    fn field(&self, p: &Position<Dim>) -> Normal<Dim> {
+        self.dir.clone().neg().into()
     }
 }
 

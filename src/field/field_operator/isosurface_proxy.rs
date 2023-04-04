@@ -7,7 +7,8 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_2,
     prelude::{
-        Color, DisplaceProxyOp, Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv,
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrTangent, AttrUv,
+        DisplaceProxyOp, Distance, Field, FieldOperator, Operator,
     },
 };
 
@@ -17,39 +18,39 @@ use crate::{
 #[repr(C)]
 pub struct IsosurfaceProxyOp;
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Distance<Input>> for IsosurfaceProxyOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrDistance<Input>> for IsosurfaceProxyOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfB: Field<Distance<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
     Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> f32 {
-        let d1 = sdf_a.field(p);
-        let d2 = sdf_b.field(p);
-        d1 - d2
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Distance {
+        let d1 = *sdf_a.field(p);
+        let d2 = *sdf_b.field(p);
+        (d1 - d2).into()
     }
 }
 
-impl_passthrough_op_2!(IsosurfaceProxyOp, Normal<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(IsosurfaceProxyOp, Tangent<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(IsosurfaceProxyOp, AttrNormal<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(IsosurfaceProxyOp, AttrTangent<Dim>, 0, SdfA, Dim);
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Uv<Input>> for IsosurfaceProxyOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrUv<Input>> for IsosurfaceProxyOp
 where
-    SdfA: crate::prelude::Field<Uv<Input>>,
-    SdfB: crate::prelude::Field<Distance<Input>>,
+    SdfA: crate::prelude::Field<AttrUv<Input>>,
+    SdfB: crate::prelude::Field<AttrDistance<Input>>,
     Input: Clone + Div<f32, Output = Input>,
 {
     fn operator(
         &self,
         (sdf_a, sdf_b): &(SdfA, SdfB),
-        input: &Input,
-    ) -> <Uv<Input> as crate::prelude::Attribute>::Output {
-        let p = input.clone() / sdf_b.field(input);
-        sdf_a.field(&p)
+        input: &Position<Input>,
+    ) -> <AttrUv<Input> as crate::prelude::Attribute>::Output {
+        let p = (**input).clone() / *sdf_b.field(input);
+        sdf_a.field(&p.into())
     }
 }
 
-impl_passthrough_op_2!(IsosurfaceProxyOp, Color<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(IsosurfaceProxyOp, AttrColor<Dim>, 0, SdfA, Dim);
 
 /// Add an arbitrary radius to a distance field.
 pub type IsosurfaceProxy<SdfA, SdfB> = Operator<DisplaceProxyOp, (SdfA, SdfB)>;

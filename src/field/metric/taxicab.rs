@@ -7,7 +7,9 @@ use rust_gpu_bridge::{
     Abs, Normalize, Sign,
 };
 
-use crate::prelude::{Distance, Field, Normal};
+use crate::prelude::{
+    items::position::Position, AttrDistance, AttrNormal, Distance, Field, Normal,
+};
 
 /// Taxicab distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -15,30 +17,30 @@ use crate::prelude::{Distance, Field, Normal};
 #[repr(C)]
 pub struct TaxicabMetric;
 
-impl Field<Distance<f32>> for TaxicabMetric {
-    fn field(&self, p: &f32) -> f32 {
-        p.abs()
+impl Field<AttrDistance<f32>> for TaxicabMetric {
+    fn field(&self, p: &Position<f32>) -> Distance {
+        p.abs().into()
     }
 }
 
-impl Field<Distance<Vec2>> for TaxicabMetric {
-    fn field(&self, p: &Vec2) -> f32 {
-        p.x.abs().add(p.y.abs())
+impl Field<AttrDistance<Vec2>> for TaxicabMetric {
+    fn field(&self, p: &Position<Vec2>) -> Distance {
+        p.x.abs().add(p.y.abs()).into()
     }
 }
 
-impl Field<Distance<Vec3>> for TaxicabMetric {
-    fn field(&self, p: &Vec3) -> f32 {
-        p.x.abs().add(p.y.abs()).add(p.z.abs())
+impl Field<AttrDistance<Vec3>> for TaxicabMetric {
+    fn field(&self, p: &Position<Vec3>) -> Distance {
+        p.x.abs().add(p.y.abs()).add(p.z.abs()).into()
     }
 }
 
-impl<Input> Field<Normal<Input>> for TaxicabMetric
+impl<Input> Field<AttrNormal<Input>> for TaxicabMetric
 where
     Input: Clone + Sign + Normalize,
 {
-    fn field(&self, input: &Input) -> Input {
-        input.clone().sign().normalize()
+    fn field(&self, input: &Position<Input>) -> Normal<Input> {
+        (**input).clone().sign().normalize().into()
     }
 }
 

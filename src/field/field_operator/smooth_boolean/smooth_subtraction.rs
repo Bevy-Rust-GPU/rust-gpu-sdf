@@ -4,7 +4,10 @@ use core::ops::{Add, Div, Mul, Sub};
 use rust_gpu_bridge::{glam::Vec2, Clamp, Mix, Normalize, Saturate, Splat, Step};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv};
+use crate::prelude::{
+    items::position::Position, AttrDistance, AttrNormal, AttrTangent, AttrUv, Distance, Field,
+    FieldOperator, Normal, Operator, Tangent, Uv,
+};
 
 /// Compute the blended boolean subtraction of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -14,26 +17,26 @@ pub struct SmoothSubtractionOp {
     pub k: f32,
 }
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Distance<Input>> for SmoothSubtractionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrDistance<Input>> for SmoothSubtractionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfB: Field<Distance<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
     Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> f32 {
-        let d1 = sdf_a.field(p);
-        let d2 = sdf_b.field(p);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Distance {
+        let d1 = *sdf_a.field(p);
+        let d2 = *sdf_b.field(p);
         let h = (0.5 - 0.5 * (d2 + d1) / self.k).clamp(0.0, 1.0);
         d2.mix(-d1, h).add(self.k.mul(h).mul(1.0 - h)).into()
     }
 }
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Normal<Input>> for SmoothSubtractionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrNormal<Input>> for SmoothSubtractionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfA: Field<Normal<Input>>,
-    SdfB: Field<Distance<Input>>,
-    SdfB: Field<Normal<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfA: Field<AttrNormal<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrNormal<Input>>,
     Input: Clone
         + Sub<Input, Output = Input>
         + Div<f32, Output = Input>
@@ -47,9 +50,9 @@ where
         + Normalize
         + Splat,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> Input {
-        let d1 = Field::<Distance<Input>>::field(sdf_a, p);
-        let d2 = Field::<Distance<Input>>::field(sdf_b, p);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Normal<Input> {
+        let d1 = *Field::<AttrDistance<Input>>::field(sdf_a, p);
+        let d2 = *Field::<AttrDistance<Input>>::field(sdf_b, p);
 
         let h = (d2.clone() + d1.clone())
             .div(self.k)
@@ -57,19 +60,19 @@ where
             .sub(0.5)
             .saturate();
 
-        let n1 = Field::<Normal<Input>>::field(sdf_a, p);
-        let n2 = Field::<Normal<Input>>::field(sdf_b, p);
+        let n1 = (*Field::<AttrNormal<Input>>::field(sdf_a, p)).clone();
+        let n2 = (*Field::<AttrNormal<Input>>::field(sdf_b, p)).clone();
 
-        n2.mix(n1.mul(-1.0), Input::splat(h)).normalize()
+        n2.mix(n1.mul(-1.0), Input::splat(h)).normalize().into()
     }
 }
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Tangent<Input>> for SmoothSubtractionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrTangent<Input>> for SmoothSubtractionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfA: Field<Tangent<Input>>,
-    SdfB: Field<Distance<Input>>,
-    SdfB: Field<Tangent<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfA: Field<AttrTangent<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrTangent<Input>>,
     Input: Clone
         + Sub<Input, Output = Input>
         + Div<f32, Output = Input>
@@ -83,9 +86,9 @@ where
         + Normalize
         + Splat,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> Input {
-        let d1 = Field::<Distance<Input>>::field(sdf_a, p);
-        let d2 = Field::<Distance<Input>>::field(sdf_b, p);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Tangent<Input> {
+        let d1 = *Field::<AttrDistance<Input>>::field(sdf_a, p);
+        let d2 = *Field::<AttrDistance<Input>>::field(sdf_b, p);
 
         let h = (d2.clone() + d1.clone())
             .div(self.k)
@@ -93,19 +96,19 @@ where
             .sub(0.5)
             .saturate();
 
-        let t1 = Field::<Tangent<Input>>::field(sdf_a, p);
-        let t2 = Field::<Tangent<Input>>::field(sdf_b, p);
+        let t1 = (*Field::<AttrTangent<Input>>::field(sdf_a, p)).clone();
+        let t2 = (*Field::<AttrTangent<Input>>::field(sdf_b, p)).clone();
 
-        t2.mix(t1.mul(-1.0), Input::splat(h)).normalize()
+        t2.mix(t1.mul(-1.0), Input::splat(h)).normalize().into()
     }
 }
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Uv<Input>> for SmoothSubtractionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrUv<Input>> for SmoothSubtractionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfA: Field<Uv<Input>>,
-    SdfB: Field<Distance<Input>>,
-    SdfB: Field<Uv<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfA: Field<AttrUv<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrUv<Input>>,
     Input: Clone
         + Sub<Input, Output = Input>
         + Div<f32, Output = Input>
@@ -119,9 +122,9 @@ where
         + Normalize
         + Splat,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> Vec2 {
-        let d1 = Field::<Distance<Input>>::field(sdf_a, p);
-        let d2 = Field::<Distance<Input>>::field(sdf_b, p);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Uv {
+        let d1 = *Field::<AttrDistance<Input>>::field(sdf_a, p);
+        let d2 = *Field::<AttrDistance<Input>>::field(sdf_b, p);
 
         let h = (d2.clone() + d1.clone())
             .div(self.k)
@@ -129,10 +132,10 @@ where
             .sub(0.5)
             .saturate();
 
-        let uv1 = Field::<Uv<Input>>::field(sdf_a, p);
-        let uv2 = Field::<Uv<Input>>::field(sdf_b, p);
+        let uv1 = *Field::<AttrUv<Input>>::field(sdf_a, p);
+        let uv2 = *Field::<AttrUv<Input>>::field(sdf_b, p);
 
-        uv2.mix(uv1.mul(-1.0), Vec2::splat(h.step(0.5)))
+        uv2.mix(uv1.mul(-1.0), Vec2::splat(h.step(0.5))).into()
     }
 }
 

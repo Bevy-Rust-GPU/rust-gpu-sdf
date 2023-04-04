@@ -4,7 +4,13 @@ pub use crate::{
     },
     bound_tester::*,
     context::{
-        context_item::*, context_items::*, context_path::*, context_plural::*, context_query::*, *,
+        context_item::*,
+        context_items::*,
+        context_path::*,
+        context_plural::*,
+        context_query::*,
+        items::{position::*, *},
+        *,
     },
     field::{
         field_attribute::*,

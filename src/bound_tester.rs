@@ -1,6 +1,6 @@
 //! Utility type for testing the bound error term of a distance function
 
-use core::{marker::PhantomData, ops::RangeInclusive};
+use core::ops::RangeInclusive;
 
 use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
@@ -8,7 +8,8 @@ use rust_gpu_bridge::{
 };
 
 use crate::prelude::{
-    default, BoundError, Distance, ErrorTerm, Field, FieldAttribute, Normal, SupportFunction,
+    default, AttrBoundError, AttrDistance, AttrNormal, BoundError, ErrorTerm, Field,
+    FieldAttribute, SupportFunction,
 };
 
 /// Asserts that the provided distance function is a field rather than a bound
@@ -37,7 +38,7 @@ where
 
 impl<Sdf> BoundTester<Sdf>
 where
-    Sdf: Field<Distance<Vec2>> + Field<Normal<Vec2>> + Default + Clone + 'static,
+    Sdf: Field<AttrDistance<Vec2>> + Field<AttrNormal<Vec2>> + Default + Clone + 'static,
 {
     pub fn is_field_2d(self) -> bool {
         !self.is_bound_2d()
@@ -58,7 +59,7 @@ where
                     },
                     ..Default::default()
                 }
-                .attribute::<ErrorTerm<Vec2>>(&pos);
+                .attribute::<AttrBoundError<Vec2>>(&pos.into());
 
                 // Skip samples with no valid support function
                 if error_term.support.normal == Vec2::ZERO {
@@ -67,10 +68,10 @@ where
 
                 assert!(
                     error_term.error.abs() <= self.epsilon,
-                    "Encountered error {:?} at point {:}, {:} with distance {:} and normal {:}, {}",
+                    "Encountered error {:?} at point {:}, {:} with {:?} and normal {:}, {}",
+                    error_term.error,
                     pos.x,
                     pos.y,
-                    error_term.error,
                     error_term.support.distance,
                     error_term.support.normal.x,
                     error_term.support.normal.y
@@ -84,7 +85,7 @@ where
 
 impl<Sdf> BoundTester<Sdf>
 where
-    Sdf: Field<Distance<Vec3>> + Field<Normal<Vec3>> + Default + Clone + 'static,
+    Sdf: Field<AttrDistance<Vec3>> + Field<AttrNormal<Vec3>> + Default + Clone + 'static,
 {
     pub fn is_field_3d(self) -> bool {
         !self.is_bound_3d()
@@ -106,7 +107,7 @@ where
                         },
                         ..Default::default()
                     }
-                    .attribute::<ErrorTerm<Vec3>>(&pos);
+                    .attribute::<AttrBoundError<Vec3>>(&pos.into());
 
                     // Skip samples with no valid support function
                     if error_term.support.normal == Vec3::ZERO {
@@ -115,7 +116,7 @@ where
 
                     assert!(
                     error_term.error.abs() <= self.epsilon,
-                    "Encountered error {:} at point {:}, {:}, {:} with distance {:} and normal {:}, {:}, {:}",
+                    "Encountered error {:?} at point {:}, {:}, {:} with {:?} and normal {:}, {:}, {:}",
                     error_term.error,
                     pos.x,
                     pos.y,

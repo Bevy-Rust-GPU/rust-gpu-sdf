@@ -1,12 +1,15 @@
 //! Vector to nearest surface
 
-use core::ops::Mul;
+use core::{marker::PhantomData, ops::Mul};
 
 use rust_gpu_bridge::IsNormalized;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Attribute, Color, Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv},
+    prelude::{
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrTangent, AttrUv,
+        Attribute, Distance, Field, FieldOperator, Operator,
+    },
 };
 
 /// Support function attribute marker
@@ -14,7 +17,7 @@ use crate::{
 #[repr(C)]
 pub struct Support<Dim> {
     pub normal: Dim,
-    pub distance: f32,
+    pub distance: Distance,
 }
 
 impl<Dim> Support<Dim> {
@@ -22,16 +25,21 @@ impl<Dim> Support<Dim> {
     where
         Dim: Clone + Mul<f32, Output = Dim>,
     {
-        self.normal.clone() * -self.distance
+        self.normal.clone() * -*self.distance
     }
 }
 
-impl<Dim> Attribute for Support<Dim>
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct AttrSupport<Dim> {
+    _phantom: PhantomData<Dim>,
+}
+
+impl<Dim> Attribute for AttrSupport<Dim>
 where
     Dim: Default,
 {
-    type Input = Dim;
-    type Output = Self;
+    type Input = Position<Dim>;
+    type Output = Support<Dim>;
 }
 
 /// Support function wrapper operator
@@ -39,16 +47,16 @@ where
 #[repr(C)]
 pub struct SupportFunctionOp;
 
-impl<Sdf, Input> FieldOperator<Sdf, Support<Input>> for SupportFunctionOp
+impl<Sdf, Dim> FieldOperator<Sdf, AttrSupport<Dim>> for SupportFunctionOp
 where
-    Sdf: Field<Distance<Input>> + Field<Normal<Input>>,
-    Input: Default + Clone + Mul<f32, Output = Input> + IsNormalized,
+    Sdf: Field<AttrDistance<Dim>> + Field<AttrNormal<Dim>>,
+    Dim: Default + Clone + Mul<f32, Output = Dim> + IsNormalized,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> <Support<Input> as Attribute>::Output {
+    fn operator(&self, sdf: &Sdf, p: &Position<Dim>) -> <AttrSupport<Dim> as Attribute>::Output {
         let mut out = Support::default();
 
         // Calculate normal
-        let n = Field::<Normal<Input>>::field(sdf, p);
+        let n = (*Field::<AttrNormal<Dim>>::field(sdf, p)).clone();
 
         // Skip samples where normal is not valid
         // (ex. the center of a sphere)
@@ -57,7 +65,7 @@ where
         }
 
         // Calculate distance
-        let d = Field::<Distance<Input>>::field(sdf, p);
+        let d = Field::<AttrDistance<Dim>>::field(sdf, p);
 
         // Write into output
         out.normal = n;
@@ -67,11 +75,11 @@ where
     }
 }
 
-impl_passthrough_op_1!(SupportFunctionOp, Distance<Dim>, Dim);
-impl_passthrough_op_1!(SupportFunctionOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(SupportFunctionOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(SupportFunctionOp, Uv<Dim>, Dim);
-impl_passthrough_op_1!(SupportFunctionOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(SupportFunctionOp, AttrDistance<Dim>, Dim);
+impl_passthrough_op_1!(SupportFunctionOp, AttrNormal<Dim>, Dim);
+impl_passthrough_op_1!(SupportFunctionOp, AttrTangent<Dim>, Dim);
+impl_passthrough_op_1!(SupportFunctionOp, AttrUv<Dim>, Dim);
+impl_passthrough_op_1!(SupportFunctionOp, AttrColor<Dim>, Dim);
 
 /// Support function wrapper
 pub type SupportFunction<Sdf> = Operator<SupportFunctionOp, Sdf>;

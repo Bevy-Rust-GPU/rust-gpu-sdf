@@ -4,7 +4,7 @@ use rust_gpu_bridge::{glam::Vec4, Splat, ToVec};
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Raycast, Tangent, Uv},
+    prelude::{AttrColor, AttrDistance, Field, AttrNormal, Raycast, AttrTangent, AttrUv, items::position::Position, Color},
 };
 
 use super::{FieldOperator, Operator};
@@ -13,24 +13,24 @@ use super::{FieldOperator, Operator};
 #[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 pub struct ColorTangentOp;
 
-impl<Sdf, Input> FieldOperator<Sdf, Color<Input>> for ColorTangentOp
+impl<Sdf, Input> FieldOperator<Sdf, AttrColor<Input>> for ColorTangentOp
 where
-    Sdf: Field<Tangent<Input>>,
-    Input: Add<Input, Output = Input> + Mul<Input, Output = Input> + Splat + ToVec<Vec4>,
+    Sdf: Field<AttrTangent<Input>>,
+    Input: Clone + Add<Input, Output = Input> + Mul<Input, Output = Input> + Splat + ToVec<Vec4>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> Vec4 {
-        let normal = sdf.field(p);
-        let normal = normal * Input::splat(0.5) + Input::splat(0.5);
-        let mut color = normal.to_vec();
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> Color {
+        let tangent = (*sdf.field(p)).clone();
+        let tangent = tangent * Input::splat(0.5) + Input::splat(0.5);
+        let mut color = tangent.to_vec();
         color.w = 1.0;
-        color
+        color.into()
     }
 }
 
-impl_passthrough_op_1!(ColorTangentOp, Distance<Dim>, Dim);
-impl_passthrough_op_1!(ColorTangentOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(ColorTangentOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(ColorTangentOp, Uv<Dim>, Dim);
+impl_passthrough_op_1!(ColorTangentOp, AttrDistance<Dim>, Dim);
+impl_passthrough_op_1!(ColorTangentOp, AttrNormal<Dim>, Dim);
+impl_passthrough_op_1!(ColorTangentOp, AttrTangent<Dim>, Dim);
+impl_passthrough_op_1!(ColorTangentOp, AttrUv<Dim>, Dim);
 impl_passthrough_op_1!(ColorTangentOp, Raycast,);
 
 pub type ColorTangent<Sdf> = Operator<ColorTangentOp, Sdf>;

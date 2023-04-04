@@ -5,7 +5,7 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_2,
-    prelude::{Color, Distance, FieldOperator, Normal, Operator, Raycast, Tangent, Uv}, impl_passthrough_op_1,
+    prelude::{AttrColor, AttrDistance, FieldOperator, AttrNormal, Operator, Raycast, AttrTangent, AttrUv, items::position::Position}, impl_passthrough_op_1,
 };
 
 /// Override the colors of an SDF with the colors of another SDF
@@ -14,11 +14,11 @@ use crate::{
 #[repr(C)]
 pub struct ProxyColorOp;
 
-impl_passthrough_op_2!(ProxyColorOp, Distance<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyColorOp, Normal<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyColorOp, Tangent<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyColorOp, Uv<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyColorOp, Color<Dim>, 1, SdfB, Dim);
+impl_passthrough_op_2!(ProxyColorOp, AttrDistance<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyColorOp, AttrNormal<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyColorOp, AttrTangent<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyColorOp, AttrUv<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyColorOp, AttrColor<Dim>, 1, SdfB, Dim);
 impl_passthrough_op_2!(ProxyColorOp, Raycast, 0, SdfA);
 
 pub type ProxyColor<SdfA, SdfB> = Operator<ProxyColorOp, (SdfA, SdfB)>;
@@ -28,18 +28,18 @@ pub type ProxyColor<SdfA, SdfB> = Operator<ProxyColorOp, (SdfA, SdfB)>;
 #[repr(C)]
 pub struct WhiteOp;
 
-impl_passthrough_op_1!(WhiteOp, Distance<Dim>, Dim);
-impl_passthrough_op_1!(WhiteOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(WhiteOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(WhiteOp, Uv<Dim>, Dim);
+impl_passthrough_op_1!(WhiteOp, AttrDistance<Dim>, Dim);
+impl_passthrough_op_1!(WhiteOp, AttrNormal<Dim>, Dim);
+impl_passthrough_op_1!(WhiteOp, AttrTangent<Dim>, Dim);
+impl_passthrough_op_1!(WhiteOp, AttrUv<Dim>, Dim);
 
-impl<Sdf, Input> crate::prelude::FieldOperator<Sdf, Color<Input>> for WhiteOp {
+impl<Sdf, Input> crate::prelude::FieldOperator<Sdf, AttrColor<Input>> for WhiteOp {
     fn operator(
         &self,
         _: &Sdf,
-        _: &Input,
-    ) -> <Color<Input> as crate::prelude::Attribute>::Output {
-        Vec4::ONE
+        _: &Position<Input>,
+    ) -> <AttrColor<Input> as crate::prelude::Attribute>::Output {
+        Vec4::ONE.into()
     }
 }
 

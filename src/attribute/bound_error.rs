@@ -27,13 +27,16 @@
 //! gradient function, but is more robust than the derivative approach,
 //! and able to catch more common bound cases.
 
-use core::ops::{Add, Mul};
+use core::{
+    marker::PhantomData,
+    ops::{Add, Mul},
+};
 
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Attribute, Color, Distance, Field, FieldOperator, Normal, Operator, Support,
-        SupportFunction, Tangent, Uv,
+        items::position::Position, AttrDistance, Attribute, AttrColor, Field, FieldOperator, AttrNormal,
+        Operator, Support, SupportFunction, AttrTangent, AttrUv, AttrSupport, Distance,
     },
 };
 
@@ -42,15 +45,20 @@ use crate::{
 #[repr(C)]
 pub struct ErrorTerm<Dim> {
     pub support: Support<Dim>,
-    pub error: f32,
+    pub error: Distance,
 }
 
-impl<Dim> Attribute for ErrorTerm<Dim>
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct AttrBoundError<Dim> {
+    _phantom: PhantomData<Dim>,
+}
+
+impl<Dim> Attribute for AttrBoundError<Dim>
 where
     Dim: Default,
 {
-    type Input = Dim;
-    type Output = Self;
+    type Input = Position<Dim>;
+    type Output = ErrorTerm<Dim>;
 }
 
 /// Bound error wrapper operator
@@ -58,27 +66,31 @@ where
 #[repr(C)]
 pub struct BoundErrorOp;
 
-impl<Sdf, Input> FieldOperator<Sdf, ErrorTerm<Input>> for BoundErrorOp
+impl<Sdf, Input> FieldOperator<Sdf, AttrBoundError<Input>> for BoundErrorOp
 where
-    Sdf: Field<Distance<Input>> + Field<Support<Input>>,
+    Sdf: Field<AttrDistance<Input>> + Field<AttrSupport<Input>>,
     Input: Default + Clone + Add<Input, Output = Input> + Mul<f32, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> <ErrorTerm<Input> as Attribute>::Output {
+    fn operator(
+        &self,
+        sdf: &Sdf,
+        p: &Position<Input>,
+    ) -> <AttrBoundError<Input> as Attribute>::Output {
         let mut out = ErrorTerm::default();
 
-        let support = Field::<Support<Input>>::field(sdf, p);
+        let support = Field::<AttrSupport<Input>>::field(sdf, p);
         let sv = support.support_vector();
         out.support = support;
-        out.error = Field::<Distance<Input>>::field(sdf, &(p.clone() + sv));
+        out.error = Field::<AttrDistance<Input>>::field(sdf, &((**p).clone() + sv).into());
         out
     }
 }
 
-impl_passthrough_op_1!(BoundErrorOp, Distance<Dim>, Dim);
-impl_passthrough_op_1!(BoundErrorOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(BoundErrorOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(BoundErrorOp, Uv<Dim>, Dim);
-impl_passthrough_op_1!(BoundErrorOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(BoundErrorOp, AttrDistance<Dim>, Dim);
+impl_passthrough_op_1!(BoundErrorOp, AttrNormal<Dim>, Dim);
+impl_passthrough_op_1!(BoundErrorOp, AttrTangent<Dim>, Dim);
+impl_passthrough_op_1!(BoundErrorOp, AttrUv<Dim>, Dim);
+impl_passthrough_op_1!(BoundErrorOp, AttrColor<Dim>, Dim);
 
 /// Bound error wrapper
 pub type BoundError<Sdf> = Operator<BoundErrorOp, SupportFunction<Sdf>>;

@@ -4,7 +4,10 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_2,
-    prelude::{Color, Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv},
+    prelude::{
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrTangent, AttrUv,
+        Distance, Field, FieldOperator, Operator,
+    },
 };
 
 /// Displace the output of a distance field using the output of another distance field.
@@ -15,20 +18,20 @@ pub struct DisplaceOp {
     pub delta: f32,
 }
 
-impl<SdfA, Input> FieldOperator<SdfA, Distance<Input>> for DisplaceOp
+impl<SdfA, Input> FieldOperator<SdfA, AttrDistance<Input>> for DisplaceOp
 where
-    SdfA: Field<Distance<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
     Input: Clone,
 {
-    fn operator(&self, sdf_a: &SdfA, input: &Input) -> f32 {
-        sdf_a.field(input) + self.delta
+    fn operator(&self, sdf_a: &SdfA, input: &Position<Input>) -> Distance {
+        (*sdf_a.field(input) + self.delta).into()
     }
 }
 
-impl_passthrough_op_2!(DisplaceOp, Normal<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(DisplaceOp, Tangent<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(DisplaceOp, Uv<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(DisplaceOp, Color<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(DisplaceOp, AttrNormal<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(DisplaceOp, AttrTangent<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(DisplaceOp, AttrUv<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(DisplaceOp, AttrColor<Dim>, 0, SdfA, Dim);
 
 /// Displace the output of a distance field using the output of another distance field.
 pub type Displace<SdfA, SdfB> = Operator<DisplaceOp, (SdfA, SdfB)>;

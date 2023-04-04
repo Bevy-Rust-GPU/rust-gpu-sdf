@@ -1,47 +1,77 @@
-use core::marker::PhantomData;
+use core::{
+    marker::PhantomData,
+    ops::{Deref, DerefMut},
+};
 
 use rust_gpu_bridge::glam::{Vec2, Vec3};
 
-use crate::{default, prelude::Field};
+use crate::{
+    default,
+    prelude::{items::position::Position, Field},
+};
 
 use super::Attribute;
 
 #[repr(C)]
-pub struct Normal<Dim>(PhantomData<Dim>);
+pub struct AttrNormal<Dim>(PhantomData<Dim>);
 
-impl<Dim> Default for Normal<Dim> {
+impl<Dim> Default for AttrNormal<Dim> {
     fn default() -> Self {
-        Normal(default())
+        AttrNormal(default())
     }
 }
 
-impl<Dim> Clone for Normal<Dim> {
+impl<Dim> Clone for AttrNormal<Dim> {
     fn clone(&self) -> Self {
-        Normal(self.0.clone())
+        AttrNormal(self.0.clone())
     }
 }
 
-impl<Dim> Copy for Normal<Dim> {}
+impl<Dim> Copy for AttrNormal<Dim> {}
 
-impl<Dim> Attribute for Normal<Dim> {
-    type Input = Dim;
-    type Output = Dim;
+impl<Dim> Attribute for AttrNormal<Dim> {
+    type Input = Position<Dim>;
+    type Output = Normal<Dim>;
 }
 
-impl Field<Normal<f32>> for f32 {
-    fn field(&self, _: &f32) -> f32 {
-        *self
+impl Field<AttrNormal<f32>> for f32 {
+    fn field(&self, _: &Position<f32>) -> Normal<f32> {
+        Normal(*self)
     }
 }
 
-impl Field<Normal<Vec2>> for Vec2 {
-    fn field(&self, _: &Vec2) -> Vec2 {
-        *self
+impl Field<AttrNormal<Vec2>> for Vec2 {
+    fn field(&self, _: &Position<Vec2>) -> Normal<Vec2> {
+        Normal(*self)
     }
 }
 
-impl Field<Normal<Vec3>> for Vec3 {
-    fn field(&self, _: &Vec3) -> Vec3 {
-        *self
+impl Field<AttrNormal<Vec3>> for Vec3 {
+    fn field(&self, _: &Position<Vec3>) -> Normal<Vec3> {
+        Normal(*self)
     }
 }
+
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Normal<Dim>(pub Dim);
+
+impl<Dim> Deref for Normal<Dim> {
+    type Target = Dim;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<Dim> DerefMut for Normal<Dim> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<Dim> From<Dim> for Normal<Dim> {
+    fn from(value: Dim) -> Self {
+        Normal(value)
+    }
+}
+

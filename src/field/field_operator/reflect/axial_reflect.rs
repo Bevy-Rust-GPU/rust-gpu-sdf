@@ -6,7 +6,9 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Attribute, Distance, Field, FieldOperator, Normal, Operator, Uv};
+use crate::prelude::{
+    items::position::Position, Attribute, AttrDistance, Field, FieldOperator, AttrNormal, Operator, AttrUv, Distance, Normal, Uv,
+};
 
 pub const AXIS_X: usize = 1;
 pub const AXIS_Y: usize = 2;
@@ -25,26 +27,26 @@ pub struct AxialReflectOp<const AXIS: usize>;
 
 impl<const AXIS: usize, Sdf, Attr> FieldOperator<Sdf, Attr> for AxialReflectOp<AXIS>
 where
-    Attr: Attribute<Input = f32>,
+    Attr: Attribute<Input = Position<f32>>,
     Sdf: Field<Attr>,
 {
-    fn operator(&self, sdf: &Sdf, input: &f32) -> Attr::Output {
-        let mut input = *input;
+    fn operator(&self, sdf: &Sdf, input: &Position<f32>) -> Attr::Output {
+        let mut input = **input;
 
         if AXIS & AXIS_X > 0 {
             input = input.abs();
         }
 
-        sdf.field(&input)
+        sdf.field(&input.into())
     }
 }
 
-impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Distance<Vec2>> for AxialReflectOp<AXIS>
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, AttrDistance<Vec2>> for AxialReflectOp<AXIS>
 where
-    Sdf: Field<Distance<Vec2>>,
+    Sdf: Field<AttrDistance<Vec2>>,
 {
-    fn operator(&self, sdf: &Sdf, input: &Vec2) -> f32 {
-        let mut input = *input;
+    fn operator(&self, sdf: &Sdf, input: &Position<Vec2>) -> Distance {
+        let mut input = **input;
 
         if AXIS & AXIS_X > 0 {
             input.x = input.x.abs();
@@ -54,15 +56,44 @@ where
             input.y = input.y.abs();
         }
 
-        sdf.field(&input)
+        sdf.field(&input.into())
     }
 }
 
-impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Normal<Vec2>> for AxialReflectOp<AXIS>
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, AttrNormal<Vec2>> for AxialReflectOp<AXIS>
 where
-    Sdf: Field<Normal<Vec2>>,
+    Sdf: Field<AttrNormal<Vec2>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec2) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec2>) -> Normal<Vec2> {
+        let mut pa = **p;
+
+        if AXIS & AXIS_X > 0 {
+            pa.x = p.x.abs();
+        }
+
+        if AXIS & AXIS_Y > 0 {
+            pa.y = p.y.abs();
+        }
+
+        let mut n = sdf.field(&pa.into());
+
+        if AXIS & AXIS_X > 0 && p.x < 0.0 {
+            n.x *= -1.0;
+        }
+
+        if AXIS & AXIS_Y > 0 && p.y < 0.0 {
+            n.y *= -1.0;
+        }
+
+        n
+    }
+}
+
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, AttrUv<Vec2>> for AxialReflectOp<AXIS>
+where
+    Sdf: Field<AttrUv<Vec2>>,
+{
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec2>) -> Uv {
         let mut pa = *p;
 
         if AXIS & AXIS_X > 0 {
@@ -87,40 +118,11 @@ where
     }
 }
 
-impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Uv<Vec2>> for AxialReflectOp<AXIS>
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, AttrDistance<Vec3>> for AxialReflectOp<AXIS>
 where
-    Sdf: Field<Uv<Vec2>>,
+    Sdf: Field<AttrDistance<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec2) -> Vec2 {
-        let mut pa = *p;
-
-        if AXIS & AXIS_X > 0 {
-            pa.x = p.x.abs();
-        }
-
-        if AXIS & AXIS_Y > 0 {
-            pa.y = p.y.abs();
-        }
-
-        let mut n = sdf.field(&pa);
-
-        if AXIS & AXIS_X > 0 && p.x < 0.0 {
-            n.x *= -1.0;
-        }
-
-        if AXIS & AXIS_Y > 0 && p.y < 0.0 {
-            n.y *= -1.0;
-        }
-
-        n
-    }
-}
-
-impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Distance<Vec3>> for AxialReflectOp<AXIS>
-where
-    Sdf: Field<Distance<Vec3>>,
-{
-    fn operator(&self, sdf: &Sdf, mut p: &Vec3) -> f32 {
+    fn operator(&self, sdf: &Sdf, mut p: &Position<Vec3>) -> Distance {
         let mut p = *p;
 
         if AXIS & AXIS_X > 0 {
@@ -139,11 +141,11 @@ where
     }
 }
 
-impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Normal<Vec3>> for AxialReflectOp<AXIS>
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, AttrNormal<Vec3>> for AxialReflectOp<AXIS>
 where
-    Sdf: Field<Normal<Vec3>>,
+    Sdf: Field<AttrNormal<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec3) -> Vec3 {
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec3>) -> Normal<Vec3> {
         let mut pa = *p;
 
         if AXIS & AXIS_X > 0 {
@@ -176,11 +178,11 @@ where
     }
 }
 
-impl<const AXIS: usize, Sdf> FieldOperator<Sdf, Uv<Vec3>> for AxialReflectOp<AXIS>
+impl<const AXIS: usize, Sdf> FieldOperator<Sdf, AttrUv<Vec3>> for AxialReflectOp<AXIS>
 where
-    Sdf: Field<Uv<Vec3>>,
+    Sdf: Field<AttrUv<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec3) -> Vec2 {
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec3>) -> Uv {
         let mut pa = *p;
 
         if AXIS & AXIS_X > 0 {

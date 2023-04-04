@@ -1,7 +1,7 @@
 use rust_gpu_bridge::{glam::Vec3, Abs, Pow, Sign};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, Normal};
+use crate::prelude::{items::position::Position, AttrDistance, Field, AttrNormal, Distance, Normal};
 
 // TODO: Apply pow(1.0 / foo) to un-exponentiate distance after axes are summed,
 //       as per Superellipse
@@ -19,20 +19,20 @@ impl Default for Superellipsoid {
     }
 }
 
-impl Field<Distance<Vec3>> for Superellipsoid {
-    fn field(&self, p: &Vec3) -> f32 {
+impl Field<AttrDistance<Vec3>> for Superellipsoid {
+    fn field(&self, p: &Position<Vec3>) -> Distance {
         let d = (p.x.abs().pow(self.e1) + p.y.abs().pow(self.e2)).pow(self.e2 / self.e1)
             + p.z.abs().pow(self.e1);
 
-        d - 1.0
+        (d - 1.0).into()
     }
 }
 
-impl Field<Normal<Vec3>> for Superellipsoid {
-    fn field(&self, p: &Vec3) -> Vec3 {
+impl Field<AttrNormal<Vec3>> for Superellipsoid {
+    fn field(&self, p: &Position<Vec3>) -> Normal<Vec3> {
         let pa = p.abs();
         let pp = pa.pow(Vec3::new(self.e1, self.e2, self.e1));
-        pp.normalize() * p.sign()
+        (pp.normalize() * p.sign()).into()
     }
 }
 

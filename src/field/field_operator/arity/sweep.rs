@@ -4,7 +4,7 @@
 use rust_gpu_bridge::glam::{Vec2, Vec3, Vec3Swizzles};
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
+use crate::prelude::{AttrDistance, Field, FieldOperator, AttrNormal, Operator, AttrUv, items::position::Position, Normal, Uv};
 
 /// Create a 3D distance field by sweeping a 2D distance field
 /// around the perimiter of another 2D distance field
@@ -13,60 +13,60 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 #[repr(C)]
 pub struct SweepOp;
 
-impl<Core, Shell> FieldOperator<(Core, Shell), Distance<Vec2>> for SweepOp
+impl<Core, Shell> FieldOperator<(Core, Shell), AttrDistance<Vec2>> for SweepOp
 where
-    Core: Field<Distance<f32>>,
-    Shell: Field<Distance<f32>>,
+    Core: Field<AttrDistance<f32>>,
+    Shell: Field<AttrDistance<f32>>,
 {
     fn operator(
         &self,
         (core, shell): &(Core, Shell),
-        p: &Vec2,
-    ) -> <Distance<Vec2> as crate::prelude::Attribute>::Output {
-        let q = core.field(&p.x);
-        shell.field(&q)
+        p: &Position<Vec2>,
+    ) -> <AttrDistance<Vec2> as crate::prelude::Attribute>::Output {
+        let q = *core.field(&p.x.into());
+        shell.field(&q.into())
     }
 }
 
-impl<Core, Shell> FieldOperator<(Core, Shell), Distance<Vec3>> for SweepOp
+impl<Core, Shell> FieldOperator<(Core, Shell), AttrDistance<Vec3>> for SweepOp
 where
-    Core: Field<Distance<Vec2>>,
-    Shell: Field<Distance<Vec2>>,
+    Core: Field<AttrDistance<Vec2>>,
+    Shell: Field<AttrDistance<Vec2>>,
 {
     fn operator(
         &self,
         (core, shell): &(Core, Shell),
-        p: &Vec3,
-    ) -> <Distance<Vec3> as crate::prelude::Attribute>::Output {
-        let q = Vec2::new(core.field(&p.truncate()), p.z);
-        shell.field(&q)
+        p: &Position<Vec3>,
+    ) -> <AttrDistance<Vec3> as crate::prelude::Attribute>::Output {
+        let q = Vec2::new(*core.field(&p.truncate().into()), p.z);
+        shell.field(&q.into())
     }
 }
 
-impl<Core, Shell> FieldOperator<(Core, Shell), Normal<Vec3>> for SweepOp
+impl<Core, Shell> FieldOperator<(Core, Shell), AttrNormal<Vec3>> for SweepOp
 where
-    Core: Field<Distance<Vec2>>,
-    Shell: Field<Normal<Vec2>>,
+    Core: Field<AttrDistance<Vec2>>,
+    Shell: Field<AttrNormal<Vec2>>,
 {
-    fn operator(&self, (core, shell): &(Core, Shell), input: &Vec3) -> Vec3 {
-        let q = Vec2::new(core.field(&input.truncate()), input.z);
-        let n = shell.field(&q);
+    fn operator(&self, (core, shell): &(Core, Shell), input: &Position<Vec3>) -> Normal<Vec3> {
+        let q = Vec2::new(*core.field(&input.truncate().into()), input.z);
+        let n = shell.field(&q.into());
         let w = input.xy().normalize() * n.x;
         Vec3::new(w.x, w.y, n.y).into()
     }
 }
 
-impl<Core, Shell> FieldOperator<(Core, Shell), Uv<Vec3>> for SweepOp
+impl<Core, Shell> FieldOperator<(Core, Shell), AttrUv<Vec3>> for SweepOp
 where
-    Core: Field<Distance<Vec2>> + Field<Uv<Vec2>>,
-    Shell: Field<Uv<Vec2>>,
+    Core: Field<AttrDistance<Vec2>> + Field<AttrUv<Vec2>>,
+    Shell: Field<AttrUv<Vec2>>,
 {
-    fn operator(&self, (core, shell): &(Core, Shell), input: &Vec3) -> Vec2 {
-        let dist_core = Field::<Distance<Vec2>>::field(core, &input.truncate());
-        let uv_core = Field::<Uv<Vec2>>::field(core, &input.truncate());
+    fn operator(&self, (core, shell): &(Core, Shell), input: &Position<Vec3>) -> Uv {
+        let dist_core = *Field::<AttrDistance<Vec2>>::field(core, &input.truncate().into());
+        let uv_core = Field::<AttrUv<Vec2>>::field(core, &input.truncate().into());
         let q = Vec2::new(dist_core, input.z);
-        let uv_shell = shell.field(&q);
-        Vec2::new(uv_core.x, uv_shell.x + uv_shell.y)
+        let uv_shell = shell.field(&q.into());
+        Vec2::new(uv_core.x, uv_shell.x + uv_shell.y).into()
     }
 }
 

@@ -1,6 +1,6 @@
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Raycast, Tangent, Uv},
+    prelude::{AttrColor, AttrDistance, Field, AttrNormal, Raycast, AttrTangent, AttrUv, items::position::Position},
 };
 use rust_gpu_bridge::{glam::Vec3, Mod};
 
@@ -10,23 +10,23 @@ use super::{FieldOperator, Operator};
 #[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 pub struct CheckerOp;
 
-impl<Sdf, Input> FieldOperator<Sdf, Color<Input>> for CheckerOp
+impl<Sdf, Input> FieldOperator<Sdf, AttrColor<Input>> for CheckerOp
 where
-    Sdf: Field<Uv<Input>>,
+    Sdf: Field<AttrUv<Input>>,
     Input: Mod,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> <Color<Input> as crate::prelude::Attribute>::Output {
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> <AttrColor<Input> as crate::prelude::Attribute>::Output {
         let uv = sdf.field(p);
         let checker = uv.round();
         let checker = (checker.x + checker.y).modulo(2.0) / 2.0;
-        Vec3::splat(checker).extend(1.0)
+        Vec3::splat(checker).extend(1.0).into()
     }
 }
 
-impl_passthrough_op_1!(CheckerOp, Distance<Dim>, Dim);
-impl_passthrough_op_1!(CheckerOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(CheckerOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(CheckerOp, Uv<Dim>, Dim);
+impl_passthrough_op_1!(CheckerOp, AttrDistance<Dim>, Dim);
+impl_passthrough_op_1!(CheckerOp, AttrNormal<Dim>, Dim);
+impl_passthrough_op_1!(CheckerOp, AttrTangent<Dim>, Dim);
+impl_passthrough_op_1!(CheckerOp, AttrUv<Dim>, Dim);
 impl_passthrough_op_1!(CheckerOp, Raycast,);
 
 pub type Checker<Sdf> = Operator<CheckerOp, Sdf>;

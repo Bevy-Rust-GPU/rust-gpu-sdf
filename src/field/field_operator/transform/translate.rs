@@ -4,7 +4,7 @@ use core::ops::Sub;
 
 use type_fields::Field;
 
-use crate::prelude::{Attribute, Field, FieldOperator, Operator};
+use crate::prelude::{Attribute, Field, FieldOperator, Operator, items::position::Position};
 
 /// Apply a positional translation to a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -16,12 +16,12 @@ pub struct TranslateOp<Dim> {
 
 impl<Sdf, Input, Attr> FieldOperator<Sdf, Attr> for TranslateOp<Input>
 where
-    Attr: Attribute<Input = Input>,
+    Attr: Attribute<Input = Position<Input>>,
     Sdf: Field<Attr>,
     Input: Clone + Sub<Input, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> Attr::Output {
-        sdf.field(&(p.clone() - self.translation.clone()))
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> Attr::Output {
+        sdf.field(&((**p).clone() - self.translation.clone()).into())
     }
 }
 

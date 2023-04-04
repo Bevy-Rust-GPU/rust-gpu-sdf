@@ -7,7 +7,10 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv},
+    prelude::{
+        items::position::Position, AttrColor, AttrDistance, Field, FieldOperator, AttrNormal, Operator,
+        AttrTangent, AttrUv, Distance, Normal, Tangent, Uv,
+    },
 };
 
 /// Convert a solid shape into a hollow one with an infinitely thin surface.
@@ -16,55 +19,55 @@ use crate::{
 #[repr(C)]
 pub struct HollowOp;
 
-impl<Sdf, Input> FieldOperator<Sdf, Distance<Input>> for HollowOp
+impl<Sdf, Input> FieldOperator<Sdf, AttrDistance<Input>> for HollowOp
 where
-    Sdf: Field<Distance<Input>>,
+    Sdf: Field<AttrDistance<Input>>,
 {
-    fn operator(&self, sdf: &Sdf, input: &Input) -> f32 {
-        sdf.field(input).abs()
+    fn operator(&self, sdf: &Sdf, input: &Position<Input>) -> Distance {
+        sdf.field(input).abs().into()
     }
 }
 
-impl<Sdf, Input> FieldOperator<Sdf, Normal<Input>> for HollowOp
+impl<Sdf, Input> FieldOperator<Sdf, AttrNormal<Input>> for HollowOp
 where
-    Sdf: Field<Distance<Input>>,
-    Sdf: Field<Normal<Input>>,
+    Sdf: Field<AttrDistance<Input>>,
+    Sdf: Field<AttrNormal<Input>>,
     Input: Clone + Mul<f32, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, input: &Input) -> Input {
-        let d = <Sdf as Field<Distance<Input>>>::field(sdf, input);
+    fn operator(&self, sdf: &Sdf, input: &Position<Input>) -> Normal<Input> {
+        let d = <Sdf as Field<AttrDistance<Input>>>::field(sdf, input);
         let s = d.sign();
-        <Sdf as Field<Normal<Input>>>::field(sdf, &(input.clone() * s))
+        <Sdf as Field<AttrNormal<Input>>>::field(sdf, &((**input).clone() * s).into())
     }
 }
 
-impl<Sdf, Input> FieldOperator<Sdf, Tangent<Input>> for HollowOp
+impl<Sdf, Dim> FieldOperator<Sdf, AttrTangent<Dim>> for HollowOp
 where
-    Sdf: Field<Distance<Input>>,
-    Sdf: Field<Tangent<Input>>,
+    Sdf: Field<AttrDistance<Dim>>,
+    Sdf: Field<AttrTangent<Dim>>,
+    Dim: Clone + Mul<f32, Output = Dim>,
+{
+    fn operator(&self, sdf: &Sdf, input: &Position<Dim>) -> Tangent<Dim> {
+        let d = <Sdf as Field<AttrDistance<Dim>>>::field(sdf, input);
+        let s = d.sign();
+        <Sdf as Field<AttrTangent<Dim>>>::field(sdf, &((**input).clone() * s).into())
+    }
+}
+
+impl<Sdf, Input> FieldOperator<Sdf, AttrUv<Input>> for HollowOp
+where
+    Sdf: Field<AttrDistance<Input>>,
+    Sdf: Field<AttrUv<Input>>,
     Input: Clone + Mul<f32, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, input: &Input) -> Input {
-        let d = <Sdf as Field<Distance<Input>>>::field(sdf, input);
+    fn operator(&self, sdf: &Sdf, input: &Position<Input>) -> Uv {
+        let d = <Sdf as Field<AttrDistance<Input>>>::field(sdf, input);
         let s = d.sign();
-        <Sdf as Field<Tangent<Input>>>::field(sdf, &(input.clone() * s))
+        <Sdf as Field<AttrUv<Input>>>::field(sdf, &((**input).clone() * s).into())
     }
 }
 
-impl<Sdf, Input> FieldOperator<Sdf, Uv<Input>> for HollowOp
-where
-    Sdf: Field<Distance<Input>>,
-    Sdf: Field<Uv<Input>>,
-    Input: Clone + Mul<f32, Output = Input>,
-{
-    fn operator(&self, sdf: &Sdf, input: &Input) -> Vec2 {
-        let d = <Sdf as Field<Distance<Input>>>::field(sdf, input);
-        let s = d.sign();
-        <Sdf as Field<Uv<Input>>>::field(sdf, &(input.clone() * s))
-    }
-}
-
-impl_passthrough_op_1!(HollowOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(HollowOp, AttrColor<Dim>, Dim);
 
 /// Convert a solid shape into a hollow one with an infinitely thin surface.
 pub type Hollow<Sdf> = Operator<HollowOp, Sdf>;

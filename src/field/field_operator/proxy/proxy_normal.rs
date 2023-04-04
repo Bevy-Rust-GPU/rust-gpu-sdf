@@ -1,6 +1,6 @@
 use crate::{
     impl_passthrough_op_2,
-    prelude::{Color, Distance, FieldOperator, Normal, Operator, Tangent, Uv, Raycast},
+    prelude::{AttrColor, AttrDistance, FieldOperator, AttrNormal, Operator, AttrTangent, AttrUv, Raycast},
 };
 
 /// Override the normals of an SDF with the normals of another SDF
@@ -9,11 +9,11 @@ use crate::{
 #[repr(C)]
 pub struct ProxyNormalOp;
 
-impl_passthrough_op_2!(ProxyNormalOp, Distance<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyNormalOp, Normal<Dim>, 1, SdfB, Dim);
-impl_passthrough_op_2!(ProxyNormalOp, Tangent<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyNormalOp, Uv<Dim>, 0, SdfA, Dim);
-impl_passthrough_op_2!(ProxyNormalOp, Color<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyNormalOp, AttrDistance<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyNormalOp, AttrNormal<Dim>, 1, SdfB, Dim);
+impl_passthrough_op_2!(ProxyNormalOp, AttrTangent<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyNormalOp, AttrUv<Dim>, 0, SdfA, Dim);
+impl_passthrough_op_2!(ProxyNormalOp, AttrColor<Dim>, 0, SdfA, Dim);
 impl_passthrough_op_2!(ProxyNormalOp, Raycast, 0, SdfA);
 
 pub type ProxyNormal<SdfA, SdfB> = Operator<ProxyNormalOp, (SdfA, SdfB)>;

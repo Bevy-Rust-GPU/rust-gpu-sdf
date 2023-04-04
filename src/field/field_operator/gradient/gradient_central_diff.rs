@@ -4,7 +4,8 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        Color, Distance, Field, FieldOperator, Normal, Normalize, Operator, Raycast, Tangent, Uv,
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrTangent, AttrUv, Field,
+        FieldOperator, Normalize, Operator, Raycast,
     },
 };
 
@@ -21,57 +22,63 @@ impl Default for GradientCentralDiffOp {
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Normal<f32>> for GradientCentralDiffOp
+impl<Sdf> FieldOperator<Sdf, AttrNormal<f32>> for GradientCentralDiffOp
 where
-    Sdf: Field<Distance<f32>>,
+    Sdf: Field<AttrDistance<f32>>,
 {
     fn operator(
         &self,
         sdf: &Sdf,
-        input: &f32,
-    ) -> <Normal<f32> as crate::prelude::Attribute>::Output {
-        sdf.field(&(input + self.epsilon)) - sdf.field(&(input - self.epsilon))
+        input: &Position<f32>,
+    ) -> <AttrNormal<f32> as crate::prelude::Attribute>::Output {
+        (*sdf.field(&(**input + self.epsilon).into())
+            - *sdf.field(&(**input - self.epsilon).into()))
+        .into()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Normal<Vec2>> for GradientCentralDiffOp
+impl<Sdf> FieldOperator<Sdf, AttrNormal<Vec2>> for GradientCentralDiffOp
 where
-    Sdf: Field<Distance<Vec2>>,
+    Sdf: Field<AttrDistance<Vec2>>,
 {
     fn operator(
         &self,
         sdf: &Sdf,
-        input: &Vec2,
-    ) -> <Normal<Vec2> as crate::prelude::Attribute>::Output {
+        input: &Position<Vec2>,
+    ) -> <AttrNormal<Vec2> as crate::prelude::Attribute>::Output {
         Vec2::new(
-            sdf.field(&Vec2::new(input.x + self.epsilon, input.y))
-                - sdf.field(&Vec2::new(input.x - self.epsilon, input.y)),
-            sdf.field(&Vec2::new(input.x, input.y + self.epsilon))
-                - sdf.field(&Vec2::new(input.x, input.y - self.epsilon)),
-        )
+            *sdf.field(&Vec2::new(input.x + self.epsilon, input.y).into())
+                - *sdf.field(&Vec2::new(input.x - self.epsilon, input.y).into()),
+            *sdf.field(&Vec2::new(input.x, input.y + self.epsilon).into())
+                - *sdf.field(&Vec2::new(input.x, input.y - self.epsilon).into()),
+        ).into()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Normal<Vec3>> for GradientCentralDiffOp
+impl<Sdf> FieldOperator<Sdf, AttrNormal<Vec3>> for GradientCentralDiffOp
 where
-    Sdf: Field<Distance<Vec3>>,
+    Sdf: Field<AttrDistance<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec3) -> <Normal<Vec3> as crate::prelude::Attribute>::Output {
+    fn operator(
+        &self,
+        sdf: &Sdf,
+        p: &Position<Vec3>,
+    ) -> <AttrNormal<Vec3> as crate::prelude::Attribute>::Output {
         Vec3::new(
-            sdf.field(&Vec3::new(p.x + self.epsilon, p.y, p.z))
-                - sdf.field(&Vec3::new(p.x - self.epsilon, p.y, p.z)),
-            sdf.field(&Vec3::new(p.x, p.y + self.epsilon, p.z))
-                - sdf.field(&Vec3::new(p.x, p.y - self.epsilon, p.z)),
-            sdf.field(&Vec3::new(p.x, p.y, p.z + self.epsilon))
-                - sdf.field(&Vec3::new(p.x, p.y, p.z - self.epsilon)),
-        )
+            *sdf.field(&Vec3::new(p.x + self.epsilon, p.y, p.z).into())
+                - *sdf.field(&Vec3::new(p.x - self.epsilon, p.y, p.z).into()),
+            *sdf.field(&Vec3::new(p.x, p.y + self.epsilon, p.z).into())
+                - *sdf.field(&Vec3::new(p.x, p.y - self.epsilon, p.z).into()),
+            *sdf.field(&Vec3::new(p.x, p.y, p.z + self.epsilon).into())
+                - *sdf.field(&Vec3::new(p.x, p.y, p.z - self.epsilon).into()),
+        ).into()
     }
 }
 
-impl_passthrough_op_1!(GradientCentralDiffOp, Distance::<Dim>, Dim);
-impl_passthrough_op_1!(GradientCentralDiffOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(GradientCentralDiffOp, Uv<Dim>, Dim);
-impl_passthrough_op_1!(GradientCentralDiffOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(GradientCentralDiffOp, AttrDistance::<Dim>, Dim);
+impl_passthrough_op_1!(GradientCentralDiffOp, AttrTangent<Dim>, Dim);
+impl_passthrough_op_1!(GradientCentralDiffOp, AttrUv<Dim>, Dim);
+impl_passthrough_op_1!(GradientCentralDiffOp, AttrColor<Dim>, Dim);
 impl_passthrough_op_1!(GradientCentralDiffOp, Raycast,);
 
 pub type GradientCentralDiff<Sdf> = Operator<GradientCentralDiffOp, Sdf>;

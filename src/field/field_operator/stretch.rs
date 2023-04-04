@@ -8,7 +8,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Attribute, Field, FieldOperator, Operator};
+use crate::prelude::{items::position::Position, Attribute, Field, FieldOperator, Operator};
 
 /// Extrude a shape infinitely along an arbitrary axis.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -38,17 +38,17 @@ impl Default for StretchInfiniteOp<Vec3> {
 
 impl<Sdf, Input, Attr> FieldOperator<Sdf, Attr> for StretchInfiniteOp<Input>
 where
-    Attr: Attribute<Input = Input>,
+    Attr: Attribute<Input = Position<Input>>,
     Sdf: Field<Attr>,
     Input: Clone + Mul<f32, Output = Input> + Sub<Input, Output = Input> + IsNormalized + Dot,
 {
-    fn operator(&self, sdf: &Sdf, input: &Input) -> Attr::Output {
+    fn operator(&self, sdf: &Sdf, input: &Position<Input>) -> Attr::Output {
         assert!(
             self.dir.clone().is_normalized(),
             "ExtrudeInfiniteOp dir must be normalized"
         );
-        let q = input.clone() - self.dir.clone() * input.clone().dot(self.dir.clone());
-        sdf.field(&q)
+        let q = (**input).clone() - self.dir.clone() * (**input).clone().dot(self.dir.clone());
+        sdf.field(&q.into())
     }
 }
 
@@ -99,14 +99,18 @@ impl Default for StretchDistOp<Vec3> {
 
 impl<Sdf, Input, Attr> FieldOperator<Sdf, Attr> for StretchDistOp<Input>
 where
-    Attr: Attribute<Input = Input>,
+    Attr: Attribute<Input = Position<Input>>,
     Sdf: Field<Attr>,
     Input: Clone + Mul<f32, Output = Input> + Sub<Input, Output = Input> + Dot,
 {
-    fn operator(&self, sdf: &Sdf, input: &Input) -> Attr::Output {
-        let q = input.clone()
-            - (self.dir.clone() * input.clone().dot(self.dir.clone()).clamp(-self.dist, self.dist));
-        sdf.field(&q)
+    fn operator(&self, sdf: &Sdf, input: &Position<Input>) -> Attr::Output {
+        let q = (**input).clone()
+            - (self.dir.clone()
+                * (**input)
+                    .clone()
+                    .dot(self.dir.clone())
+                    .clamp(-self.dist, self.dist));
+        sdf.field(&q.into())
     }
 }
 

@@ -6,7 +6,10 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
+use crate::prelude::{
+    items::position::Position, AttrDistance, AttrNormal, AttrUv, Field, FieldOperator, Normal,
+    Operator,
+};
 
 /// Extrude a 2D distance field into 3D.
 #[derive(Default, Copy, Clone, PartialEq, Field)]
@@ -17,42 +20,42 @@ pub struct ExtrudeOp {
     pub depth: f32,
 }
 
-impl<Sdf> FieldOperator<Sdf, Distance<Vec2>> for ExtrudeOp
+impl<Sdf> FieldOperator<Sdf, AttrDistance<Vec2>> for ExtrudeOp
 where
-    Sdf: Field<Distance<f32>>,
+    Sdf: Field<AttrDistance<f32>>,
 {
     fn operator(
         &self,
         sdf: &Sdf,
-        input: &Vec2,
-    ) -> <Distance<f32> as crate::prelude::Attribute>::Output {
-        let d = sdf.field(&input.x);
+        input: &Position<Vec2>,
+    ) -> <AttrDistance<f32> as crate::prelude::Attribute>::Output {
+        let d = *sdf.field(&input.x.into());
         let w = Vec2::new(d, input.y.abs() - self.depth);
-        w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()
+        (w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()).into()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Distance<Vec3>> for ExtrudeOp
+impl<Sdf> FieldOperator<Sdf, AttrDistance<Vec3>> for ExtrudeOp
 where
-    Sdf: Field<Distance<Vec2>>,
+    Sdf: Field<AttrDistance<Vec2>>,
 {
     fn operator(
         &self,
         sdf: &Sdf,
-        input: &Vec3,
-    ) -> <Distance<Vec2> as crate::prelude::Attribute>::Output {
-        let d = sdf.field(&input.truncate());
+        input: &Position<Vec3>,
+    ) -> <AttrDistance<Vec2> as crate::prelude::Attribute>::Output {
+        let d = *sdf.field(&input.truncate().into());
         let w = Vec2::new(d, input.z.abs() - self.depth);
-        w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()
+        (w.x.max(w.y).min(0.0) + w.max(Vec2::ZERO).length()).into()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Normal<Vec2>> for ExtrudeOp
+impl<Sdf> FieldOperator<Sdf, AttrNormal<Vec2>> for ExtrudeOp
 where
-    Sdf: Field<Normal<f32>>,
+    Sdf: Field<AttrNormal<f32>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec2) -> Vec2 {
-        let d = sdf.field(&p.x);
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec2>) -> Normal<Vec2> {
+        let d = *sdf.field(&p.x.into());
         let w = Vec2::new(d, p.y.abs() - self.depth);
         let s = p.y.sign();
 
@@ -71,40 +74,49 @@ where
                 }
             });
 
-        m
+        m.into()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Normal<Vec3>> for ExtrudeOp
+impl<Sdf> FieldOperator<Sdf, AttrNormal<Vec3>> for ExtrudeOp
 where
-    Sdf: Field<Normal<Vec2>>,
+    Sdf: Field<AttrNormal<Vec2>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec3) -> Vec3 {
-        let d = sdf.field(&p.xy());
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec3>) -> Normal<Vec3> {
+        let d = sdf.field(&p.xy().into());
         if p.z.abs() > p.xy().length() * 0.5 {
             Vec3::new(0.0, 0.0, p.z.sign())
         } else {
             d.extend(0.0)
         }
         .normalize()
+        .into()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Uv<Vec2>> for ExtrudeOp
+impl<Sdf> FieldOperator<Sdf, AttrUv<Vec2>> for ExtrudeOp
 where
-    Sdf: crate::prelude::Field<Uv<f32>>,
+    Sdf: crate::prelude::Field<AttrUv<f32>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec2) -> <Uv<Vec2> as crate::prelude::Attribute>::Output {
-        sdf.field(&p.x) + Vec2::new(0.0, p.y.abs())
+    fn operator(
+        &self,
+        sdf: &Sdf,
+        p: &Position<Vec2>,
+    ) -> <AttrUv<Vec2> as crate::prelude::Attribute>::Output {
+        (*sdf.field(&p.x.into()) + Vec2::new(0.0, p.y.abs())).into()
     }
 }
 
-impl<Sdf> FieldOperator<Sdf, Uv<Vec3>> for ExtrudeOp
+impl<Sdf> FieldOperator<Sdf, AttrUv<Vec3>> for ExtrudeOp
 where
-    Sdf: crate::prelude::Field<Uv<Vec2>>,
+    Sdf: crate::prelude::Field<AttrUv<Vec2>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec3) -> <Uv<Vec3> as crate::prelude::Attribute>::Output {
-        sdf.field(&p.truncate()) + Vec2::new(0.0, p.z.abs())
+    fn operator(
+        &self,
+        sdf: &Sdf,
+        p: &Position<Vec3>,
+    ) -> <AttrUv<Vec3> as crate::prelude::Attribute>::Output {
+        (*sdf.field(&p.truncate().into()) + Vec2::new(0.0, p.z.abs())).into()
     }
 }
 

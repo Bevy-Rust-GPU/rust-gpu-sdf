@@ -5,7 +5,9 @@ use rust_gpu_bridge::{
     Asin, Atan2, Length, Normalize,
 };
 
-use crate::prelude::{Distance, Field, Normal, Uv};
+use crate::prelude::{
+    items::position::Position, AttrDistance, AttrNormal, AttrUv, Distance, Field, Normal, Uv,
+};
 
 /// Euclidian distance metric.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -15,47 +17,48 @@ use crate::prelude::{Distance, Field, Normal, Uv};
 #[repr(C)]
 pub struct EuclideanMetric;
 
-impl<Input> Field<Distance<Input>> for EuclideanMetric
+impl<Input> Field<AttrDistance<Input>> for EuclideanMetric
 where
     Input: Clone + Length,
 {
-    fn field(&self, input: &Input) -> f32 {
-        input.clone().length()
+    fn field(&self, input: &Position<Input>) -> Distance {
+        (**input).clone().length().into()
     }
 }
 
-impl<Input> Field<Normal<Input>> for EuclideanMetric
+impl<Dim> Field<AttrNormal<Dim>> for EuclideanMetric
 where
-    Input: Default + Clone + PartialEq + Normalize,
+    Dim: Default + Clone + PartialEq + Normalize,
 {
-    fn field(&self, input: &Input) -> Input {
-        let d = Input::default();
-        if *input == d {
-            return d;
+    fn field(&self, input: &Position<Dim>) -> Normal<Dim> {
+        let d = Dim::default();
+        if **input == d {
+            return d.into();
         }
 
-        input.clone().normalize()
+        (**input).clone().normalize().into()
     }
 }
 
-impl Field<Uv<f32>> for EuclideanMetric {
-    fn field(&self, p: &f32) -> Vec2 {
-        Vec2::new(*p, 0.0)
+impl Field<AttrUv<f32>> for EuclideanMetric {
+    fn field(&self, p: &Position<f32>) -> Uv {
+        Vec2::new(**p, 0.0).into()
     }
 }
 
-impl Field<Uv<Vec2>> for EuclideanMetric {
-    fn field(&self, p: &Vec2) -> Vec2 {
-        Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length())
+impl Field<AttrUv<Vec2>> for EuclideanMetric {
+    fn field(&self, p: &Position<Vec2>) -> Uv {
+        Vec2::new((p.x.atan2(p.y) / core::f32::consts::TAU) + 0.5, p.length()).into()
     }
 }
 
-impl Field<Uv<Vec3>> for EuclideanMetric {
-    fn field(&self, p: &Vec3) -> Vec2 {
+impl Field<AttrUv<Vec3>> for EuclideanMetric {
+    fn field(&self, p: &Position<Vec3>) -> Uv {
         Vec2::new(
             (p.x.atan2(p.z) / core::f32::consts::TAU) + 0.5,
             (p.y.asin() / core::f32::consts::PI) + 0.5,
         )
+        .into()
     }
 }
 

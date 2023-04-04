@@ -9,7 +9,9 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, Normal, Uv};
+use crate::prelude::{
+    items::position::Position, AttrDistance, AttrNormal, AttrUv, Distance, Field, Normal, Uv,
+};
 
 use super::{FieldOperator, Operator};
 
@@ -40,33 +42,34 @@ impl Default for SidedOp<Vec3> {
     }
 }
 
-impl<Sdf, Input> FieldOperator<Sdf, Distance<Input>> for SidedOp<Input>
+impl<Sdf, Input> FieldOperator<Sdf, AttrDistance<Input>> for SidedOp<Input>
 where
-    Sdf: Field<Distance<Input>>,
+    Sdf: Field<AttrDistance<Input>>,
     Input: Clone + Mul<Input, Output = Input> + Sign + Dot,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> f32 {
-        sdf.field(p) * p.clone().dot(self.axis.clone()).sign()
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> Distance {
+        (*sdf.field(p) * (**p).clone().dot(self.axis.clone()).sign()).into()
     }
 }
 
-impl<Sdf, Input> FieldOperator<Sdf, Normal<Input>> for SidedOp<Input>
+impl<Sdf, Input> FieldOperator<Sdf, AttrNormal<Input>> for SidedOp<Input>
 where
-    Sdf: Field<Normal<Input>>,
+    Sdf: Field<AttrNormal<Input>>,
     Input: Clone + Dot + Mul<f32, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> Input {
-        (sdf.field(p)) * p.clone().dot(self.axis.clone()).sign()
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> Normal<Input> {
+        let n = (*sdf.field(p)).clone();
+        (n * (**p).clone().dot(self.axis.clone()).sign()).into()
     }
 }
 
-impl<Sdf, Input> FieldOperator<Sdf, Uv<Input>> for SidedOp<Input>
+impl<Sdf, Input> FieldOperator<Sdf, AttrUv<Input>> for SidedOp<Input>
 where
-    Sdf: Field<Uv<Input>>,
+    Sdf: Field<AttrUv<Input>>,
     Input: Clone + Dot + Mul<f32, Output = Input>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> Vec2 {
-        (sdf.field(p)) * p.clone().dot(self.axis.clone()).sign()
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> Uv {
+        ((*sdf.field(p)).clone() * (**p).clone().dot(self.axis.clone()).sign()).into()
     }
 }
 

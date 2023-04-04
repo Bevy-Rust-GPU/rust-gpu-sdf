@@ -3,7 +3,7 @@ use rust_gpu_bridge::{
     Acos, Atan2, Sign,
 };
 
-use crate::prelude::{Attribute, Field, FieldOperator, Operator};
+use crate::prelude::{Attribute, Field, FieldOperator, Operator, items::position::Position};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
@@ -13,12 +13,12 @@ pub struct CartesianToPolarOp;
 impl<Sdf, Attr> FieldOperator<Sdf, Attr> for CartesianToPolarOp
 where
     Sdf: Field<Attr>,
-    Attr: Attribute<Input = Vec2>,
+    Attr: Attribute<Input = Position<Vec2>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec2) -> Attr::Output {
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec2>) -> Attr::Output {
         let r = p.length();
         let a = p.x.atan2(p.y);
-        sdf.field(&Vec2::new(a, r))
+        sdf.field(&Vec2::new(a, r).into())
     }
 }
 
@@ -32,13 +32,13 @@ pub struct CartesianToSphericalOp;
 impl<Sdf, Attr> FieldOperator<Sdf, Attr> for CartesianToSphericalOp
 where
     Sdf: Field<Attr>,
-    Attr: Attribute<Input = Vec3>,
+    Attr: Attribute<Input = Position<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec3) -> Attr::Output {
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec3>) -> Attr::Output {
         let r = p.length();
         let i = (p.z / r).acos();
         let a = p.y.sign() * (p.x / p.xy().length()).acos();
-        sdf.field(&Vec3::new(i, r, a))
+        sdf.field(&Vec3::new(i, r, a).into())
     }
 }
 

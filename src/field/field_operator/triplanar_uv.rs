@@ -6,7 +6,7 @@ use type_fields::Field;
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{Color, Distance, Field, Normal, Tangent, Uv},
+    prelude::{AttrColor, AttrDistance, Field, AttrNormal, AttrTangent, AttrUv, items::position::Position},
 };
 
 use super::{FieldOperator, Operator};
@@ -19,11 +19,11 @@ pub struct TriplanarUvOp {
     pub k: f32,
 }
 
-impl<Sdf> FieldOperator<Sdf, Uv<Vec3>> for TriplanarUvOp
+impl<Sdf> FieldOperator<Sdf, AttrUv<Vec3>> for TriplanarUvOp
 where
-    Sdf: Field<Normal<Vec3>>,
+    Sdf: Field<AttrNormal<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, input: &Vec3) -> <Uv<Vec3> as crate::prelude::Attribute>::Output {
+    fn operator(&self, sdf: &Sdf, input: &Position<Vec3>) -> <AttrUv<Vec3> as crate::prelude::Attribute>::Output {
         let front = input.xy();
         let side = input.zy();
         let top = input.xz();
@@ -34,14 +34,14 @@ where
             .pow(Vec3::splat(self.k))
             .normalize();
 
-        front * weights.z + side * weights.x + top * weights.y
+        (front * weights.z + side * weights.x + top * weights.y).into()
     }
 }
 
-impl_passthrough_op_1!(TriplanarUvOp, Distance<Dim>, Dim);
-impl_passthrough_op_1!(TriplanarUvOp, Normal<Dim>, Dim);
-impl_passthrough_op_1!(TriplanarUvOp, Tangent<Dim>, Dim);
-impl_passthrough_op_1!(TriplanarUvOp, Color<Dim>, Dim);
+impl_passthrough_op_1!(TriplanarUvOp, AttrDistance<Dim>, Dim);
+impl_passthrough_op_1!(TriplanarUvOp, AttrNormal<Dim>, Dim);
+impl_passthrough_op_1!(TriplanarUvOp, AttrTangent<Dim>, Dim);
+impl_passthrough_op_1!(TriplanarUvOp, AttrColor<Dim>, Dim);
 
 pub type TriplanarUv<Sdf> = Operator<TriplanarUvOp, Sdf>;
 

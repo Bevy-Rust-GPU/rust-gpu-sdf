@@ -3,7 +3,9 @@
 use rust_gpu_bridge::glam::Vec2;
 use type_fields::Field;
 
-use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
+use crate::prelude::{
+    items::position::Position, AttrDistance, Field, FieldOperator, AttrNormal, Operator, AttrUv, Distance, Normal, Uv,
+};
 
 /// Compute the boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -11,55 +13,55 @@ use crate::prelude::{Distance, Field, FieldOperator, Normal, Operator, Uv};
 #[repr(C)]
 pub struct IntersectionOp;
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Distance<Input>> for IntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrDistance<Input>> for IntersectionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfB: Field<Distance<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
     Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> f32 {
-        sdf_a.field(p).max(sdf_b.field(p))
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Distance {
+        sdf_a.field(input).max(*sdf_b.field(input)).into()
     }
 }
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Normal<Input>> for IntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrNormal<Input>> for IntersectionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfA: Field<Normal<Input>>,
-    SdfB: Field<Distance<Input>>,
-    SdfB: Field<Normal<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfA: Field<AttrNormal<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrNormal<Input>>,
     Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Input) -> Input {
-        let dist_a = Field::<Distance<Input>>::field(sdf_a, p);
-        let dist_b = Field::<Distance<Input>>::field(sdf_b, p);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Normal<Input> {
+        let dist_a = Field::<AttrDistance<Input>>::field(sdf_a, input);
+        let dist_b = Field::<AttrDistance<Input>>::field(sdf_b, input);
 
         let n = if dist_a > dist_b {
-            Field::<Normal<Input>>::field(sdf_a, p)
+            Field::<AttrNormal<Input>>::field(sdf_a, input)
         } else {
-            Field::<Normal<Input>>::field(sdf_b, p)
+            Field::<AttrNormal<Input>>::field(sdf_b, input)
         };
 
         n.into()
     }
 }
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), Uv<Input>> for IntersectionOp
+impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrUv<Input>> for IntersectionOp
 where
-    SdfA: Field<Distance<Input>>,
-    SdfA: Field<Uv<Input>>,
-    SdfB: Field<Distance<Input>>,
-    SdfB: Field<Uv<Input>>,
+    SdfA: Field<AttrDistance<Input>>,
+    SdfA: Field<AttrUv<Input>>,
+    SdfB: Field<AttrDistance<Input>>,
+    SdfB: Field<AttrUv<Input>>,
     Input: Clone,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Input) -> Vec2 {
-        let dist_a = Field::<Distance<Input>>::field(sdf_a, input);
-        let dist_b = Field::<Distance<Input>>::field(sdf_b, input);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Uv {
+        let dist_a = Field::<AttrDistance<Input>>::field(sdf_a, input);
+        let dist_b = Field::<AttrDistance<Input>>::field(sdf_b, input);
 
         if dist_a > dist_b {
-            Field::<Uv<Input>>::field(sdf_a, input)
+            Field::<AttrUv<Input>>::field(sdf_a, input)
         } else {
-            Field::<Uv<Input>>::field(sdf_b, input)
+            Field::<AttrUv<Input>>::field(sdf_b, input)
         }
     }
 }
