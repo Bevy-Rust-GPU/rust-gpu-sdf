@@ -4,7 +4,7 @@ use core::ops::Sub;
 
 use type_fields::Field;
 
-use crate::prelude::{Attribute, Field, FieldOperator, Operator, items::position::Position};
+use crate::prelude::{items::position::Position, Attribute, Field, FieldOperator, Operator};
 
 /// Apply a positional translation to a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -21,7 +21,7 @@ where
     Input: Clone + Sub<Input, Output = Input>,
 {
     fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> Attr::Output {
-        sdf.field(&((**p).clone() - self.translation.clone()).into())
+        sdf.field(&(p.clone() - self.translation.clone()).into())
     }
 }
 

@@ -6,7 +6,7 @@ use core::{
 use rust_gpu_bridge::glam::{Vec2, Vec3};
 
 use crate::{
-    default,
+    default, impl_newtype,
     prelude::{items::position::Position, Field},
 };
 
@@ -52,26 +52,7 @@ impl Field<AttrNormal<Vec3>> for Vec3 {
     }
 }
 
-#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Normal<Dim>(pub Dim);
-
-impl<Dim> Deref for Normal<Dim> {
-    type Target = Dim;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl<Dim> DerefMut for Normal<Dim> {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-
-impl<Dim> From<Dim> for Normal<Dim> {
-    fn from(value: Dim) -> Self {
-        Normal(value)
-    }
-}
-
+impl_newtype!(
+    #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct Normal<Dim>(Dim);
+);

@@ -1,6 +1,5 @@
 //! Compute the boolean intersection of two distance fields.
 
-use rust_gpu_bridge::glam::Vec2;
 use type_fields::Field;
 
 use crate::prelude::{
@@ -17,7 +16,6 @@ impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrDistance<Input>> for Int
 where
     SdfA: Field<AttrDistance<Input>>,
     SdfB: Field<AttrDistance<Input>>,
-    Input: Clone,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Distance {
         sdf_a.field(input).max(*sdf_b.field(input)).into()
@@ -30,7 +28,6 @@ where
     SdfA: Field<AttrNormal<Input>>,
     SdfB: Field<AttrDistance<Input>>,
     SdfB: Field<AttrNormal<Input>>,
-    Input: Clone,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Normal<Input> {
         let dist_a = Field::<AttrDistance<Input>>::field(sdf_a, input);
@@ -42,7 +39,7 @@ where
             Field::<AttrNormal<Input>>::field(sdf_b, input)
         };
 
-        n.into()
+        n
     }
 }
 
@@ -52,7 +49,6 @@ where
     SdfA: Field<AttrUv<Input>>,
     SdfB: Field<AttrDistance<Input>>,
     SdfB: Field<AttrUv<Input>>,
-    Input: Clone,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Uv {
         let dist_a = Field::<AttrDistance<Input>>::field(sdf_a, input);

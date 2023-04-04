@@ -3,7 +3,7 @@
 use rust_gpu_bridge::glam::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Attribute, Field, items::position::Position};
+use crate::prelude::{items::position::Position, Attribute, Field};
 
 use super::{FieldOperator, Operator};
 
@@ -50,12 +50,12 @@ where
 
 impl<Sdf, Attr> FieldOperator<Sdf, Attr> for TwistOp<Vec3>
 where
-    Attr: Attribute<Input = Vec3>,
+    Attr: Attribute<Input = Position<Vec3>>,
     Sdf: Field<Attr>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec3) -> Attr::Output {
-        let q = Quat::from_axis_angle(self.axis_rot, self.k * self.axis_pos.dot(*p)) * *p;
-        sdf.field(&q)
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec3>) -> Attr::Output {
+        let q = Quat::from_axis_angle(self.axis_rot, self.k * self.axis_pos.dot(**p)) * **p;
+        sdf.field(&q.into())
     }
 }
 

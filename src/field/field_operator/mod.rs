@@ -143,21 +143,21 @@ macro_rules! test_op_attrs {
 #[macro_export]
 macro_rules! test_op_attrs_1d {
     ($ty:ty) => {
-        crate::test_op_attrs_impl!($ty, test_attrs_1d, f32, [crate::prelude::Distance<f32>, crate::prelude::Normal<f32>, crate::prelude::Uv<f32>]);
+        crate::test_op_attrs_impl!($ty, test_attrs_1d, crate::prelude::Position<f32>, [crate::prelude::AttrDistance<f32>, crate::prelude::AttrNormal<f32>, crate::prelude::AttrUv<f32>]);
     };
 }
 
 #[macro_export]
 macro_rules! test_op_attrs_2d {
     ($ty:ty) => {
-        crate::test_op_attrs_impl!($ty, test_attrs_2d, rust_gpu_bridge::glam::Vec2, [crate::prelude::Distance<rust_gpu_bridge::glam::Vec2>, crate::prelude::Normal<rust_gpu_bridge::glam::Vec2>, crate::prelude::Uv<rust_gpu_bridge::glam::Vec2>]);
+        crate::test_op_attrs_impl!($ty, test_attrs_2d, crate::prelude::Position<rust_gpu_bridge::glam::Vec2>, [crate::prelude::AttrDistance<rust_gpu_bridge::glam::Vec2>, crate::prelude::AttrNormal<rust_gpu_bridge::glam::Vec2>, crate::prelude::AttrUv<rust_gpu_bridge::glam::Vec2>]);
     };
 }
 
 #[macro_export]
 macro_rules! test_op_attrs_3d {
     ($ty:ty) => {
-        crate::test_op_attrs_impl!($ty, test_attrs_3d, rust_gpu_bridge::glam::Vec3, [crate::prelude::Distance<rust_gpu_bridge::glam::Vec3>, crate::prelude::Normal<rust_gpu_bridge::glam::Vec3>, crate::prelude::Uv<rust_gpu_bridge::glam::Vec3>]);
+        crate::test_op_attrs_impl!($ty, test_attrs_3d, crate::prelude::Position<rust_gpu_bridge::glam::Vec3>, [crate::prelude::AttrDistance<rust_gpu_bridge::glam::Vec3>, crate::prelude::AttrNormal<rust_gpu_bridge::glam::Vec3>, crate::prelude::AttrUv<rust_gpu_bridge::glam::Vec3>]);
     };
 }
 

@@ -1,6 +1,6 @@
 use core::{marker::PhantomData, ops::{Deref, DerefMut}};
 
-use crate::prelude::{Field, items::position::Position};
+use crate::{prelude::{Field, items::position::Position}, impl_newtype};
 
 use super::Attribute;
 
@@ -38,25 +38,7 @@ impl<Dim> Field<AttrDistance<Dim>> for f32 {
     }
 }
 
-#[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
-pub struct Distance(pub f32);
-
-impl Deref for Distance {
-    type Target = f32;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl DerefMut for Distance {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-
-impl From<f32> for Distance {
-    fn from(value: f32) -> Self {
-        Distance(value)
-    }
-}
+impl_newtype!(
+    #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd)]
+    pub struct Distance(f32);
+);

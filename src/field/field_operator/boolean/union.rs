@@ -1,9 +1,11 @@
 //! Compute the boolean union of two distance fields.
 
-use rust_gpu_bridge::glam::Vec2;
 use type_fields::Field;
 
-use crate::prelude::{AttrDistance, Field, FieldOperator, AttrNormal, Operator, AttrUv, items::position::Position, Distance, Normal, Uv};
+use crate::prelude::{
+    items::position::Position, AttrDistance, AttrNormal, AttrUv, Distance, Field, FieldOperator,
+    Normal, Operator, Uv,
+};
 
 /// Compute the boolean union of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Field)]
@@ -15,7 +17,6 @@ impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrDistance<Input>> for Uni
 where
     SdfA: Field<AttrDistance<Input>>,
     SdfB: Field<AttrDistance<Input>>,
-    Input: Clone,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Distance {
         sdf_a.field(p).min(*sdf_b.field(p)).into()
@@ -28,7 +29,6 @@ where
     SdfA: Field<AttrNormal<Input>>,
     SdfB: Field<AttrDistance<Input>>,
     SdfB: Field<AttrNormal<Input>>,
-    Input: Clone,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Normal<Input> {
         let dist_a = Field::<AttrDistance<Input>>::field(sdf_a, input);
@@ -48,7 +48,6 @@ where
     SdfA: Field<AttrUv<Input>>,
     SdfB: Field<AttrDistance<Input>>,
     SdfB: Field<AttrUv<Input>>,
-    Input: Clone,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Uv {
         let dist_a = Field::<AttrDistance<Input>>::field(sdf_a, input);

@@ -24,7 +24,7 @@ where
     Input: Clone,
 {
     fn operator(&self, sdf_a: &SdfA, input: &Position<Input>) -> Distance {
-        (*sdf_a.field(input) + self.delta).into()
+        sdf_a.field(input) + self.delta
     }
 }
 

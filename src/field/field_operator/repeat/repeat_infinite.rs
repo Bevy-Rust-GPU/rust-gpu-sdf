@@ -6,7 +6,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Attribute, Field, FieldOperator, Operator};
+use crate::prelude::{Attribute, Field, FieldOperator, Operator, Position};
 
 /// Repeat a distance field infinitely in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -36,7 +36,7 @@ impl Default for RepeatInfiniteOp<Vec3> {
 
 impl<Sdf, Input, Attr> FieldOperator<Sdf, Attr> for RepeatInfiniteOp<Input>
 where
-    Attr: Attribute<Input = Input>,
+    Attr: Attribute<Input = Position<Input>>,
     Sdf: Field<Attr>,
     Input: Add<Input, Output = Input>
         + Add<f32, Output = Input>
@@ -46,11 +46,11 @@ where
         + Mod
         + Clone,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> Attr::Output {
-        let q = (p.clone().add(0.5).mul(self.period.clone()))
+    fn operator(&self, sdf: &Sdf, p: &Position<Input>) -> Attr::Output {
+        let q = ((**p).clone().add(0.5).mul(self.period.clone()))
             .modulo(self.period.clone())
             .sub(self.period.clone().mul(0.5));
-        sdf.field(&q)
+        sdf.field(&q.into())
     }
 }
 
@@ -69,7 +69,7 @@ pub mod tests {
     use type_fields::field::Field;
 
     use crate::{
-        prelude::{Point, Sphere, RepeatInfinite},
+        prelude::{Point, RepeatInfinite, Sphere},
         test_op_attrs_1d, test_op_attrs_2d, test_op_attrs_3d,
     };
 

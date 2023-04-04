@@ -47,8 +47,8 @@ where
             self.dir.clone().is_normalized(),
             "ExtrudeInfiniteOp dir must be normalized"
         );
-        let q = (**input).clone() - self.dir.clone() * (**input).clone().dot(self.dir.clone());
-        sdf.field(&q.into())
+        let q = (*input).clone() - self.dir.clone() * (**input).clone().dot(self.dir.clone());
+        sdf.field(&q)
     }
 }
 
@@ -104,13 +104,13 @@ where
     Input: Clone + Mul<f32, Output = Input> + Sub<Input, Output = Input> + Dot,
 {
     fn operator(&self, sdf: &Sdf, input: &Position<Input>) -> Attr::Output {
-        let q = (**input).clone()
+        let q = (*input).clone()
             - (self.dir.clone()
                 * (**input)
                     .clone()
                     .dot(self.dir.clone())
                     .clamp(-self.dist, self.dist));
-        sdf.field(&q.into())
+        sdf.field(&q)
     }
 }
 

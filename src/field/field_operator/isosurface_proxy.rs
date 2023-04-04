@@ -25,9 +25,9 @@ where
     Input: Clone,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Distance {
-        let d1 = *sdf_a.field(p);
-        let d2 = *sdf_b.field(p);
-        (d1 - d2).into()
+        let d1 = sdf_a.field(p);
+        let d2 = sdf_b.field(p);
+        d1 - *d2
     }
 }
 
@@ -45,8 +45,8 @@ where
         (sdf_a, sdf_b): &(SdfA, SdfB),
         input: &Position<Input>,
     ) -> <AttrUv<Input> as crate::prelude::Attribute>::Output {
-        let p = (**input).clone() / *sdf_b.field(input);
-        sdf_a.field(&p.into())
+        let p = (*input).clone() / *sdf_b.field(input);
+        sdf_a.field(&p)
     }
 }
 

@@ -16,7 +16,7 @@ use crate::prelude::{AttrDistance, Field, items::position::Position, Distance};
 pub struct Squircle;
 
 impl Field<AttrDistance<Vec2>> for Squircle {
-    fn field(&self, mut p: &Position<Vec2>) -> Distance {
+    fn field(&self, p: &Position<Vec2>) -> Distance {
         // Axial reflection
         let mut p = p.abs();
 

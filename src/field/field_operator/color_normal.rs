@@ -4,7 +4,10 @@ use rust_gpu_bridge::{glam::Vec4, Splat, ToVec};
 
 use crate::{
     impl_passthrough_op_1,
-    prelude::{AttrColor, AttrDistance, Field, AttrNormal, AttrTangent, AttrUv, Raycast, items::position::Position, Color},
+    prelude::{
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrTangent, AttrUv, Color,
+        Field, Raycast,
+    },
 };
 
 use super::{FieldOperator, Operator};

@@ -1,8 +1,14 @@
-use core::{marker::PhantomData, ops::{DerefMut, Deref}};
+use core::{
+    marker::PhantomData,
+    ops::{Deref, DerefMut},
+};
 
 use rust_gpu_bridge::glam::Vec2;
 
-use crate::prelude::{Field, items::position::Position};
+use crate::{
+    impl_newtype,
+    prelude::{items::position::Position, Field},
+};
 
 use super::Attribute;
 
@@ -40,25 +46,7 @@ impl<Dim> Field<AttrUv<Dim>> for Vec2 {
     }
 }
 
-#[derive(Default, Copy, Clone, PartialEq)]
-pub struct Uv(pub Vec2);
-
-impl Deref for Uv {
-    type Target = Vec2;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl DerefMut for Uv {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-
-impl From<Vec2> for Uv {
-    fn from(value: Vec2) -> Self {
-        Uv(value)
-    }
-}
+impl_newtype!(
+    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    pub struct Uv(Vec2);
+);

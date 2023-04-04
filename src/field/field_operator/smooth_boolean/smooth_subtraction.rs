@@ -51,14 +51,10 @@ where
         + Splat,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Normal<Input> {
-        let d1 = *Field::<AttrDistance<Input>>::field(sdf_a, p);
-        let d2 = *Field::<AttrDistance<Input>>::field(sdf_b, p);
+        let d1 = (*Field::<AttrDistance<Input>>::field(sdf_a, p)).clone();
+        let d2 = (*Field::<AttrDistance<Input>>::field(sdf_b, p)).clone();
 
-        let h = (d2.clone() + d1.clone())
-            .div(self.k)
-            .mul(0.5)
-            .sub(0.5)
-            .saturate();
+        let h = (d2 + d1).div(self.k).mul(0.5).sub(0.5).saturate();
 
         let n1 = (*Field::<AttrNormal<Input>>::field(sdf_a, p)).clone();
         let n2 = (*Field::<AttrNormal<Input>>::field(sdf_b, p)).clone();

@@ -5,7 +5,10 @@ use core::ops::{Add, Div, Mul, Sub};
 use rust_gpu_bridge::{glam::Vec2, Clamp, Mix, Normalize, Saturate, Splat, Step};
 use type_fields::Field;
 
-use crate::prelude::{AttrDistance, Field, FieldOperator, AttrNormal, Operator, AttrTangent, AttrUv, items::position::Position, Distance, Normal, Tangent, Uv};
+use crate::prelude::{
+    items::position::Position, AttrDistance, AttrNormal, AttrTangent, AttrUv, Distance, Field,
+    FieldOperator, Normal, Operator, Tangent, Uv,
+};
 
 /// Compute the blended boolean intersection of two distance fields.
 #[derive(Debug, Default, Copy, Clone, PartialEq, PartialOrd, Field)]
@@ -29,39 +32,35 @@ where
     }
 }
 
-impl<SdfA, SdfB, Input> FieldOperator<(SdfA, SdfB), AttrNormal<Input>> for SmoothIntersectionOp
+impl<SdfA, SdfB, Dim> FieldOperator<(SdfA, SdfB), AttrNormal<Dim>> for SmoothIntersectionOp
 where
-    SdfA: Field<AttrDistance<Input>>,
-    SdfA: Field<AttrNormal<Input>>,
-    SdfB: Field<AttrDistance<Input>>,
-    SdfB: Field<AttrNormal<Input>>,
-    Input: Clone
-        + Sub<Input, Output = Input>
-        + Div<f32, Output = Input>
-        + Mul<f32, Output = Input>
-        + Mul<Input, Output = Input>
-        + Add<f32, Output = Input>
-        + Add<Input, Output = Input>
+    SdfA: Field<AttrDistance<Dim>>,
+    SdfA: Field<AttrNormal<Dim>>,
+    SdfB: Field<AttrDistance<Dim>>,
+    SdfB: Field<AttrNormal<Dim>>,
+    Dim: Clone
+        + Sub<Dim, Output = Dim>
+        + Div<f32, Output = Dim>
+        + Mul<f32, Output = Dim>
+        + Mul<Dim, Output = Dim>
+        + Add<f32, Output = Dim>
+        + Add<Dim, Output = Dim>
         + Clamp
         + Mix
         + Saturate
         + Normalize
         + Splat,
 {
-    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Normal<Input> {
-        let d1 = *Field::<AttrDistance<Input>>::field(sdf_a, p);
-        let d2 = *Field::<AttrDistance<Input>>::field(sdf_b, p);
+    fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Dim>) -> Normal<Dim> {
+        let d1 = (*Field::<AttrDistance<Dim>>::field(sdf_a, p)).clone();
+        let d2 = (*Field::<AttrDistance<Dim>>::field(sdf_b, p)).clone();
 
-        let h = (d2.clone() - d1.clone())
-            .div(self.k)
-            .mul(0.5)
-            .sub(0.5)
-            .saturate();
+        let h = (d2 - d1).div(self.k).mul(0.5).sub(0.5).saturate();
 
-        let n1 = (*Field::<AttrNormal<Input>>::field(sdf_a, p)).clone();
-        let n2 = (*Field::<AttrNormal<Input>>::field(sdf_b, p)).clone();
+        let n1 = (*Field::<AttrNormal<Dim>>::field(sdf_a, p)).clone();
+        let n2 = (*Field::<AttrNormal<Dim>>::field(sdf_b, p)).clone();
 
-        n2.mix(n1, Input::splat(h.clone())).normalize().into()
+        n2.mix(n1, Dim::splat(h)).normalize().into()
     }
 }
 
@@ -85,19 +84,15 @@ where
         + Splat,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Tangent<Input> {
-        let d1 = *Field::<AttrDistance<Input>>::field(sdf_a, p);
-        let d2 = *Field::<AttrDistance<Input>>::field(sdf_b, p);
+        let d1 = (*Field::<AttrDistance<Input>>::field(sdf_a, p)).clone();
+        let d2 = (*Field::<AttrDistance<Input>>::field(sdf_b, p)).clone();
 
-        let h = (d2.clone() - d1.clone())
-            .div(self.k)
-            .mul(0.5)
-            .sub(0.5)
-            .saturate();
+        let h = (d2 - d1).div(self.k).mul(0.5).sub(0.5).saturate();
 
         let n1 = (*Field::<AttrTangent<Input>>::field(sdf_a, p)).clone();
         let n2 = (*Field::<AttrTangent<Input>>::field(sdf_b, p)).clone();
 
-        n2.mix(n1, Input::splat(h.clone())).normalize().into()
+        n2.mix(n1, Input::splat(h)).normalize().into()
     }
 }
 
@@ -121,14 +116,10 @@ where
         + Splat,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Input>) -> Uv {
-        let d1 = *Field::<AttrDistance<Input>>::field(sdf_a, p);
-        let d2 = *Field::<AttrDistance<Input>>::field(sdf_b, p);
+        let d1 = (*Field::<AttrDistance<Input>>::field(sdf_a, p)).clone();
+        let d2 = (*Field::<AttrDistance<Input>>::field(sdf_b, p)).clone();
 
-        let h = (d2.clone() - d1.clone())
-            .div(self.k)
-            .mul(0.5)
-            .sub(0.5)
-            .saturate();
+        let h = (d2 - d1).div(self.k).mul(0.5).sub(0.5).saturate();
 
         let uv1 = *Field::<AttrUv<Input>>::field(sdf_a, p);
         let uv2 = *Field::<AttrUv<Input>>::field(sdf_b, p);

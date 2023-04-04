@@ -8,7 +8,7 @@ use rust_gpu_bridge::{
 };
 use type_fields::Field;
 
-use crate::prelude::{Attribute, Field, FieldOperator, Operator};
+use crate::prelude::{Attribute, Field, FieldOperator, Operator, Position};
 
 /// Repeat a distance field a set number of times in one or more axes.
 #[derive(Debug, Copy, Clone, PartialEq, Field)]
@@ -46,22 +46,22 @@ impl Default for RepeatCountOp<Vec3> {
     }
 }
 
-impl<Sdf, Input, Attr> FieldOperator<Sdf, Attr> for RepeatCountOp<Input>
+impl<Sdf, Dim, Attr> FieldOperator<Sdf, Attr> for RepeatCountOp<Dim>
 where
-    Attr: Attribute<Input = Input>,
+    Attr: Attribute<Input = Position<Dim>>,
     Sdf: Field<Attr>,
-    Input: Clone
-        + Div<Input, Output = Input>
-        + Neg<Output = Input>
-        + Mul<Input, Output = Input>
-        + Sub<Input, Output = Input>
+    Dim: Clone
+        + Div<Dim, Output = Dim>
+        + Neg<Output = Dim>
+        + Mul<Dim, Output = Dim>
+        + Sub<Dim, Output = Dim>
         + Round
         + Clamp,
 {
-    fn operator(&self, sdf: &Sdf, p: &Input) -> Attr::Output {
+    fn operator(&self, sdf: &Sdf, p: &Position<Dim>) -> Attr::Output {
         let q = p.clone()
             - self.period.clone()
-                * (p.clone() / self.period.clone())
+                * ((**p).clone() / self.period.clone())
                     .round()
                     .clamp(-self.count.clone(), self.count.clone());
         sdf.field(&q)

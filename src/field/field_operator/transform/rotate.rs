@@ -4,7 +4,7 @@ use core::fmt::Debug;
 use rust_gpu_bridge::glam::{Quat, Vec2, Vec3};
 use type_fields::Field;
 
-use crate::prelude::{Attribute, Field, FieldOperator, Operator, items::position::Position};
+use crate::prelude::{items::position::Position, Attribute, Field, FieldOperator, Operator};
 
 /// Rotate a distance field.
 #[derive(Debug, Default, Copy, Clone, PartialEq, Field)]
@@ -49,11 +49,11 @@ impl Debug for Rotate3dOp {
 
 impl<Sdf, Attr> FieldOperator<Sdf, Attr> for Rotate3dOp
 where
-    Attr: Attribute<Input = Vec3>,
+    Attr: Attribute<Input = Position<Vec3>>,
     Sdf: Field<Attr>,
 {
-    fn operator(&self, sdf: &Sdf, p: &Vec3) -> Attr::Output {
-        sdf.field(&(self.rotation.inverse() * *p))
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec3>) -> Attr::Output {
+        sdf.field(&(self.rotation.inverse() * **p).into())
     }
 }
 

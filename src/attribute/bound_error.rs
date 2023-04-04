@@ -35,8 +35,8 @@ use core::{
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        items::position::Position, AttrDistance, Attribute, AttrColor, Field, FieldOperator, AttrNormal,
-        Operator, Support, SupportFunction, AttrTangent, AttrUv, AttrSupport, Distance,
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrSupport, AttrTangent,
+        AttrUv, Attribute, Distance, Field, FieldOperator, Operator, Support, SupportFunction,
     },
 };
 
@@ -81,7 +81,7 @@ where
         let support = Field::<AttrSupport<Input>>::field(sdf, p);
         let sv = support.support_vector();
         out.support = support;
-        out.error = Field::<AttrDistance<Input>>::field(sdf, &((**p).clone() + sv).into());
+        out.error = Field::<AttrDistance<Input>>::field(sdf, &((*p).clone() + sv));
         out
     }
 }

@@ -5,7 +5,10 @@ use core::{
 
 use rust_gpu_bridge::glam::Vec4;
 
-use crate::prelude::{items::position::Position, Field};
+use crate::{
+    impl_newtype,
+    prelude::{items::position::Position, Field},
+};
 
 use super::Attribute;
 
@@ -43,25 +46,7 @@ impl<Input> Field<AttrColor<Input>> for Vec4 {
     }
 }
 
-#[derive(Default, Copy, Clone, PartialEq)]
-pub struct Color(pub Vec4);
-
-impl Deref for Color {
-    type Target = Vec4;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl DerefMut for Color {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-
-impl From<Vec4> for Color {
-    fn from(value: Vec4) -> Self {
-        Color(value)
-    }
-}
+impl_newtype!(
+    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    pub struct Color(Vec4);
+);

@@ -50,10 +50,10 @@ where
             "ReflectOp axis must be normalized"
         );
 
-        let q = (**input).clone()
+        let q = input.clone()
             - self.axis.clone() * (**input).clone().dot(self.axis.clone()).min(0.0) * 2.0;
 
-        sdf.field(&q.into())
+        sdf.field(&q)
     }
 }
 

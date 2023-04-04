@@ -50,7 +50,7 @@ where
 {
     fn operator(&self, sdf: &Sdf, input: &Position<f32>) -> Distance {
         let q = input.abs() - self.extent;
-        sdf.field(&q.max(0.0).into()).add(q.min(0.0)).into()
+        sdf.field(&q.max(0.0).into()) + q.min(0.0)
     }
 }
 
@@ -60,9 +60,7 @@ where
 {
     fn operator(&self, sdf: &Sdf, input: &Position<Vec2>) -> Distance {
         let q = input.abs() - self.extent;
-        sdf.field(&q.max(Vec2::ZERO).into())
-            .add(q.x.max(q.y).min(0.0))
-            .into()
+        sdf.field(&q.max(Vec2::ZERO).into()) + q.x.max(q.y).min(0.0)
     }
 }
 
@@ -72,9 +70,7 @@ where
 {
     fn operator(&self, sdf: &Sdf, input: &Position<Vec3>) -> Distance {
         let q = input.abs() - self.extent;
-        sdf.field(&q.max(Vec3::ZERO).into())
-            .add(q.x.max(q.y.max(q.z)).min(0.0))
-            .into()
+        sdf.field(&q.max(Vec3::ZERO).into()) + q.x.max(q.y.max(q.z)).min(0.0)
     }
 }
 

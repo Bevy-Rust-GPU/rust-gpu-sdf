@@ -54,7 +54,7 @@ where
         let d1 = *Field::<AttrDistance<Input>>::field(sdf_a, input);
         let d2 = *Field::<AttrDistance<Input>>::field(sdf_b, input);
 
-        let h = ((d2.clone() - d1.clone()).div(self.k).mul(0.5).add(0.5)).saturate();
+        let h = ((d2 - d1).div(self.k).mul(0.5).add(0.5)).saturate();
 
         let n1 = (*Field::<AttrNormal<Input>>::field(sdf_a, input)).clone();
         let n2 = (*Field::<AttrNormal<Input>>::field(sdf_b, input)).clone();
@@ -84,7 +84,7 @@ where
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), p: &Position<Dim>) -> Tangent<Dim> {
         let d1 = *Field::<AttrDistance<Dim>>::field(sdf_a, p);
         let d2 = *Field::<AttrDistance<Dim>>::field(sdf_b, p);
-        let h = ((d2.clone() - d1.clone()).div(self.k).mul(0.5).add(0.5)).saturate();
+        let h = ((d2 - d1).div(self.k).mul(0.5).add(0.5)).saturate();
 
         let t1 = (*Field::<AttrTangent<Dim>>::field(sdf_a, p)).clone();
         let t2 = (*Field::<AttrTangent<Dim>>::field(sdf_b, p)).clone();
@@ -115,7 +115,7 @@ where
         let d1 = *Field::<AttrDistance<Input>>::field(sdf_a, input);
         let d2 = *Field::<AttrDistance<Input>>::field(sdf_b, input);
 
-        let h = ((d2.clone() - d1.clone()).div(self.k).mul(0.5).add(0.5)).saturate();
+        let h = ((d2 - d1).div(self.k).mul(0.5).add(0.5)).saturate();
 
         let uv1 = Field::<AttrUv<Input>>::field(sdf_a, input);
         let uv2 = Field::<AttrUv<Input>>::field(sdf_b, input);

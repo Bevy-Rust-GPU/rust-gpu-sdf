@@ -2,7 +2,7 @@ use core::{marker::PhantomData, ops::{Deref, DerefMut}};
 
 use rust_gpu_bridge::glam::{Vec2, Vec3};
 
-use crate::{default, prelude::{Field, items::position::Position}};
+use crate::{default, prelude::{Field, items::position::Position}, impl_newtype};
 
 use super::Attribute;
 
@@ -46,26 +46,7 @@ impl Field<AttrTangent<Vec3>> for Vec3 {
     }
 }
 
-#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Tangent<Dim>(pub Dim);
-
-impl<Dim> Deref for Tangent<Dim> {
-    type Target = Dim;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl<Dim> DerefMut for Tangent<Dim> {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-
-impl<Dim> From<Dim> for Tangent<Dim> {
-    fn from(value: Dim) -> Self {
-        Tangent(value)
-    }
-}
-
+impl_newtype!(
+    #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct Tangent<Dim>(Dim);
+);

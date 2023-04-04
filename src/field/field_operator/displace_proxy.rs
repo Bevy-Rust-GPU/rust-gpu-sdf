@@ -23,7 +23,7 @@ where
     Input: Clone,
 {
     fn operator(&self, (sdf_a, sdf_b): &(SdfA, SdfB), input: &Position<Input>) -> Distance {
-        (*sdf_a.field(input) + *sdf_b.field(input)).into()
+        sdf_a.field(input) + *sdf_b.field(input)
     }
 }
 

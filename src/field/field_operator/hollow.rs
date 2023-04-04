@@ -8,8 +8,8 @@ use type_fields::Field;
 use crate::{
     impl_passthrough_op_1,
     prelude::{
-        items::position::Position, AttrColor, AttrDistance, Field, FieldOperator, AttrNormal, Operator,
-        AttrTangent, AttrUv, Distance, Normal, Tangent, Uv,
+        items::position::Position, AttrColor, AttrDistance, AttrNormal, AttrTangent, AttrUv,
+        Distance, Field, FieldOperator, Normal, Operator, Tangent, Uv,
     },
 };
 
@@ -37,7 +37,7 @@ where
     fn operator(&self, sdf: &Sdf, input: &Position<Input>) -> Normal<Input> {
         let d = <Sdf as Field<AttrDistance<Input>>>::field(sdf, input);
         let s = d.sign();
-        <Sdf as Field<AttrNormal<Input>>>::field(sdf, &((**input).clone() * s).into())
+        <Sdf as Field<AttrNormal<Input>>>::field(sdf, &((*input).clone() * s))
     }
 }
 
@@ -50,7 +50,7 @@ where
     fn operator(&self, sdf: &Sdf, input: &Position<Dim>) -> Tangent<Dim> {
         let d = <Sdf as Field<AttrDistance<Dim>>>::field(sdf, input);
         let s = d.sign();
-        <Sdf as Field<AttrTangent<Dim>>>::field(sdf, &((**input).clone() * s).into())
+        <Sdf as Field<AttrTangent<Dim>>>::field(sdf, &((*input).clone() * s))
     }
 }
 
@@ -63,7 +63,7 @@ where
     fn operator(&self, sdf: &Sdf, input: &Position<Input>) -> Uv {
         let d = <Sdf as Field<AttrDistance<Input>>>::field(sdf, input);
         let s = d.sign();
-        <Sdf as Field<AttrUv<Input>>>::field(sdf, &((**input).clone() * s).into())
+        <Sdf as Field<AttrUv<Input>>>::field(sdf, &((*input).clone() * s))
     }
 }
 
