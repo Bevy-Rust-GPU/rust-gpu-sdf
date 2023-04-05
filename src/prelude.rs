@@ -4,12 +4,11 @@ pub use crate::{
     },
     bound_tester::*,
     context::{
-        context_item::*,
-        context_items::*,
-        context_path::*,
-        context_plural::*,
-        context_query::*,
         items::{position::*, *},
+        traits::{
+            context::*, context_item::*, context_items::*, context_items_uncons::*, contexts::*,
+            contexts_uncons::*, *,
+        },
         *,
     },
     field::{
@@ -47,7 +46,9 @@ pub use crate::{
         shape::{composite::*, octahedron::*, plane::*, squircle::*, *},
         traits::{
             field::*, field_attribute::*, field_attribute_context::*, field_attributes::*,
-            field_attributes_context_cons::*, field_context::*, fields::*, fields_context::*, *,
+            field_attributes_context_cons::*, field_context::*, field_contexts::*,
+            field_contexts_uncons::*, fields::*, fields_context::*, fields_contexts::*,
+            fields_contexts_uncons::*, *,
         },
         *,
     },

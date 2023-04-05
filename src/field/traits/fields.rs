@@ -1,6 +1,6 @@
 //! Function associating several attribute values with a point in space.
 
-use crate::prelude::{Attribute, Attributes, AttributesRef, Context, Field};
+use crate::prelude::{Attribute, Attributes, Field};
 
 /// Function associating several attribute values with a point in space.
 ///
@@ -40,4 +40,3 @@ where
         (self.field(input), ())
     }
 }
-

@@ -1,4 +1,4 @@
-use crate::prelude::{Fields, AttributesRef, Context};
+use crate::prelude::{AttributesRef, Context, Fields};
 
 /// Function associating an attribute value with a point in space.
 ///

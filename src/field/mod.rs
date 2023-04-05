@@ -7,8 +7,6 @@ pub mod field_operator;
 
 pub mod traits;
 
-use crate::prelude::Attribute;
-
 #[cfg(feature = "glam")]
 pub mod boxed {
     extern crate alloc;
