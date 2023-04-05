@@ -2,7 +2,7 @@
 
 use core::ops::{Add, Div, Mul, Sub};
 
-use rust_gpu_bridge::{glam::Vec2, Clamp, Mix, Normalize, Saturate, Splat};
+use rust_gpu_bridge::{Clamp, Mix, Normalize, Saturate, Splat};
 use type_fields::Field;
 
 use crate::prelude::{

@@ -60,7 +60,7 @@ impl<Dim> Field<AttrNormal<Dim>> for Plane<Dim>
 where
     Dim: Clone + Neg<Output = Dim>,
 {
-    fn field(&self, p: &Position<Dim>) -> Normal<Dim> {
+    fn field(&self, _: &Position<Dim>) -> Normal<Dim> {
         self.dir.clone().neg().into()
     }
 }

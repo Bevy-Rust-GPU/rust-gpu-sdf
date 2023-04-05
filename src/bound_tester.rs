@@ -8,7 +8,7 @@ use rust_gpu_bridge::{
 };
 
 use crate::prelude::{
-    default, AttrBoundError, AttrDistance, AttrNormal, BoundError, ErrorTerm, Field,
+    default, AttrBoundError, AttrDistance, AttrNormal, BoundError, Field,
     FieldAttribute, SupportFunction,
 };
 

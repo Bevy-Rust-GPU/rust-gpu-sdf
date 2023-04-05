@@ -1,7 +1,5 @@
 //! Extrude a shape along its axes, preserving exterior geometry.
 
-use core::ops::Add;
-
 use rust_gpu_bridge::{
     glam::{Vec2, Vec3, Vec3Swizzles},
     Abs, Sign,

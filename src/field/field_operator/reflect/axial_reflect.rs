@@ -122,7 +122,7 @@ impl<const AXIS: usize, Sdf> FieldOperator<Sdf, AttrDistance<Vec3>> for AxialRef
 where
     Sdf: Field<AttrDistance<Vec3>>,
 {
-    fn operator(&self, sdf: &Sdf, mut p: &Position<Vec3>) -> Distance {
+    fn operator(&self, sdf: &Sdf, p: &Position<Vec3>) -> Distance {
         let mut p = *p;
 
         if AXIS & AXIS_X > 0 {

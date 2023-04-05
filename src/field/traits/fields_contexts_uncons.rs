@@ -36,10 +36,8 @@ mod test {
     };
 
     #[test]
-    pub fn test_field_contexts() {
+    pub fn test_fields_contexts_uncons() {
         let context = (1usize, 2.0, "three").cons_ref();
-
-        let (_float, (_int, ())) = Contexts::<_, (&f32, (&usize, ()))>::contexts(context);
 
         #[derive(Default)]
         pub struct TestFieldsContextsUncons;
@@ -106,7 +104,5 @@ mod test {
             &Operator::<TestFieldsContextsUncons2, TestFieldsContextsUncons>::default(),
             context,
         );
-
-        panic!("{int:} {float:} {string:} {smallint:}");
     }
 }
