@@ -13,8 +13,6 @@ pub use crate::{
         *,
     },
     field::{
-        field_attribute::*,
-        field_attributes::*,
         field_operator::{
             arity::{extrude::*, extrude_interior::*, slice::*, sweep::*, *},
             boolean::{intersection::*, subtraction::*, union::*, *},
@@ -45,9 +43,12 @@ pub use crate::{
             twist::*,
             *,
         },
-        fields::*,
         metric::{chebyshev::*, euclidean::*, superellipse::*, taxicab::*, *},
         shape::{composite::*, octahedron::*, plane::*, squircle::*, *},
+        traits::{
+            field::*, field_attribute::*, field_attribute_context::*, field_attributes::*,
+            field_attributes_context_cons::*, field_context::*, fields::*, fields_context::*, *,
+        },
         *,
     },
     *,

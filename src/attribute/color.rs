@@ -47,6 +47,6 @@ impl<Input> Field<AttrColor<Input>> for Vec4 {
 }
 
 impl_newtype!(
-    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    #[derive(Default, Copy, Clone, PartialEq)]
     pub struct Color(Vec4);
 );

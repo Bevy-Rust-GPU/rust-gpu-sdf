@@ -47,6 +47,6 @@ impl<Dim> Field<AttrUv<Dim>> for Vec2 {
 }
 
 impl_newtype!(
-    #[derive(Debug, Default, Copy, Clone, PartialEq)]
+    #[derive(Default, Copy, Clone, PartialEq)]
     pub struct Uv(Vec2);
 );

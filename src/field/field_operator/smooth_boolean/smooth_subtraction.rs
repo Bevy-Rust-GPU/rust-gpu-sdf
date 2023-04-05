@@ -148,7 +148,7 @@ impl<SdfA, SdfB> SmoothSubtraction<SdfA, SdfB> {
     }
 
     pub fn k(&mut self) -> &mut f32 {
-        &mut self.op.k
+        &mut self.op().k
     }
 }
 
