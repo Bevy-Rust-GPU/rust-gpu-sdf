@@ -1,30 +1,29 @@
-//! Function associating several attribute values with a point in space.
-
-use type_fields::cons::Uncons;
+use type_fields::t_funk::hlist::ToTList;
 
 use crate::prelude::{Attributes, ConsAttributes, Fields};
 
-/// Function associating several attribute values with a point in space.
+/// Evalute multiple attributes of a field function.
 ///
-/// Extension trait of `Fields`;
-/// `Cons`es the provided tuple, evaluates it via `FieldAttributesImpl`,
-/// then returns the `Uncons` of the result.
+/// Moves `Attrs` into the function position.
 pub trait FieldAttributes {
-    fn attributes<'a, Attr>(
+    fn field_attributes<'a, Attrs>(
         &self,
-        input: &<Attr::ConsAttr as Attributes>::Input,
-    ) -> Attr::UnconsOutput
+        input: &<Attrs::ConsAttr as Attributes>::Input,
+    ) -> Attrs::UnconsOutput
     where
-        Self: Fields<Attr::ConsAttr>,
-        Attr: ConsAttributes<'a>;
+        Self: Fields<Attrs::ConsAttr>,
+        Attrs: ConsAttributes<'a>;
 }
 
 impl<T> FieldAttributes for T {
-    fn attributes<'a, Attr>(&self, input: &<Attr::Cons as Attributes>::Input) -> Attr::UnconsOutput
+    fn field_attributes<'a, Attr>(
+        &self,
+        input: &<Attr::HList as Attributes>::Input,
+    ) -> Attr::UnconsOutput
     where
-        Self: Fields<Attr::Cons>,
+        Self: Fields<Attr::HList>,
         Attr: ConsAttributes<'a>,
     {
-        self.fields(input).uncons()
+        self.fields(input).to_tlist()
     }
 }

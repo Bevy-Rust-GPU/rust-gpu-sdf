@@ -1,6 +1,6 @@
 //! Attributes whose corresponding data type can be evaluated via field function
 
-use type_fields::cons::{Cons, Uncons};
+use type_fields::t_funk::{hlist::ToTList, tlist::ToHList};
 
 pub trait Attribute {
     type Input;
@@ -61,23 +61,23 @@ where
 }
 
 /// A cons list of `Attribute`s
-pub trait ConsAttributes<'a>: Cons<Cons = Self::ConsAttr> {
+pub trait ConsAttributes<'a>: ToHList<HList = Self::ConsAttr> {
     type ConsAttr: Attributes<Input = Self::AttrInput, Output = Self::AttrOutput>;
     type AttrInput: 'a;
-    type AttrOutput: Uncons<Uncons = Self::UnconsOutput>;
+    type AttrOutput: ToTList<TList = Self::UnconsOutput>;
     type UnconsOutput;
 }
 
 impl<'a, T> ConsAttributes<'a> for T
 where
-    T: Cons,
-    T::Cons: AttributesRef<'a>,
-    <T::Cons as Attributes>::Output: Uncons,
+    T: ToHList,
+    T::HList: AttributesRef<'a>,
+    <T::HList as Attributes>::Output: ToTList,
 {
-    type ConsAttr = T::Cons;
-    type AttrInput = <T::Cons as AttributesRef<'a>>::InputRef;
-    type AttrOutput = <T::Cons as Attributes>::Output;
-    type UnconsOutput = <<T::Cons as Attributes>::Output as Uncons>::Uncons;
+    type ConsAttr = T::HList;
+    type AttrInput = <T::HList as AttributesRef<'a>>::InputRef;
+    type AttrOutput = <T::HList as Attributes>::Output;
+    type UnconsOutput = <<T::HList as Attributes>::Output as ToTList>::TList;
 }
 
 pub mod color;

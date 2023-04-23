@@ -59,7 +59,7 @@ where
                     },
                     ..Default::default()
                 }
-                .attribute::<AttrBoundError<Vec2>>(&pos.into());
+                .field_attribute::<AttrBoundError<Vec2>>(&pos.into());
 
                 // Skip samples with no valid support function
                 if error_term.support.normal == Vec2::ZERO {
@@ -107,7 +107,7 @@ where
                         },
                         ..Default::default()
                     }
-                    .attribute::<AttrBoundError<Vec3>>(&pos.into());
+                    .field_attribute::<AttrBoundError<Vec3>>(&pos.into());
 
                     // Skip samples with no valid support function
                     if error_term.support.normal == Vec3::ZERO {

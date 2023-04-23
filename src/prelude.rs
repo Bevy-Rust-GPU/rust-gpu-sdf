@@ -6,8 +6,8 @@ pub use crate::{
     context::{
         items::{position::*, *},
         traits::{
-            context::*, context_item::*, context_items::*, context_items_uncons::*, contexts::*,
-            contexts_uncons::*, *,
+            register::*, register_item::*, register_items::*, register_items_uncons::*,
+            registers::*, registers_uncons::*, *,
         },
         *,
     },
@@ -45,10 +45,10 @@ pub use crate::{
         metric::{chebyshev::*, euclidean::*, superellipse::*, taxicab::*, *},
         shape::{composite::*, octahedron::*, plane::*, squircle::*, *},
         traits::{
-            field::*, field_attribute::*, field_attribute_context::*, field_attributes::*,
-            field_attributes_context_cons::*, field_context::*, field_contexts::*,
-            field_contexts_uncons::*, fields::*, fields_context::*, fields_contexts::*,
-            fields_contexts_uncons::*, *,
+            field::*, field_attribute::*, field_attribute_register::*, field_attributes::*,
+            field_attributes_register_cons::*, field_register::*, field_registers::*,
+            field_registers_uncons::*, fields::*, fields_register::*, fields_registers::*,
+            fields_registers_uncons::*, fields_uncons_registers_uncons::*, *,
         },
         *,
     },

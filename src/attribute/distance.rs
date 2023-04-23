@@ -1,6 +1,9 @@
-use core::{marker::PhantomData, ops::{Deref, DerefMut}};
+use core::marker::PhantomData;
 
-use crate::{prelude::{Field, items::position::Position}, impl_newtype};
+use crate::{
+    impl_newtype,
+    prelude::{items::position::Position, Field},
+};
 
 use super::Attribute;
 

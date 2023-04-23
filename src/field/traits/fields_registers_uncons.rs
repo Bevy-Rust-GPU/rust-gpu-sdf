@@ -1,27 +1,43 @@
-use type_fields::cons::{Cons, Uncons};
+use type_fields::t_funk::{hlist::ToTList, tlist::ToHList};
 
-use crate::prelude::{AttributesRef, ContextsUncons, Fields};
+use crate::prelude::{Attributes, AttributesRef, Fields, RegistersUncons};
 
-pub trait FieldsContextsUncons<'a, Attr, Ctx, State>: Fields<Attr>
+/// Evalute multiple attributes of a field function,
+/// drawing input from `Ctx` and `Uncons`ing the result.
+pub trait FieldsRegistersUncons<'a, Attrs, Ctx, State>: Fields<Attrs::HList>
 where
-    Attr: AttributesRef<'a>,
-    Attr::InputRef: Cons,
-    <Attr::InputRef as Cons>::Cons: Uncons<Uncons = Attr::InputRef>,
-    Ctx: ContextsUncons<State, Attr::InputRef, Type = <Attr::InputRef as Cons>::Cons>,
+    Attrs: ToHList,
+    Attrs::HList: AttributesRef<'a>,
+    <Attrs::HList as AttributesRef<'a>>::InputRef: ToHList,
+    <<Attrs::HList as AttributesRef<'a>>::InputRef as ToHList>::HList:
+        ToTList<TList = <Attrs::HList as AttributesRef<'a>>::InputRef>,
+    <Attrs::HList as Attributes>::Output: ToTList,
+    Ctx: RegistersUncons<
+        State,
+        <Attrs::HList as AttributesRef<'a>>::InputRef,
+        Type = <<Attrs::HList as AttributesRef<'a>>::InputRef as ToHList>::HList,
+    >,
 {
-    fn fields_contexts_uncons(&self, ctx: Ctx) -> Attr::Output;
+    fn fields_registers_uncons(&self, ctx: Ctx) -> <Attrs::HList as Attributes>::Output;
 }
 
-impl<'a, T, Attr, Ctx, State> FieldsContextsUncons<'a, Attr, Ctx, State> for T
+impl<'a, T, Attrs, Ctx, State> FieldsRegistersUncons<'a, Attrs, Ctx, State> for T
 where
-    Self: Fields<Attr>,
-    Attr: AttributesRef<'a>,
-    Attr::InputRef: Cons,
-    <Attr::InputRef as Cons>::Cons: Uncons<Uncons = Attr::InputRef>,
-    Ctx: ContextsUncons<State, Attr::InputRef, Type = <Attr::InputRef as Cons>::Cons>,
+    Self: Fields<Attrs::HList>,
+    Attrs: ToHList,
+    Attrs::HList: AttributesRef<'a>,
+    <Attrs::HList as AttributesRef<'a>>::InputRef: ToHList,
+    <<Attrs::HList as AttributesRef<'a>>::InputRef as ToHList>::HList:
+        ToTList<TList = <Attrs::HList as AttributesRef<'a>>::InputRef>,
+    <Attrs::HList as Attributes>::Output: ToTList,
+    Ctx: RegistersUncons<
+        State,
+        <Attrs::HList as AttributesRef<'a>>::InputRef,
+        Type = <<Attrs::HList as AttributesRef<'a>>::InputRef as ToHList>::HList,
+    >,
 {
-    fn fields_contexts_uncons(&self, ctx: Ctx) -> Attr::Output {
-        self.fields(&ctx.contexts_uncons())
+    fn fields_registers_uncons(&self, ctx: Ctx) -> <Attrs::HList as Attributes>::Output {
+        self.fields(&ctx.registers_uncons())
     }
 }
 
@@ -31,9 +47,7 @@ mod test {
 
     use type_fields::cons::ConsRef;
 
-    use crate::prelude::{
-        Attribute, Contexts, Field, FieldOperator, FieldsContextsUncons, Operator,
-    };
+    use crate::prelude::{Attribute, Field, FieldOperator, FieldsRegistersUncons, Operator};
 
     #[test]
     pub fn test_fields_contexts_uncons() {
@@ -93,14 +107,11 @@ mod test {
             }
         }
 
-        let ((int, float), ((string, smallint), ())) = FieldsContextsUncons::<
-            (
-                AttrTestFieldsContextsUncons,
-                (AttrTestFieldsContextsUncons2, ()),
-            ),
+        let ((_int, _float), ((_string, _smallint), ())) = FieldsRegistersUncons::<
+            (AttrTestFieldsContextsUncons, AttrTestFieldsContextsUncons2),
             _,
             _,
-        >::fields_contexts_uncons(
+        >::fields_registers_uncons(
             &Operator::<TestFieldsContextsUncons2, TestFieldsContextsUncons>::default(),
             context,
         );

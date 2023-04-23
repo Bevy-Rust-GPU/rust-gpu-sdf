@@ -1,8 +1,11 @@
-use core::{marker::PhantomData, ops::{Deref, DerefMut}};
+use core::marker::PhantomData;
 
 use rust_gpu_bridge::glam::{Vec2, Vec3};
 
-use crate::{default, prelude::{Field, items::position::Position}, impl_newtype};
+use crate::{
+    default, impl_newtype,
+    prelude::{items::position::Position, Field},
+};
 
 use super::Attribute;
 

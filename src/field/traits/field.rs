@@ -1,6 +1,6 @@
 use crate::prelude::Attribute;
 
-/// Function associating an attribute value with a point in space.
+/// Evalute the attribute `Attr` of a field function.
 pub trait Field<Attr>
 where
     Attr: Attribute,

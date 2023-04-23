@@ -1,7 +1,4 @@
-use core::{
-    marker::PhantomData,
-    ops::{Deref, DerefMut},
-};
+use core::marker::PhantomData;
 
 use rust_gpu_bridge::glam::Vec4;
 

@@ -1,5 +1,3 @@
-//! Function associating several attribute values with a point in space.
-
 use crate::prelude::{Attribute, Attributes, Field};
 
 /// Function associating several attribute values with a point in space.
@@ -7,11 +5,11 @@ use crate::prelude::{Attribute, Attributes, Field};
 /// Extension trait of `Field`;
 /// impls over `(LHS, RHS)` and `(LHS, ())` to allow recursive
 /// evaluation of `Attribute` cons lists.
-pub trait Fields<Attr>
+pub trait Fields<Attrs>
 where
-    Attr: Attributes,
+    Attrs: Attributes,
 {
-    fn fields(&self, input: &Attr::Input) -> Attr::Output;
+    fn fields(&self, input: &Attrs::Input) -> Attrs::Output;
 }
 
 impl<T, LHS, RHS> Fields<(LHS, RHS)> for T

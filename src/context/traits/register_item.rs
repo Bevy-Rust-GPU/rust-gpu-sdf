@@ -1,21 +1,20 @@
-use crate::prelude::Context;
+use crate::prelude::Register;
 
-/// Type-level data access
+/// Fetch `T` by type from a cons list.
 ///
-/// Extension API trait over `Context`;
-/// moves T into the function position.
-pub trait ContextItem<State>: Sized {
+/// Moves `T` into the function position.
+pub trait RegisterItem<State>: Sized {
     fn item<Item>(self) -> Item
     where
-        Self: Context<State, Item>;
+        Self: Register<State, Item>;
 }
 
-impl<T, State> ContextItem<State> for T {
+impl<T, State> RegisterItem<State> for T {
     fn item<Item>(self) -> Item
     where
-        T: Context<State, Item>,
+        T: Register<State, Item>,
     {
-        self.context()
+        self.register()
     }
 }
 
@@ -23,7 +22,7 @@ impl<T, State> ContextItem<State> for T {
 mod test {
     use type_fields::cons::Cons;
 
-    use crate::prelude::ContextItem;
+    use crate::prelude::RegisterItem;
 
     #[test]
     pub fn test_context_item() {

@@ -1,21 +1,17 @@
-//! Function associating an attribute value with a point in space.
-
 use crate::prelude::{Attribute, Field};
 
-/// Function associating an attribute value with a point in space.
+/// Evalute the attribute `Attr` of a field function.
 ///
-/// API extension trait of `Field`;
-/// moves the `Attr` generic into the function position,
-/// and obscures the `attr` parameter using `Attribute`'s `Default` constraint
+/// Moves `Attr` into the function position.
 pub trait FieldAttribute {
-    fn attribute<Attr>(&self, input: &Attr::Input) -> Attr::Output
+    fn field_attribute<Attr>(&self, input: &Attr::Input) -> Attr::Output
     where
         Self: Field<Attr>,
         Attr: Attribute;
 }
 
 impl<T> FieldAttribute for T {
-    fn attribute<Attr>(&self, input: &Attr::Input) -> Attr::Output
+    fn field_attribute<Attr>(&self, input: &Attr::Input) -> Attr::Output
     where
         Self: Field<Attr>,
         Attr: Attribute,

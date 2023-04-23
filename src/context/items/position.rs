@@ -1,5 +1,3 @@
-use core::ops::{Deref, DerefMut};
-
 use crate::impl_newtype;
 
 impl_newtype!(

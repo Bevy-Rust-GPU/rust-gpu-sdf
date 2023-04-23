@@ -4,22 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-#default = ["glam"]
-default = ["spirv-std"]
+default = []
 glam = ["rust-gpu-bridge/glam"]
 spirv-std = ["rust-gpu-bridge/spirv-std"]
 bevy = ["dep:bevy"]
 
-[patch.crates-io]
-#rust-gpu-bridge = { git = "https://github.com/bevy-rust-gpu/rust-gpu-bridge", branch = "master" }
-#type-fields = { git = "https://github.com/bevy-rust-gpu/type-fields" }
-
-rust-gpu-bridge = { path = "../rust-gpu-bridge" }
-rust-gpu-bridge-macros = { path = "../rust-gpu-bridge-macros" }
-type-fields = { path = "../type-fields" }
-type-fields-macros = { path = "../type-fields-macros" }
 
 [dependencies]
-rust-gpu-bridge = "0.4.0"
-type-fields = "0.1.0"
+rust-gpu-bridge = { git = "https://github.com/bevy-rust-gpu/rust-gpu-bridge" }
+type-fields = { git = "https://github.com/bevy-rust-gpu/type-fields" }
+
 bevy = { version = "0.10.0", optional = true }
