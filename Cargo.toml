@@ -12,6 +12,6 @@ bevy = ["dep:bevy"]
 
 [dependencies]
 rust-gpu-bridge = { git = "https://github.com/bevy-rust-gpu/rust-gpu-bridge", tag = "v0.5.0" }
-type-fields = { git = "https://github.com/bevy-rust-gpu/type-fields" }
+type-fields = { git = "https://github.com/bevy-rust-gpu/type-fields", tag = "prerelease" }
 
 bevy = { version = "0.10.0", optional = true }
