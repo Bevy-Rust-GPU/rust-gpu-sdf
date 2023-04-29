@@ -4,7 +4,7 @@ use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
     Mod,
 };
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{Attribute, Field, FieldOperator, Operator, Position};
 

@@ -6,7 +6,7 @@ use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
     Dot, IsNormalized,
 };
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{items::position::Position, Attribute, Field, FieldOperator, Operator};
 

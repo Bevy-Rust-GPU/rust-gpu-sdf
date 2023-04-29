@@ -2,7 +2,7 @@
 use core::fmt::Debug;
 
 use rust_gpu_bridge::glam::{Quat, Vec2, Vec3};
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{items::position::Position, Attribute, Field, FieldOperator, Operator};
 

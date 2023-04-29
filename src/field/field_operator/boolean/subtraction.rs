@@ -2,7 +2,7 @@
 
 use core::ops::Neg;
 
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{
     items::position::Position, AttrDistance, AttrNormal, AttrUv, Distance, Field, FieldOperator,

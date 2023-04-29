@@ -50,7 +50,7 @@ where
 mod test {
     use core::marker::PhantomData;
 
-    use type_fields::cons::ConsRef;
+    use type_fields::t_funk::tlist::AsHListRef;
 
     use crate::prelude::{
         fields_uncons_registers_uncons::FieldsUnconsRegistersUncons, Attribute, Field,
@@ -59,7 +59,7 @@ mod test {
 
     #[test]
     pub fn test_fields_uncons_registers_uncons() {
-        let context = (1usize, 2.0, "three").cons_ref();
+        let context = (1usize, 2.0, "three").as_hlist_ref();
 
         #[derive(Default)]
         pub struct TestFieldsContextsUncons;

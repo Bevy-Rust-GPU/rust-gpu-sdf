@@ -1,6 +1,6 @@
 //! Displace the output of a distance field using the output of another distance field.
 
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::{
     impl_passthrough_op_2,

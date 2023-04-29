@@ -1,6 +1,6 @@
 //! Override the UVs of an SDF with the UVs of another SDF
 
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::{
     impl_passthrough_op_2,

@@ -2,7 +2,7 @@ use rust_gpu_bridge::{
     glam::{Vec3, Vec3Swizzles},
     Pow,
 };
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::{
     impl_passthrough_op_1,

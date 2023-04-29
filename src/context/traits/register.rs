@@ -31,13 +31,13 @@ where
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 mod test {
-    use type_fields::cons::Cons;
+    use type_fields::t_funk::tlist::ToHList;
 
     use crate::prelude::Register;
 
     #[test]
     pub fn test_context() {
-        let context = (1, 2.0, "three").cons();
+        let context = (1, 2.0, "three").to_hlist();
 
         let _int = 0usize.register();
         let _float = 0.0.register();

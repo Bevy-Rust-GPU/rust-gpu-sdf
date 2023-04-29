@@ -3,7 +3,7 @@
 use core::ops::{Add, Div, Mul, Sub};
 
 use rust_gpu_bridge::{Clamp, Mix, Normalize, Saturate, Splat};
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{
     items::position::Position, AttrDistance, AttrNormal, AttrTangent, AttrUv, Distance, Field,

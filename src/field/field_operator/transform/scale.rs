@@ -2,7 +2,7 @@
 
 use core::ops::{Div, Mul};
 
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{Attribute, Field, FieldOperator, Operator};
 

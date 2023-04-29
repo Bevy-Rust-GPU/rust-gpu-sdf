@@ -7,7 +7,7 @@ use rust_gpu_bridge::{
     glam::{Vec2, Vec3},
     Dot, Sign,
 };
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{
     items::position::Position, AttrDistance, AttrNormal, AttrUv, Distance, Field, Normal, Uv,

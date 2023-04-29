@@ -25,7 +25,7 @@ impl<T, State> RegisterItems<State> for T {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 mod test {
-    use type_fields::tlist::ToHList;
+    use type_fields::t_funk::tlist::ToHList;
 
     use crate::prelude::RegisterItems;
 

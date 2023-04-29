@@ -45,13 +45,13 @@ where
 mod test {
     use core::marker::PhantomData;
 
-    use type_fields::cons::ConsRef;
+    use type_fields::t_funk::tlist::AsHListRef;
 
     use crate::prelude::{Attribute, Field, FieldOperator, FieldsRegistersUncons, Operator};
 
     #[test]
     pub fn test_fields_contexts_uncons() {
-        let context = (1usize, 2.0, "three").cons_ref();
+        let context = (1usize, 2.0, "three").as_hlist_ref();
 
         #[derive(Default)]
         pub struct TestFieldsContextsUncons;

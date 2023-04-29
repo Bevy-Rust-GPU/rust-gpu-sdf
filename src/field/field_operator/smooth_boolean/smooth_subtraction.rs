@@ -2,7 +2,7 @@
 use core::ops::{Add, Div, Mul, Sub};
 
 use rust_gpu_bridge::{glam::Vec2, Clamp, Mix, Normalize, Saturate, Splat, Step};
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{
     items::position::Position, AttrDistance, AttrNormal, AttrTangent, AttrUv, Distance, Field,

@@ -1,4 +1,4 @@
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::{
     impl_passthrough_op_2,

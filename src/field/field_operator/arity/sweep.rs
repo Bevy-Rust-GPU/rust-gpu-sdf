@@ -2,7 +2,7 @@
 //! around the perimiter of another 2D distance field
 
 use rust_gpu_bridge::glam::{Vec2, Vec3, Vec3Swizzles};
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{AttrDistance, Field, FieldOperator, AttrNormal, Operator, AttrUv, items::position::Position, Normal, Uv};
 

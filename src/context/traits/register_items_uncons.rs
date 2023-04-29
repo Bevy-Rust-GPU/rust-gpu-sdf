@@ -32,13 +32,13 @@ impl<T, State> RegisterItemsUncons<State> for T {
 
 #[cfg(all(not(feature = "spirv-std"), test))]
 mod test {
-    use type_fields::cons::Cons;
+    use type_fields::t_funk::tlist::ToHList;
 
     use crate::prelude::RegisterItemsUncons;
 
     #[test]
     pub fn test_context_items() {
-        let context = (1, 2.0, "three").cons();
+        let context = (1, 2.0, "three").to_hlist();
 
         let (_int,) = 0usize.context_items_uncons::<(usize,)>();
         let (_float,) = 0.0.context_items_uncons::<(f32,)>();

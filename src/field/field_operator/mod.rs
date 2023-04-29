@@ -40,7 +40,9 @@ where
 }
 
 /// Applies a [`FieldOperator`] to a [`FieldAttribute`].
-#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, type_fields::Field)]
+#[derive(
+    Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, type_fields::macros::Field,
+)]
 #[cfg_attr(feature = "glam", derive(rust_gpu_bridge::Named))]
 #[cfg_attr(feature = "bevy", derive(bevy::reflect::TypeUuid))]
 #[cfg_attr(feature = "bevy", uuid = "d588f817-4e15-4b1e-b98c-dc2b0d47f719")]

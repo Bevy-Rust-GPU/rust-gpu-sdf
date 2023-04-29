@@ -1,6 +1,6 @@
 use type_fields::t_funk::{hlist::ToTList, tlist::ToHList};
 
-use crate::prelude::{AttributeRef, RegistersUncons, Field};
+use crate::prelude::{AttributeRef, Field, RegistersUncons};
 
 pub trait FieldRegistersUncons<'a, Attr, Ctx, State>: Field<Attr>
 where
@@ -29,13 +29,13 @@ where
 mod test {
     use core::marker::PhantomData;
 
-    use type_fields::cons::ConsRef;
+    use type_fields::t_funk::tlist::AsHListRef;
 
-    use crate::prelude::{Attribute, RegistersUncons, Field, FieldRegistersUncons};
+    use crate::prelude::{Attribute, Field, FieldRegistersUncons, RegistersUncons};
 
     #[test]
     pub fn test_field_contexts_uncons() {
-        let context = (1usize, 2.0, "three").cons_ref();
+        let context = (1usize, 2.0, "three").as_hlist_ref();
 
         let (_float, _int) = RegistersUncons::<_, (&f32, &usize)>::registers_uncons(context);
 

@@ -1,6 +1,6 @@
 //! Compute the boolean intersection of two distance fields.
 
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{
     items::position::Position, AttrDistance, Field, FieldOperator, AttrNormal, Operator, AttrUv, Distance, Normal, Uv,

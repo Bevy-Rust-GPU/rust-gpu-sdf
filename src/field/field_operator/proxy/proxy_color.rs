@@ -1,7 +1,7 @@
 //! Override the colors of an SDF with the colors of another SDF
 
 use rust_gpu_bridge::glam::Vec4;
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::{
     impl_passthrough_op_2,

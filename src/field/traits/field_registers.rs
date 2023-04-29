@@ -23,13 +23,13 @@ where
 mod test {
     use core::marker::PhantomData;
 
-    use type_fields::cons::ConsRef;
+    use type_fields::t_funk::tlist::AsHListRef;
 
     use crate::prelude::{Attribute, Registers, Field, FieldRegisters};
 
     #[test]
     pub fn test_field_contexts() {
-        let context = (1usize, 2.0, "three").cons_ref();
+        let context = (1usize, 2.0, "three").as_hlist_ref();
 
         let (_float, (_int, ())) = Registers::<_, (&f32, (&usize, ()))>::registers(context);
 

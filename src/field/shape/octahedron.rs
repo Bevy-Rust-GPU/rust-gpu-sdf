@@ -1,7 +1,7 @@
 //! An octahedron.
 
 use rust_gpu_bridge::{glam::Vec3, Normalize, Sign};
-use type_fields::Field;
+use type_fields::macros::Field;
 
 use crate::prelude::{
     items::position::Position, AttrDistance, AttrNormal, Distance, Field, Normal,
