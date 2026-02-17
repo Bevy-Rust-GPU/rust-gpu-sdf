@@ -6,4 +6,6 @@
 
 A no-std signed distance field library.
 Usable on the CPU in regular Rust, or on the GPU by way of `rust-gpu`.
+
+![Animated implicit surface](captures/animated.gif)
 </div>
